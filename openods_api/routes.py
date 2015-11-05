@@ -99,6 +99,36 @@ def get_organisations():
     return jsonify(result)
 
 
+@app.route("/organisations/search/<search_text>", methods=['GET'])
+@auto.doc()
+@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+def search_organisations(search_text):
+
+    """
+
+    Returns a list of organisations
+
+    Params:
+    - offset=x (Offset start of results by x)
+    - limit=y (Retrieve y results)
+    """
+
+    log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
+    offset = request.args.get('offset') if request.args.get('offset') else 0
+    limit = request.args.get('limit') if request.args.get('limit') else 1000
+    log.debug(offset)
+    log.debug(limit)
+    orgs = db.search_organisation(search_text)
+
+    if orgs:
+        result = {'organisations': orgs}
+        return jsonify(result)
+
+    else:
+        return "Not found", 404
+
+
+
 @app.route("/organisations/<ods_code>/document", methods=['GET'])
 @auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
