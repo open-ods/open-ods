@@ -1,7 +1,7 @@
 import psycopg2, psycopg2.pool, psycopg2.extras
 import logging
 
-import openods.database.connection as connect
+import openods_api.database.connection as connect
 
 log = logging.getLogger('__name__')
 log.setLevel(logging.DEBUG)

@@ -1,7 +1,7 @@
 import psycopg2, psycopg2.pool, psycopg2.extras
 from urllib.parse import urlparse as urlparse
 import logging
-import openods.config as config
+import openods_api.config as config
 
 log = logging.getLogger('__name__')
 log.setLevel(logging.DEBUG)

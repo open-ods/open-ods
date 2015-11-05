@@ -3,12 +3,12 @@ from dict2xml import dict2xml as xmlify
 from flask import jsonify, Response, request
 from flask.ext.autodoc import Autodoc
 
-from openods import app, config
-import openods.cache as ocache
-from openods.cache import cache
-from openods.database import db
+from openods_api import app, config
+import openods_api.cache as ocache
+from openods_api.cache import cache
+from openods_api.database import db
 
-log = logging.getLogger('openods')
+log = logging.getLogger('openods_api')
 log.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)

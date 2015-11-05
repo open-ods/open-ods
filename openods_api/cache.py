@@ -1,10 +1,10 @@
 import urllib.parse
 import logging
 from flask import request
-from openods import app
+from openods_api import app
 from flask.ext.cacheify import init_cacheify
 
-log = logging.getLogger('openods')
+log = logging.getLogger('openods_api')
 log.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)

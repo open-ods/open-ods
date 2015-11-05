@@ -1,5 +1,5 @@
 import unittest
-import openods
+import openods_api
 
 
 class CanaryTests(unittest.TestCase):
