@@ -2,6 +2,7 @@ import psycopg2, psycopg2.pool, psycopg2.extras
 import logging
 
 import openods_api.database.connection as connect
+import openods_api.config as config
 
 log = logging.getLogger('__name__')
 log.setLevel(logging.DEBUG)
@@ -34,7 +35,7 @@ def get_org_list(offset=0, limit=1000):
     result = []
 
     for row in rows:
-        link_self_href = str.format('http://prototype.openods.co.uk/organisations/{0}', row['org_odscode'])
+        link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, row['org_odscode'])
         item = {
             'odscode': row['org_odscode'],
             'name': row['org_name'],
@@ -120,6 +121,15 @@ def get_specific_org(odscode):
         relationships = []
 
         for relationship in rows_relationships:
+
+            link_self_href = str.format('http://{0}/organisations/{1}',
+                                        config.APP_HOSTNAME, relationship['target_odscode'])
+
+            relationship['link'] = {
+                    'rel': 'target',
+                    'href': link_self_href
+                }
+
             relationships.append({'relationship': relationship})
 
         result_data['relationships'] = relationships
