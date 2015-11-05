@@ -10,3 +10,4 @@ CREATE DATABASE ods
        CONNECTION LIMIT = -1;
 
 CREATE EXTENSION "uuid-ossp";
+CREATE EXTENSION "adminpack";
