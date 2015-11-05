@@ -197,28 +197,6 @@ def search_organisation(search_text):
         log.error(e)
 
 
-def get_org_doc(odscode):
-    conn = connect.get_connection()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
-    try:
-        sql = "SELECT * from register_ods_organisations " \
-              "WHERE data_jsonb ->> 'code' = %s "\
-              "limit 1;"
-        data = (odscode,)
-
-        cur.execute(sql, data)
-        row_org = cur.fetchone()
-        print(row_org)
-
-        result = row_org['data_jsonb']
-
-        return result
-
-    except psycopg2.DatabaseError as e:
-        log.error(str.format("Error {0}", e))
-
-
 def get_roles():
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)

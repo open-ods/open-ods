@@ -64,34 +64,6 @@ ALTER TABLE relationships
 
 
 
--- Table: register_ods_organisations
-
--- DROP TABLE register_ods_organisations;
-
-CREATE TABLE register_ods_organisations
-(
-  seq_no serial NOT NULL,
-  data_jsonb jsonb,
-  CONSTRAINT pk PRIMARY KEY (seq_no)
-)
-WITH (
-  OIDS=TRUE
-);
-ALTER TABLE register_ods_organisations
-  OWNER TO dev;
-
--- Index: json_idx
-
--- DROP INDEX json_idx;
-
-CREATE INDEX json_idx
-  ON register_ods_organisations
-  USING gin
-  ((data_jsonb -> 'code'::text));
-
-
-
-
 -- Table: organisations
 
 -- DROP TABLE organisations;

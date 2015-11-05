@@ -131,30 +131,6 @@ def search_organisations(search_text):
         return "Not found", 404
 
 
-
-@app.route("/organisations/<ods_code>/document", methods=['GET'])
-@auto.doc()
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
-def get_organisation_document(ods_code):
-
-    """
-
-    EXPERIMENTAL - Returns an organisation document directly from document store
-    """
-
-    data = db.get_org_doc(ods_code)
-
-    if data:
-        try:
-            del data['org_lastchanged']
-        except Exception as e:
-            pass
-        log.debug(jsonify(data))
-        return jsonify(data)
-    else:
-        return "Not found", 404
-
-
 @app.route("/roles", methods=['GET'])
 @auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
