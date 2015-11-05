@@ -66,11 +66,15 @@ def get_roles():
     return result
 
 
-def get_org(odscode):
 def get_specific_org(odscode):
+
+    # Get a database connection
     conn = connect.get_connection()
+
+    # Use the RealDictCursor to return data as a python dictionary type
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
+    # Try and retrieve the organisation record for the provided ODS code
     try:
         sql = "SELECT * from organisations " \
               "WHERE org_odscode = %s "\
@@ -79,13 +83,16 @@ def get_specific_org(odscode):
 
         cur.execute(sql, data)
         row_org = cur.fetchone()
-        print(row_org)
+        log.debug(str.format("Organisation Record: {0}", row_org))
 
+        # Raise an exception if the organisation record is not found
         if row_org is None:
             raise Exception("Record Not Found")
 
+        # Get the organisation_ref from the retrieved record
         organisation_ref = row_org['organisation_ref']
 
+        # Retrieve the roles for the organisation
         sql = "SELECT r.role_code, csr.codesystem_displayname from roles r " \
             "left join codesystems csr on r.role_code = csr.codesystem_id " \
             "WHERE r.organisation_ref = %s; "
@@ -93,8 +100,9 @@ def get_specific_org(odscode):
 
         cur.execute(sql, data)
         rows_roles = cur.fetchall()
-        print(rows_roles)
+        log.debug(rows_roles)
 
+        # Retrieve the relationships for the organisation
         sql = "SELECT rs.relationship_code, csr.codesystem_displayname, rs.target_odscode, o.org_name from relationships rs " \
             "left join codesystems csr on rs.relationship_code = csr.codesystem_id " \
             "left join organisations o on rs.target_odscode = o.org_odscode " \
@@ -103,13 +111,28 @@ def get_specific_org(odscode):
 
         cur.execute(sql, data)
         rows_relationships = cur.fetchall()
-        print(rows_relationships)
+        log.debug(rows_relationships)
 
-        data = row_org
-        data['roles'] = rows_roles
-        data['relationships'] = rows_relationships
+        # Create an object from the returned organisation record to hold the data to be returned
+        result_data = row_org
 
-        return data
+        # Add the retrieved relationships data to the object
+        relationships = []
+
+        for relationship in rows_relationships:
+            relationships.append({'relationship': relationship})
+
+        result_data['relationships'] = relationships
+
+        # Add the retrieved roles data to the object
+        roles = []
+
+        for role in rows_roles:
+            roles.append({'role': role})
+
+        result_data['roles'] = roles
+
+        return result_data
 
     except psycopg2.DatabaseError as e:
         log.error(str.format("Error {0}", e))
