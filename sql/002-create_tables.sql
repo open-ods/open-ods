@@ -16,7 +16,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE versions
-  OWNER TO dev;
+  OWNER TO openods;
 
 
 
@@ -26,18 +26,18 @@ ALTER TABLE versions
 
 CREATE TABLE roles
 (
+  role_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
   version_ref uuid NOT NULL,
   organisation_ref uuid NOT NULL,
-  role_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
-  role_code character varying(10) NOT NULL,
   org_odscode character varying(10),
+  role_code character varying(10) NOT NULL,
   CONSTRAINT roles_pk PRIMARY KEY (role_ref)
 )
 WITH (
   OIDS=FALSE
 );
 ALTER TABLE roles
-  OWNER TO dev;
+  OWNER TO openods;
 
 
 
@@ -47,11 +47,11 @@ ALTER TABLE roles
 
 CREATE TABLE relationships
 (
+  relationship_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
   version_ref uuid NOT NULL,
   organisation_ref uuid NOT NULL,
   target_ref uuid,
   relationship_code character varying(10),
-  relationship_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
   target_odscode character varying(10),
   org_odscode character varying(10),
   CONSTRAINT relationships_pk PRIMARY KEY (relationship_ref)
@@ -60,7 +60,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE relationships
-  OWNER TO dev;
+  OWNER TO openods;
 
 
 
@@ -70,8 +70,8 @@ ALTER TABLE relationships
 
 CREATE TABLE organisations
 (
-  version_ref uuid NOT NULL,
   organisation_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
+  version_ref uuid NOT NULL,
   org_odscode character varying(10),
   org_name character varying(200),
   org_status character varying(10),
@@ -83,7 +83,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE organisations
-  OWNER TO dev;
+  OWNER TO openods;
 
 
 
@@ -93,18 +93,18 @@ ALTER TABLE organisations
 
 CREATE TABLE codesystems
 (
-  codesystem_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
   codesystem_name character varying(50),
+  version_ref uuid NOT NULL,
+  codesystem_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
   codesystem_id character varying(10),
   codesystem_displayname character varying(200),
-  version_ref uuid NOT NULL,
   CONSTRAINT codesystems_pk PRIMARY KEY (codesystem_ref)
 )
 WITH (
   OIDS=FALSE
 );
 ALTER TABLE codesystems
-  OWNER TO dev;
+  OWNER TO openods;
 
 
 
@@ -114,9 +114,10 @@ ALTER TABLE codesystems
 
 CREATE TABLE addresses
 (
-  version_ref uuid NOT NULL,
   address_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
+  version_ref uuid NOT NULL,
   organisation_ref uuid NOT NULL,
+  org_odscode character varying(10),
   "streetAddressLine1" text,
   "streetAddressLine2" text,
   town text,
@@ -129,4 +130,4 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE addresses
-  OWNER TO dev;
+  OWNER TO openods;
