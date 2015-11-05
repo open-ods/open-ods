@@ -30,22 +30,22 @@ def get_org_list(offset=0, limit=1000, recordclass='both'):
     if recordclass == 'both':
         sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
         "WHERE org_status = 'ACTIVE' " \
-        "order by org_odscode OFFSET %s LIMIT %s;"
+        "order by org_name OFFSET %s LIMIT %s;"
 
     elif recordclass == 'HSCOrg':
         sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
         "WHERE org_status = 'ACTIVE' AND org_recordclass = 'HSCOrg' " \
-        "order by org_odscode OFFSET %s LIMIT %s;"
+        "order by org_name OFFSET %s LIMIT %s;"
 
     elif recordclass == 'HSCSite':
         sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
         "WHERE org_status = 'ACTIVE' AND org_recordclass = 'HSCSite' " \
-        "order by org_odscode OFFSET %s LIMIT %s;"
+        "order by org_name OFFSET %s LIMIT %s;"
 
     else:
         sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
         "WHERE org_status = 'ACTIVE' " \
-        "order by org_odscode OFFSET %s LIMIT %s;"
+        "order by org_name OFFSET %s LIMIT %s;"
 
     log.debug(sql)
     data = (offset, limit)
