@@ -1,6 +1,6 @@
-import logging, urllib.parse
+import logging
 from dict2xml import dict2xml as xmlify
-from flask import jsonify, Response, request, url_for
+from flask import jsonify, Response, request
 from flask.ext.autodoc import Autodoc
 
 from openods import app, config
