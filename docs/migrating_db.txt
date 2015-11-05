@@ -1,3 +1,0 @@
-PGPASSWORD=dev pg_dump -Fc --no-acl --no-owner -h localhost -U dev ods > ods.dump
-
-heroku pg:backups restore 'https://s3-eu-west-1.amazonaws.com/openods/ods.dump' DATABASE_URL

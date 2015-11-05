@@ -4,16 +4,19 @@
 ### Attribution
 Organisation Data Service, Health and Social Care Information Centre, licenced under the Open Government Licence v2.0  - Open Government Licence
 
+## Importing Data To PostgreSQL
+[Instructions for importing the ODS data into your PostgreSQL database](docs/data_import.md)
+
 ## Getting Started
 
-### Pre-requisite Steps
+### Pre-requisites
 * Install Python 3.4+
-* Install Virtualenv
+* Install Virtualenv `pip install -g virtualenv`
 * Install PostgreSQL ([Postgres.app](http://postgresapp.com) is good for OSX development)
-* Install lib
-* Install Heroku Toolbelt
+* Install [Heroku Toolbelt](https://toolbelt.heroku.com)
 
 ### Steps
+
 1. Clone this repository to your local machine
 
   ```bash
