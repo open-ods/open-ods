@@ -151,7 +151,9 @@ def get_roles():
     Returns the list of available OrganisationRole types
     """
 
-    roles = db.get_roles()
-    log.debug(roles)
-    result = { 'roles': roles }
+    roles_list = db.get_roles()
+    log.debug(roles_list)
+    result = {
+        'roles': roles_list
+    }
     return jsonify(result)
