@@ -1,5 +1,5 @@
 import logging
-from dict2xml import dict2xml as xmlify
+import dicttoxml
 from flask import jsonify, Response, request
 from flask.ext.autodoc import Autodoc
 
@@ -53,7 +53,7 @@ def get_organisation(ods_code):
 
         if format_type == 'xml':
             log.debug("Returning xml")
-            result = xmlify(data, wrap="all", indent="  ")
+            result = dicttoxml.dicttoxml(data, attr_type=False, custom_root='organisation')
             # log.debug(result)
             return Response(result, mimetype='text/xml')
 
