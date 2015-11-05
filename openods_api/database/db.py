@@ -22,12 +22,31 @@ def get_latest_org():
         return row
 
 
-def get_org_list(offset=0, limit=1000):
-    log.debug(str.format("Offset: {0} Limit: {1}", offset, limit))
+def get_org_list(offset=0, limit=1000, recordclass='both'):
+    log.debug(str.format("Offset: {0} Limit: {1}, RecordClass: {2}", offset, limit, recordclass))
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations WHERE org_status = 'ACTIVE' " \
-          "order by org_odscode OFFSET %s LIMIT %s;"
+
+    if recordclass == 'both':
+        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
+        "WHERE org_status = 'ACTIVE' " \
+        "order by org_odscode OFFSET %s LIMIT %s;"
+
+    elif recordclass == 'HSCOrg':
+        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
+        "WHERE org_status = 'ACTIVE' AND org_recordclass = 'HSCOrg' " \
+        "order by org_odscode OFFSET %s LIMIT %s;"
+
+    elif recordclass == 'HSCSite':
+        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
+        "WHERE org_status = 'ACTIVE' AND org_recordclass = 'HSCSite' " \
+        "order by org_odscode OFFSET %s LIMIT %s;"
+
+    else:
+        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
+        "WHERE org_status = 'ACTIVE' " \
+        "order by org_odscode OFFSET %s LIMIT %s;"
+
     log.debug(sql)
     data = (offset, limit)
     cur.execute(sql, data)
