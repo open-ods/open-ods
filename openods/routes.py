@@ -28,7 +28,7 @@ def documentation():
 
 @app.route("/organisations/<ods_code>", methods=['GET'])
 @auto.doc()
-@cache.cached(timeout=config.CACHE_TIMEOUT)
+@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation(ods_code):
 
     """
