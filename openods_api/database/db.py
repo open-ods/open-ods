@@ -133,6 +133,48 @@ def get_specific_org(odscode):
         log.error(e)
 
 
+def search_organisation(search_text):
+
+    # Get a database connection
+    conn = connect.get_connection()
+
+    # Use the RealDictCursor to return data as a python dictionary type
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    try:
+        search_term = str.format("%{0}%", search_text)
+        sql = "SELECT * from organisations " \
+              "WHERE org_name like UPPER(%s); "
+        data = (search_term,)
+
+        cur.execute(sql, data)
+        rows = cur.fetchall()
+        print(rows)
+
+        # Raise an exception if the organisation record is not found
+        if rows == []:
+            raise Exception("Record Not Found")
+
+        result = []
+
+        for row in rows:
+            link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, row['org_odscode'])
+            item = {
+                'code': row['org_odscode'],
+                'name': row['org_name'],
+                'link': {
+                    'rel': 'self',
+                    'href': link_self_href
+                }
+            }
+            result.append(item)
+
+        return result
+
+    except Exception as e:
+        log.error(e)
+
+
 def get_org_doc(odscode):
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
