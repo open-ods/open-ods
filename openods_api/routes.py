@@ -21,6 +21,7 @@ auto = Autodoc(app)
 @auto.doc()
 def documentation():
     """
+
     Returns API documentation as HTML
     """
     return auto.html()
@@ -32,6 +33,7 @@ def documentation():
 def get_organisation(ods_code):
 
     """
+
     Returns a specific organisation resource
 
     Params:
@@ -79,6 +81,7 @@ def get_organisation(ods_code):
 def get_organisations():
 
     """
+
     Returns a list of organisations
 
     Params:
@@ -102,9 +105,12 @@ def get_organisations():
 def get_organisation_document(ods_code):
 
     """
-    EXPERIMENTAL: Returns an organisation document directly from document store
+
+    EXPERIMENTAL - Returns an organisation document directly from document store
     """
+
     data = db.get_org_doc(ods_code)
+
     if data:
         try:
             del data['org_lastchanged']
@@ -122,6 +128,7 @@ def get_organisation_document(ods_code):
 def get_roles():
 
     """
+
     Returns the list of available OrganisationRole types
     """
 
