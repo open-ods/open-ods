@@ -18,7 +18,6 @@ auto = Autodoc(app)
 
 
 @app.route('/')
-@app.route('/docs')
 @auto.doc()
 def documentation():
     '''
