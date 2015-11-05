@@ -96,32 +96,6 @@ def get_organisations():
     return jsonify(result)
 
 
-@app.route("/organisations/latest", methods=['GET'])
-def get_latest_organisation():
-    format_type = request.args.get('format')
-    log.debug(format_type)
-    data = db.get_latest_org()
-    del data['org_lastchanged']
-
-    if format_type == 'xml':
-        log.debug("Returning xml")
-        xml = xmlify(data, wrap="all", indent="  ")
-        log.debug(xml)
-        return Response(xml, mimetype='text/xml')
-
-    elif format_type == 'json':
-        log.debug("Returning json")
-        result = jsonify(data)
-        log.debug(result)
-        return result
-
-    else:
-        log.debug("Returning json")
-        result = jsonify(data)
-        log.debug(result)
-        return result
-
-
 @app.route("/organisations/<ods_code>/document", methods=['GET'])
 @auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
