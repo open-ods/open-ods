@@ -26,7 +26,8 @@ def get_org_list(offset=0, limit=1000):
     log.debug(str.format("Offset: {0} Limit: {1}", offset, limit))
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    sql = 'SELECT distinct org_odscode, org_name from organisations order by org_odscode OFFSET %s LIMIT %s;'
+    sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations WHERE org_status = 'ACTIVE' " \
+          "order by org_odscode OFFSET %s LIMIT %s;"
     log.debug(sql)
     data = (offset, limit)
     cur.execute(sql, data)
@@ -37,8 +38,9 @@ def get_org_list(offset=0, limit=1000):
     for row in rows:
         link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, row['org_odscode'])
         item = {
-            'odscode': row['org_odscode'],
+            'odsCode': row['org_odscode'],
             'name': row['org_name'],
+            'recordClass': row['org_recordclass'],
             'link': {
                 'rel':'self',
                 'href': link_self_href
@@ -60,7 +62,7 @@ def get_specific_org(odscode):
     # Try and retrieve the organisation record for the provided ODS code
     try:
         sql = "SELECT * from organisations " \
-              "WHERE org_odscode = %s "\
+              "WHERE org_odscode = %s and org_status = 'ACTIVE' "\
               "limit 1;"
         data = (odscode,)
 
@@ -144,7 +146,7 @@ def search_organisation(search_text):
     try:
         search_term = str.format("%{0}%", search_text)
         sql = "SELECT * from organisations " \
-              "WHERE org_name like UPPER(%s); "
+              "WHERE org_name like UPPER(%s) and org_status = 'ACTIVE';"
         data = (search_term,)
 
         cur.execute(sql, data)
@@ -162,6 +164,7 @@ def search_organisation(search_text):
             item = {
                 'code': row['org_odscode'],
                 'name': row['org_name'],
+                'recordClass': row['org_recordclass'],
                 'link': {
                     'rel': 'self',
                     'href': link_self_href
