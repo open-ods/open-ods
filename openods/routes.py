@@ -8,7 +8,7 @@ import openods.cache as ocache
 from openods.cache import cache
 from openods.database import db
 
-log = logging.getLogger('__name__')
+log = logging.getLogger('openods')
 log.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
@@ -62,10 +62,11 @@ def get_organisations():
     - limit=y (Retrieve y results)
     '''
 
+    log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
     offset = request.args.get('offset') if request.args.get('offset') else 0
     limit = request.args.get('limit') if request.args.get('limit') else 1000
-    print(offset)
-    print(limit)
+    log.debug(offset)
+    log.debug(limit)
     orgs = db.get_org_list(offset, limit)
     result = {'organisations': orgs}
     return jsonify(result)
@@ -74,26 +75,26 @@ def get_organisations():
 @app.route("/organisations/latest", methods=['GET'])
 def get_latest_organisation():
     format_type = request.args.get('format')
-    print(format_type)
+    log.debug(format_type)
     data = db.get_latest_org()
     del data['org_lastchanged']
 
     if format_type == 'xml':
         log.debug("Returning xml")
         xml = xmlify(data, wrap="all", indent="  ")
-        print(xml)
+        log.debug(xml)
         return Response(xml, mimetype='text/xml')
 
     elif format_type == 'json':
         log.debug("Returning json")
         result = jsonify(data)
-        print(result)
+        log.debug(result)
         return result
 
     else:
         log.debug("Returning json")
         result = jsonify(data)
-        print(result)
+        log.debug(result)
         return result
 
 
@@ -127,6 +128,6 @@ def get_roles():
     '''
 
     roles = db.get_roles()
-    print(roles)
+    log.debug(roles)
     result = { 'roles': roles }
     return jsonify(result)
