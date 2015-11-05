@@ -152,8 +152,9 @@ def get_roles():
     """
 
     roles_list = db.get_roles()
-    log.debug(roles_list)
+
     result = {
         'roles': roles_list
     }
+
     return jsonify(result)
