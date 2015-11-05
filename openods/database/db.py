@@ -75,6 +75,9 @@ def get_org(odscode):
         row_org = cur.fetchone()
         print(row_org)
 
+        if row_org is None:
+            raise Exception("Record Not Found")
+
         organisation_ref = row_org['organisation_ref']
 
         sql = "SELECT r.role_code, csr.codesystem_displayname from roles r " \
@@ -104,6 +107,9 @@ def get_org(odscode):
 
     except psycopg2.DatabaseError as e:
         log.error(str.format("Error {0}", e))
+
+    except Exception as e:
+        log.error(e)
 
 
 def get_org_doc(odscode):
