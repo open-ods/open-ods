@@ -20,9 +20,9 @@ auto = Autodoc(app)
 @app.route('/')
 @auto.doc()
 def documentation():
-    '''
+    """
     Returns API documentation as HTML
-    '''
+    """
     return auto.html()
 
 
@@ -30,9 +30,10 @@ def documentation():
 @auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT)
 def get_organisation(ods_code):
-    '''
+
+    """
     Returns a specific organisation resource
-    '''
+    """
     data = db.get_org(ods_code)
     if data:
 
@@ -53,13 +54,13 @@ def get_organisation(ods_code):
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisations():
 
-    '''
+    """
     Returns a list of organisations
 
     Params:
     - offset=x (Offset start of results by x)
     - limit=y (Retrieve y results)
-    '''
+    """
 
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
     offset = request.args.get('offset') if request.args.get('offset') else 0
@@ -102,9 +103,9 @@ def get_latest_organisation():
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation_document(ods_code):
 
-    '''
+    """
     EXPERIMENTAL: Returns an organisation document directly from document store
-    '''
+    """
     data = db.get_org_doc(ods_code)
     if data:
         try:
@@ -122,9 +123,9 @@ def get_organisation_document(ods_code):
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_roles():
 
-    '''
+    """
     Returns the list of available OrganisationRole types
-    '''
+    """
 
     roles = db.get_roles()
     log.debug(roles)
