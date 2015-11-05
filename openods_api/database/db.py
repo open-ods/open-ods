@@ -62,7 +62,7 @@ def get_specific_org(odscode):
     # Try and retrieve the organisation record for the provided ODS code
     try:
         sql = "SELECT * from organisations " \
-              "WHERE org_odscode = %s and org_status = 'ACTIVE' "\
+              "WHERE org_odscode = %s "\
               "limit 1;"
         data = (odscode,)
 
