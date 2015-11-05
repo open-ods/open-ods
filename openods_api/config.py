@@ -1,7 +1,7 @@
 import os
 
 DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://dev:dev@localhost:5432/ods')
-CACHE_TIMEOUT = int(os.environ.get('CACHE_TIMEOUT', '10'))
+CACHE_TIMEOUT = int(os.environ.get('CACHE_TIMEOUT', '30'))
 APP_HOSTNAME = os.environ.get('APP_HOSTNAME', 'localhost:5000')
 
 print(str.format("Database URL: {0}", DATABASE_URL))
