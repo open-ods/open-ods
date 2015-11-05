@@ -49,24 +49,6 @@ def get_org_list(offset=0, limit=1000):
     return result
 
 
-def get_roles():
-    conn = connect.get_connection()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("SELECT codesystem_displayname, codesystem_id from codesystems where codesystem_name = 'OrganisationRole' "\
-                "group by codesystem_displayname, codesystem_id order by codesystem_displayname;")
-    rows = cur.fetchall()
-    result = []
-
-    for row in rows:
-        result.append({
-            'name': row['codesystem_displayname'],
-            'code': row['codesystem_id']
-            }
-        )
-
-    return result
-
-
 def get_specific_org(odscode):
 
     # Get a database connection
@@ -171,3 +153,21 @@ def get_org_doc(odscode):
 
     except psycopg2.DatabaseError as e:
         log.error(str.format("Error {0}", e))
+
+
+def get_roles():
+    conn = connect.get_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT codesystem_displayname, codesystem_id from codesystems where codesystem_name = 'OrganisationRole' "\
+                "group by codesystem_displayname, codesystem_id order by codesystem_displayname;")
+    rows = cur.fetchall()
+    result = []
+
+    for row in rows:
+        result.append({
+            'name': row['codesystem_displayname'],
+            'code': row['codesystem_id']
+            }
+        )
+
+    return result
