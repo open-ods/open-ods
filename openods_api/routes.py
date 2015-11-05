@@ -41,7 +41,7 @@ def get_organisation(ods_code):
     format_type = request.args.get('format')
     log.debug(format_type)
 
-    data = db.get_org(ods_code)
+    data = db.get_specific_org(ods_code)
 
     if data:
 

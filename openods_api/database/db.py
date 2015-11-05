@@ -67,6 +67,7 @@ def get_roles():
 
 
 def get_org(odscode):
+def get_specific_org(odscode):
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
