@@ -33,8 +33,16 @@ def get_organisation(ods_code):
 
     """
     Returns a specific organisation resource
+
+    Params:
+    - format=xml/json (Return the data in specified format - defaults to json)
     """
+
+    format_type = request.args.get('format')
+    log.debug(format_type)
+
     data = db.get_org(ods_code)
+
     if data:
 
         try:
@@ -43,8 +51,24 @@ def get_organisation(ods_code):
         except Exception as e:
             pass
 
-        log.debug(jsonify(data))
-        return jsonify(data)
+        if format_type == 'xml':
+            log.debug("Returning xml")
+            result = xmlify(data, wrap="all", indent="  ")
+            # log.debug(result)
+            return Response(result, mimetype='text/xml')
+
+        elif format_type == 'json':
+            log.debug("Returning json")
+            result = jsonify(data)
+            # log.debug(result)
+            return result
+
+        else:
+            log.debug("Returning json")
+            result = jsonify(data)
+            # log.debug(result)
+            return result
+
     else:
         return "Not found", 404
 
