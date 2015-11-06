@@ -1,7 +1,8 @@
 # open-ods
 
-## Source Data
-### Attribution
+## This is an unofficial personal project making use of open data and is unrelated to the NHS and associated organisations
+
+## Source Data Attribution
 Organisation Data Service, Health and Social Care Information Centre, licenced under the Open Government Licence v2.0  - Open Government Licence
 
 ## Importing Data To PostgreSQL
@@ -54,3 +55,5 @@ Organisation Data Service, Health and Social Care Information Centre, licenced u
     ```bash
     pip install -r requirements.txt
     ```
+
+7. [Now go import the ODS data into your OpenODS database](docs/data_import.md)

@@ -1,4 +1,4 @@
-# Importing ODS Data Into PostgreSQL
+# Importing ODS Data Into OpenODS
 
 ### Pre-requisites
 * Runningn instance of PostgreSQL
