@@ -82,19 +82,22 @@ def get_organisations():
 
     """
 
-    Returns a list of organisations
+    Returns a list of ODS organisations
 
     Params:
-    - offset=x (Offset start of results by x)
-    - limit=y (Retrieve y results)
+    - offset=x (Offset start of results [0])
+    - limit=y (Limit number of results [1000])
+    - recordclass=HSCOrg/HSCSite/both (filter results by recordclass [both])
     """
 
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
     offset = request.args.get('offset') if request.args.get('offset') else 0
     limit = request.args.get('limit') if request.args.get('limit') else 1000
+    recordclass = request.args.get('recordclass') if request.args.get('recordclass') else 'both'
     log.debug(offset)
     log.debug(limit)
-    orgs = db.get_org_list(offset, limit)
+    log.debug(recordclass)
+    orgs = db.get_org_list(offset, limit, recordclass)
     result = {'organisations': orgs}
     return jsonify(result)
 
@@ -124,30 +127,6 @@ def search_organisations(search_text):
         result = {'organisations': orgs}
         return jsonify(result)
 
-    else:
-        return "Not found", 404
-
-
-
-@app.route("/organisations/<ods_code>/document", methods=['GET'])
-@auto.doc()
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
-def get_organisation_document(ods_code):
-
-    """
-
-    EXPERIMENTAL - Returns an organisation document directly from document store
-    """
-
-    data = db.get_org_doc(ods_code)
-
-    if data:
-        try:
-            del data['org_lastchanged']
-        except Exception as e:
-            pass
-        log.debug(jsonify(data))
-        return jsonify(data)
     else:
         return "Not found", 404
 

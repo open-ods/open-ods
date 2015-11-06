@@ -22,11 +22,31 @@ def get_latest_org():
         return row
 
 
-def get_org_list(offset=0, limit=1000):
-    log.debug(str.format("Offset: {0} Limit: {1}", offset, limit))
+def get_org_list(offset=0, limit=1000, recordclass='both'):
+    log.debug(str.format("Offset: {0} Limit: {1}, RecordClass: {2}", offset, limit, recordclass))
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    sql = 'SELECT distinct org_odscode, org_name from organisations order by org_odscode OFFSET %s LIMIT %s;'
+
+    if recordclass == 'both':
+        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
+                "WHERE org_status = 'ACTIVE' " \
+                "order by org_name OFFSET %s LIMIT %s;"
+
+    elif recordclass == 'HSCOrg':
+        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
+                "WHERE org_status = 'ACTIVE' AND org_recordclass = 'HSCOrg' " \
+                "order by org_name OFFSET %s LIMIT %s;"
+
+    elif recordclass == 'HSCSite':
+        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
+                "WHERE org_status = 'ACTIVE' AND org_recordclass = 'HSCSite' " \
+                "order by org_name OFFSET %s LIMIT %s;"
+
+    else:
+        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
+                "WHERE org_status = 'ACTIVE' " \
+                "order by org_name OFFSET %s LIMIT %s;"
+
     log.debug(sql)
     data = (offset, limit)
     cur.execute(sql, data)
@@ -37,8 +57,9 @@ def get_org_list(offset=0, limit=1000):
     for row in rows:
         link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, row['org_odscode'])
         item = {
-            'odscode': row['org_odscode'],
+            'odsCode': row['org_odscode'],
             'name': row['org_name'],
+            'recordClass': row['org_recordclass'],
             'link': {
                 'rel':'self',
                 'href': link_self_href
@@ -144,7 +165,7 @@ def search_organisation(search_text):
     try:
         search_term = str.format("%{0}%", search_text)
         sql = "SELECT * from organisations " \
-              "WHERE org_name like UPPER(%s); "
+              "WHERE org_name like UPPER(%s) and org_status = 'ACTIVE';"
         data = (search_term,)
 
         cur.execute(sql, data)
@@ -162,6 +183,7 @@ def search_organisation(search_text):
             item = {
                 'code': row['org_odscode'],
                 'name': row['org_name'],
+                'recordClass': row['org_recordclass'],
                 'link': {
                     'rel': 'self',
                     'href': link_self_href
@@ -173,28 +195,6 @@ def search_organisation(search_text):
 
     except Exception as e:
         log.error(e)
-
-
-def get_org_doc(odscode):
-    conn = connect.get_connection()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
-    try:
-        sql = "SELECT * from register_ods_organisations " \
-              "WHERE data_jsonb ->> 'code' = %s "\
-              "limit 1;"
-        data = (odscode,)
-
-        cur.execute(sql, data)
-        row_org = cur.fetchone()
-        print(row_org)
-
-        result = row_org['data_jsonb']
-
-        return result
-
-    except psycopg2.DatabaseError as e:
-        log.error(str.format("Error {0}", e))
 
 
 def get_roles():
