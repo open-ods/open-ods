@@ -19,7 +19,6 @@ auto = Autodoc(app)
 
 
 @app.route('/')
-@auto.doc()
 def documentation():
     """
 
@@ -28,9 +27,9 @@ def documentation():
     return auto.html()
 
 
+@auto.doc()
 @app.route("/organisations/<ods_code>", methods=['GET'])
 @requires_auth
-@auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation(ods_code):
 
@@ -77,9 +76,9 @@ def get_organisation(ods_code):
         return "Not found", 404
 
 
+@auto.doc()
 @app.route("/organisations", methods=['GET'])
 @requires_auth
-@auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisations():
 
@@ -105,9 +104,9 @@ def get_organisations():
     return jsonify(result)
 
 
+@auto.doc()
 @app.route("/organisations/search/<search_text>", methods=['GET'])
 @requires_auth
-@auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def search_organisations(search_text):
 
@@ -135,9 +134,9 @@ def search_organisations(search_text):
         return "Not found", 404
 
 
+@auto.doc()
 @app.route("/roles", methods=['GET'])
 @requires_auth
-@auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_roles():
 
