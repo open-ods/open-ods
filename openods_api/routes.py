@@ -7,6 +7,7 @@ from openods_api import app, config
 import openods_api.cache as ocache
 from openods_api.cache import cache
 from openods_api.database import db
+from openods_api.auth import requires_auth
 
 log = logging.getLogger('openods_api')
 log.setLevel(logging.DEBUG)
@@ -28,6 +29,7 @@ def documentation():
 
 
 @app.route("/organisations/<ods_code>", methods=['GET'])
+@requires_auth
 @auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation(ods_code):
@@ -76,6 +78,7 @@ def get_organisation(ods_code):
 
 
 @app.route("/organisations", methods=['GET'])
+@requires_auth
 @auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisations():
@@ -103,6 +106,7 @@ def get_organisations():
 
 
 @app.route("/organisations/search/<search_text>", methods=['GET'])
+@requires_auth
 @auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def search_organisations(search_text):
@@ -132,6 +136,7 @@ def search_organisations(search_text):
 
 
 @app.route("/roles", methods=['GET'])
+@requires_auth
 @auto.doc()
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_roles():
