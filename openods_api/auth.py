@@ -7,7 +7,8 @@ def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
     """
-    return username == config.API_USER and password == config.API_PASS
+    result = (username == config.API_USER and password == config.API_PASS)
+    return result
 
 
 def authenticate():
