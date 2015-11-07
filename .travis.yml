@@ -11,9 +11,10 @@ services:
 install: "pip install -r requirements.txt"
 before_script:
   - psql -f sql/create_user_and_database.sql -U postgres
-  - psql -f sql/001-install_extensions.sql openods -U postgres
-  - psql -f sql/002-create_tables.sql openods -U postgres
-  - psql -f sql/003-create_primary_role_view.sql openods -U postgres
+  - psql -d openods -f sql/001-install_extensions.sql -U postgres
+  - psql -d openods -f sql/002-create_tables.sql -U postgres
+  - psql -d openods -f sql/003-create_primary_role_view.sql -U postgres
+  - psql -d openods -f sql/import_test_data.sql -U postgres
 env:
 - API_USER=env_test_user API_PASS=env_test_pass CACHE_TIMEOUT=10 APP_HOSTNAME=localhost:5000 API_USE_AUTH=TRUE
 script: nosetests
