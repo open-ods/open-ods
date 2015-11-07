@@ -18,7 +18,10 @@
 2. In the terminal, navigate to the data sub-directory of the repository and ensure that both `odsfull.xml.zip` and `import_ods_xml.py` files are present in the directory
 
     ```bash
-    $ ls
+    $ ls -l
+    
+    -rw-r--r--@ 1 matt  staff  19885585  3 Nov 14:56 odsfull.xml.zip
+    -rw-r--r--  1 matt  staff  6930  7 Nov 17:53 import_ods_xml.py
     ```
 
 3. Run the import script:
