@@ -66,3 +66,12 @@ More information on the Organisation Data Service can be found [on the HSCIC web
 
 
 7. Now go import the ODS data into your OpenODS database -> [Instructions for importing the ODS data into your PostgreSQL database](docs/data_import.md)
+
+
+## License
+
+This project is licensed under MIT License.
+
+Copyright (c) 2015 Matt Stibbs
+
+See [LICENSE.md](LICENSE.md).
