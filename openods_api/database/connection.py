@@ -29,3 +29,9 @@ def get_connection():
         sys.exit(1)
 
     return conn
+
+
+def get_cursor():
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    return cur
