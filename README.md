@@ -10,6 +10,10 @@ Organisation Data Service, Health and Social Care Information Centre, licenced u
 More information on the Organisation Data Service can be found [on the HSCIC website](http://systems.hscic.gov.uk/data/ods)
 
 
+## Issue Tracker
+[![Stories in Ready](https://badge.waffle.io/mattstibbs/open-ods.png?label=ready&title=Ready)](http://waffle.io/mattstibbs/open-ods)
+
+
 ## Getting Started
 
 ### Pre-requisites
