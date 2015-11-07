@@ -22,33 +22,25 @@ def get_latest_org():
         return row
 
 
-def get_org_list(offset=0, limit=1000, recordclass='both'):
+def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=None):
     log.debug(str.format("Offset: {0} Limit: {1}, RecordClass: {2}", offset, limit, recordclass))
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    record_class_param = '%' if recordclass == 'both' else recordclass
 
-    if recordclass == 'both':
-        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
-                "WHERE org_status = 'ACTIVE' " \
+    if primary_role_code:
+        sql = "SELECT distinct org_odscode, org_name, org_recordclass from active_organisations_primary_roles " \
+                "WHERE org_recordclass LIKE %s AND role_code = %s " \
                 "order by org_name OFFSET %s LIMIT %s;"
-
-    elif recordclass == 'HSCOrg':
-        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
-                "WHERE org_status = 'ACTIVE' AND org_recordclass = 'HSCOrg' " \
-                "order by org_name OFFSET %s LIMIT %s;"
-
-    elif recordclass == 'HSCSite':
-        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
-                "WHERE org_status = 'ACTIVE' AND org_recordclass = 'HSCSite' " \
-                "order by org_name OFFSET %s LIMIT %s;"
+        data = (record_class_param, primary_role_code, offset, limit)
 
     else:
-        sql = "SELECT distinct org_odscode, org_name, org_recordclass from organisations " \
-                "WHERE org_status = 'ACTIVE' " \
+        sql = "SELECT distinct org_odscode, org_name, org_recordclass from active_organisations " \
+                "WHERE org_recordclass LIKE %s " \
                 "order by org_name OFFSET %s LIMIT %s;"
+        data = (record_class_param, offset, limit)
 
     log.debug(sql)
-    data = (offset, limit)
     cur.execute(sql, data)
     rows = cur.fetchall()
     log.debug(str.format("{0} rows in result", len(rows)))
@@ -70,7 +62,7 @@ def get_org_list(offset=0, limit=1000, recordclass='both'):
     return result
 
 
-def get_specific_org(odscode):
+def get_organisation_by_odscode(odscode):
 
     # Get a database connection
     conn = connect.get_connection()
@@ -125,12 +117,12 @@ def get_specific_org(odscode):
 
         for relationship in rows_relationships:
 
-            link_self_href = str.format('http://{0}/organisations/{1}',
+            link_target_href = str.format('http://{0}/organisations/{1}',
                                         config.APP_HOSTNAME, relationship['target_odscode'])
 
             relationship['link'] = {
                     'rel': 'target',
-                    'href': link_self_href
+                    'href': link_target_href
                 }
 
             relationships.append({'relationship': relationship})
@@ -141,6 +133,13 @@ def get_specific_org(odscode):
         roles = []
 
         for role in rows_roles:
+            link_role_href = str.format('http://{0}/roles/{1}',
+                                        config.APP_HOSTNAME, role['role_code'])
+
+            role['link'] = {
+                    'rel': 'role',
+                    'href': link_role_href
+                }
             roles.append({'role': role})
 
         result_data['roles'] = roles
