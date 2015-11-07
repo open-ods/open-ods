@@ -4,7 +4,16 @@ python:
   - "3.5"
   - "3.5-dev" # 3.5 development branch
   - "nightly" # currently points to 3.6-dev
+addons:
+  postgresql: "9.4"
+services:
+  - postgresql
 install: "pip install -r requirements.txt"
+before_script:
+  - psql -f sql/000-create_user_and_database.sql -U postgres
+  - psql -f 001-install_extensions.sql openods -U postgres
+  - psql -f 002-create_tables.sql openods -U postgres
+  - psql -f 003-create_primary_role_views.sql openods -U postgres
 script: nosetests
 env:
 - API_USER=env_test_user API_PASS=env_test_pass CACHE_TIMEOUT=10 APP_HOSTNAME=localhost:5000 API_USE_AUTH=TRUE
