@@ -53,9 +53,13 @@ def get_organisations():
     log.debug(limit)
     log.debug(record_class)
     log.debug(primary_role_code)
-    orgs = db.get_org_list(offset, limit, record_class, primary_role_code)
-    result = {'organisations': orgs}
-    return jsonify(result)
+    data = db.get_org_list(offset, limit, record_class, primary_role_code)
+
+    if data:
+        result = {'organisations': data}
+        return jsonify(result)
+    else:
+        return Response("404: Not Found", 404)
 
 
 @auto.doc()
@@ -75,7 +79,7 @@ def get_organisation(ods_code):
     format_type = request.args.get('format')
     log.debug(format_type)
 
-    data = db.get_specific_org(ods_code)
+    data = db.get_organisation_by_odscode(ods_code)
 
     if data:
 
@@ -105,7 +109,6 @@ def get_organisation(ods_code):
 
     else:
         return "Not found", 404
-
 
 
 @auto.doc()
@@ -154,5 +157,22 @@ def get_roles():
     result = {
         'roles': roles_list
     }
+
+    return jsonify(result)
+
+
+
+@auto.doc()
+@app.route("/roles/<role_code>", methods=['GET'])
+@requires_auth
+@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+def get_role_by_code(role_code):
+
+    """
+
+    Returns the list of available OrganisationRole types
+    """
+
+    result = db.get_role_by_id(role_code)
 
     return jsonify(result)
