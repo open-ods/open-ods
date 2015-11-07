@@ -4,7 +4,7 @@ import logging
 import openods_api.config as config
 import sys
 
-log = logging.getLogger('__name__')
+log = logging.getLogger('openods')
 log.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
@@ -45,3 +45,5 @@ def check_schema_version(required_schema_version):
 
     else:
         log.info(str.format("Database schema version is {0}", db_schema_version))
+
+    return True
