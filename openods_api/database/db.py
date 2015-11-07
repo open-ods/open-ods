@@ -29,13 +29,13 @@ def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=Non
     record_class_param = '%' if recordclass == 'both' else recordclass
 
     if primary_role_code:
-        sql = "SELECT distinct org_odscode, org_name, org_recordclass from active_organisations_primary_roles " \
+        sql = "SELECT org_odscode, org_name, org_recordclass from organisations_primary_roles " \
                 "WHERE org_recordclass LIKE %s AND role_code = %s " \
                 "order by org_name OFFSET %s LIMIT %s;"
         data = (record_class_param, primary_role_code, offset, limit)
 
     else:
-        sql = "SELECT distinct org_odscode, org_name, org_recordclass from active_organisations " \
+        sql = "SELECT org_odscode, org_name, org_recordclass from organisations " \
                 "WHERE org_recordclass LIKE %s " \
                 "order by org_name OFFSET %s LIMIT %s;"
         data = (record_class_param, offset, limit)
@@ -201,7 +201,6 @@ def get_roles():
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute("SELECT codesystem_displayname, codesystem_id from codesystems "
                 "where codesystem_name = 'OrganisationRole' "\
-                "group by codesystem_displayname, codesystem_id "
                 "order by codesystem_displayname;")
     rows = cur.fetchall()
     result = []

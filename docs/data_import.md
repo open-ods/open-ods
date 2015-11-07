@@ -12,13 +12,9 @@
   ```bash
   $ cd repo/sql
 
-  $ psql -f 000-create_user_and_database.sql -U postgres
-
-  $ psql -f 001-install_extensions.sql openods -U postgres
-
-  $ psql -f 002-create_tables.sql openods -U postgres
-
-  $ psql -f 003-create_primary_role_views.sql openods -U postgres
+  $ psql -f create_user_and_database.sql -U postgres
+  
+  $ psql -d openods -f run_migration_scripts.sql -U postgres
   ```
 
 2. In the terminal, navigate to the data sub-directory of the repository and ensure that both `odsfull.xml.zip` and `import_ods_xml.py` files are present in the directory
