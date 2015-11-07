@@ -4,7 +4,8 @@ from functools import wraps
 
 
 def auth_enabled():
-    return True if config.API_USE_AUTH == 'TRUE' else False
+    result = True if config.API_USE_AUTH == 'TRUE' else False
+    return result
 
 
 def check_auth(username, password):
