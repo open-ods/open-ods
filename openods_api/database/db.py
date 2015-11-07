@@ -199,19 +199,32 @@ def search_organisation(search_text):
 def get_roles():
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("SELECT codesystem_displayname, codesystem_id from codesystems where codesystem_name = 'OrganisationRole' "\
-                "group by codesystem_displayname, codesystem_id order by codesystem_displayname;")
+    cur.execute("SELECT codesystem_displayname, codesystem_id from codesystems "
+                "where codesystem_name = 'OrganisationRole' "\
+                "group by codesystem_displayname, codesystem_id "
+                "order by codesystem_displayname;")
     rows = cur.fetchall()
     result = []
 
     for row in rows:
+        role_code = row['codesystem_id']
+        role_display_name = row['codesystem_displayname']
+        link_self_href = str.format('http://{0}/roles/{1}', config.APP_HOSTNAME, role_code)
+        link_search_href = str.format('http://{0}/organisations?primaryRoleCode={1}', config.APP_HOSTNAME, role_code)
         result.append({
-            'name': row['codesystem_displayname'],
-            'code': row['codesystem_id']
-            }
-        )
+            'name': role_display_name,
+            'code': role_code,
+            'links': [{
+                'rel':'self',
+                'href': link_self_href
+                }, {
+                'rel':'organisations.searchByRoleCode',
+                'href': link_search_href
+                }]
+        })
 
     return result
+
 
 def get_role_by_id(role_id):
 
