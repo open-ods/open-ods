@@ -29,8 +29,8 @@ def documentation():
 
 @auto.doc()
 @app.route("/organisations", methods=['GET'])
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 @requires_auth
+@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisations():
 
     """
@@ -41,16 +41,19 @@ def get_organisations():
     - offset=x (Offset start of results [0])
     - limit=y (Limit number of results [1000])
     - recordclass=HSCOrg/HSCSite/both (filter results by recordclass [both])
+    - primaryRoleCode=xxxx (filter results to only those with a specific primaryRole)
     """
 
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
     offset = request.args.get('offset') if request.args.get('offset') else 0
     limit = request.args.get('limit') if request.args.get('limit') else 1000
-    recordclass = request.args.get('recordclass') if request.args.get('recordclass') else 'both'
+    record_class = request.args.get('recordclass') if request.args.get('recordclass') else 'both'
+    primary_role_code = request.args.get('primaryRoleCode' if request.args.get('primaryRoleCode') else None)
     log.debug(offset)
     log.debug(limit)
-    log.debug(recordclass)
-    orgs = db.get_org_list(offset, limit, recordclass)
+    log.debug(record_class)
+    log.debug(primary_role_code)
+    orgs = db.get_org_list(offset, limit, record_class, primary_role_code)
     result = {'organisations': orgs}
     return jsonify(result)
 
@@ -137,8 +140,8 @@ def search_organisations(search_text):
 
 @auto.doc()
 @app.route("/roles", methods=['GET'])
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 @requires_auth
+@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_roles():
 
     """
