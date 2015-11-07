@@ -13,6 +13,10 @@ More information on the Organisation Data Service can be found [on the HSCIC web
 ## Issue Tracker
 [![Stories in Ready](https://badge.waffle.io/mattstibbs/open-ods.png?label=ready&title=Ready)](http://waffle.io/mattstibbs/open-ods)
 
+## Continuous Integration
+develop [![Build Status](https://travis-ci.org/mattstibbs/open-ods.svg?branch=develop)](https://travis-ci.org/mattstibbs/open-ods)
+master [![Build Status](https://travis-ci.org/mattstibbs/open-ods.svg?branch=master)](https://travis-ci.org/mattstibbs/open-ods)
+
 
 ## Getting Started
 
