@@ -15,6 +15,7 @@ More information on the Organisation Data Service can be found [on the HSCIC web
 
 ## Continuous Integration
 develop [![Build Status](https://travis-ci.org/mattstibbs/open-ods.svg?branch=develop)](https://travis-ci.org/mattstibbs/open-ods)
+
 master [![Build Status](https://travis-ci.org/mattstibbs/open-ods.svg?branch=master)](https://travis-ci.org/mattstibbs/open-ods)
 
 
