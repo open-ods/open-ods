@@ -213,3 +213,32 @@ def get_roles():
         )
 
     return result
+
+def get_role_by_id(role_id):
+
+    sql = "SELECT codesystem_displayname, codesystem_id from codesystems " \
+          "where codesystem_name = 'OrganisationRole' AND codesystem_id = %s;"
+    data = (role_id,)
+
+    cur = connect.get_cursor()
+    cur.execute(sql, data)
+
+    returned_row = cur.fetchone()
+
+    role_code = returned_row['codesystem_id']
+    role_display_name = returned_row['codesystem_displayname']
+    link_self_href = str.format('http://{0}/roles/{1}', config.APP_HOSTNAME, role_code)
+    link_search_href = str.format('http://{0}/organisations?primaryRoleCode={1}', config.APP_HOSTNAME, role_code)
+    result = {
+        'name': role_display_name,
+        'code': role_code,
+        'links': [{
+            'rel':'self',
+            'href': link_self_href
+            }, {
+            'rel':'organisations.searchByRoleCode',
+            'href': link_search_href
+            }]
+    }
+
+    return result
