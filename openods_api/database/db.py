@@ -248,7 +248,7 @@ def get_role_by_id(role_id):
             'rel':'self',
             'href': link_self_href
             }, {
-            'rel':'organisations.searchByRoleCode',
+            'rel':'organisations.searchByPrimaryRoleCode',
             'href': link_search_href
             }]
     }
