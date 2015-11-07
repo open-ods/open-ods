@@ -28,6 +28,34 @@ def documentation():
 
 
 @auto.doc()
+@app.route("/organisations", methods=['GET'])
+@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@requires_auth
+def get_organisations():
+
+    """
+
+    Returns a list of ODS organisations
+
+    Params:
+    - offset=x (Offset start of results [0])
+    - limit=y (Limit number of results [1000])
+    - recordclass=HSCOrg/HSCSite/both (filter results by recordclass [both])
+    """
+
+    log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
+    offset = request.args.get('offset') if request.args.get('offset') else 0
+    limit = request.args.get('limit') if request.args.get('limit') else 1000
+    recordclass = request.args.get('recordclass') if request.args.get('recordclass') else 'both'
+    log.debug(offset)
+    log.debug(limit)
+    log.debug(recordclass)
+    orgs = db.get_org_list(offset, limit, recordclass)
+    result = {'organisations': orgs}
+    return jsonify(result)
+
+
+@auto.doc()
 @app.route("/organisations/<ods_code>", methods=['GET'])
 @requires_auth
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
@@ -76,33 +104,6 @@ def get_organisation(ods_code):
         return "Not found", 404
 
 
-@auto.doc()
-@app.route("/organisations", methods=['GET'])
-@requires_auth
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
-def get_organisations():
-
-    """
-
-    Returns a list of ODS organisations
-
-    Params:
-    - offset=x (Offset start of results [0])
-    - limit=y (Limit number of results [1000])
-    - recordclass=HSCOrg/HSCSite/both (filter results by recordclass [both])
-    """
-
-    log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
-    offset = request.args.get('offset') if request.args.get('offset') else 0
-    limit = request.args.get('limit') if request.args.get('limit') else 1000
-    recordclass = request.args.get('recordclass') if request.args.get('recordclass') else 'both'
-    log.debug(offset)
-    log.debug(limit)
-    log.debug(recordclass)
-    orgs = db.get_org_list(offset, limit, recordclass)
-    result = {'organisations': orgs}
-    return jsonify(result)
-
 
 @auto.doc()
 @app.route("/organisations/search/<search_text>", methods=['GET'])
@@ -136,8 +137,8 @@ def search_organisations(search_text):
 
 @auto.doc()
 @app.route("/roles", methods=['GET'])
-@requires_auth
 @cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@requires_auth
 def get_roles():
 
     """

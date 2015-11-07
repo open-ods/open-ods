@@ -10,7 +10,6 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 log.addHandler(ch)
 
-print(config.DATABASE_URL)
 url = urlparse(config.DATABASE_URL)
 
 

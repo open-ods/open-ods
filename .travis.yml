@@ -7,4 +7,4 @@ python:
 install: "pip install -r requirements.txt"
 script: nosetests
 env:
-- API_USER=env_test_user API_PASS=env_test_pass CACHE_TIMEOUT=10 APP_HOSTNAME=localhost:5000
+- API_USER=env_test_user API_PASS=env_test_pass CACHE_TIMEOUT=10 APP_HOSTNAME=localhost:5000 API_USE_AUTH=TRUE
