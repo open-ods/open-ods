@@ -1,4 +1,5 @@
 import logging
+import status
 import dicttoxml
 from flask import jsonify, Response, request
 from flask.ext.autodoc import Autodoc
@@ -56,7 +57,7 @@ def get_organisations():
         result = {'organisations': data}
         return jsonify(result)
     else:
-        return Response("404: Not Found", 404)
+        return Response("404: Not Found", status.HTTP_404_NOT_FOUND )
 
 
 @auto.doc()
@@ -105,7 +106,7 @@ def get_organisation(ods_code):
             return result
 
     else:
-        return "Not found", 404
+        return "Not found", status.HTTP_404_NOT_FOUND
 
 
 @auto.doc()
@@ -135,7 +136,7 @@ def search_organisations(search_text):
         return jsonify(result)
 
     else:
-        return "Not found", 404
+        return "Not found", status.HTTP_404_NOT_FOUND
 
 
 @auto.doc()

@@ -49,10 +49,10 @@ def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=Non
             'odsCode': row['org_odscode'],
             'name': row['org_name'],
             'recordClass': row['org_recordclass'],
-            'link': {
+            'links': [{
                 'rel':'self',
                 'href': link_self_href
-            }
+            }]
         }
         result.append(item)
 
@@ -86,9 +86,10 @@ def get_organisation_by_odscode(odscode):
         organisation_ref = row_org['organisation_ref']
 
         # Retrieve the roles for the organisation
-        sql = "SELECT r.role_code, csr.codesystem_displayname from roles r " \
-            "left join codesystems csr on r.role_code = csr.codesystem_id " \
-            "WHERE r.organisation_ref = %s; "
+        sql = "SELECT r.role_code, csr.codesystem_displayname, r.role_unique_id, r.role_status, " \
+              "r.role_start_date, r.role_end_date from roles r " \
+              "left join codesystems csr on r.role_code = csr.codesystem_id " \
+              "WHERE r.organisation_ref = %s; "
         data = (organisation_ref,)
 
         cur.execute(sql, data)
@@ -117,10 +118,10 @@ def get_organisation_by_odscode(odscode):
             link_target_href = str.format('http://{0}/organisations/{1}',
                                         config.APP_HOSTNAME, relationship['target_odscode'])
 
-            relationship['link'] = {
+            relationship['links'] = [{
                     'rel': 'target',
                     'href': link_target_href
-                }
+                }]
 
             relationships.append({'relationship': relationship})
 
@@ -133,11 +134,13 @@ def get_organisation_by_odscode(odscode):
             link_role_href = str.format('http://{0}/roles/{1}',
                                         config.APP_HOSTNAME, role['role_code'])
 
-            role['link'] = {
+            role['links'] = [{
                     'rel': 'role',
                     'href': link_role_href
-                }
+                }]
             roles.append({'role': role})
+            role['role_start_date'] = role['role_start_date'].isoformat()
+            role['role_end_date'] = role['role_end_date'].isoformat()
 
         result_data['roles'] = roles
 
@@ -180,10 +183,10 @@ def search_organisation(search_text):
                 'code': row['org_odscode'],
                 'name': row['org_name'],
                 'recordClass': row['org_recordclass'],
-                'link': {
+                'links': [{
                     'rel': 'self',
                     'href': link_self_href
-                }
+                }]
             }
             result.append(item)
 
