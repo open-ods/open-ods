@@ -139,8 +139,16 @@ def get_organisation_by_odscode(odscode):
                     'href': link_role_href
                 }]
             roles.append({'role': role})
-            role['role_start_date'] = role['role_start_date'].isoformat()
-            role['role_end_date'] = role['role_end_date'].isoformat()
+
+            try:
+                role['role_start_date'] = role['role_start_date'].isoformat()
+            except:
+                pass
+
+            try:
+                role['role_end_date'] = role['role_end_date'].isoformat()
+            except:
+                pass
 
         result_data['roles'] = roles
 
