@@ -8,11 +8,7 @@ import openods_api.cache as ocache
 from openods_api.database import db, schema_check
 from openods_api.auth import requires_auth
 
-log = logging.getLogger('openods_api')
-log.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-log.addHandler(ch)
+log = logging.getLogger('openods')
 
 auto = Autodoc(app)
 
