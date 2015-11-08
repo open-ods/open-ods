@@ -4,7 +4,7 @@ import logging
 import openods_api.config as config
 import sys
 
-log = logging.getLogger('__name__')
+log = logging.getLogger('openods_api')
 log.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)

@@ -4,7 +4,7 @@ import logging
 import openods_api.config as config
 import sys
 
-log = logging.getLogger('openods')
+log = logging.getLogger('openods_api')
 log.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
@@ -13,7 +13,7 @@ log.addHandler(ch)
 url = urlparse(config.DATABASE_URL)
 
 
-def check_schema_version(required_schema_version):
+def check_schema_version():
     try:
         conn = psycopg2.connect(
             database=url.path[1:],
@@ -39,9 +39,9 @@ def check_schema_version(required_schema_version):
         log.error("Error retrieving schema_version from database")
         raise
 
-    if not (required_schema_version == db_schema_version):
+    if not (config.TARGET_SCHEMA_VERSION == db_schema_version):
         raise RuntimeError(str.format("Incorrect database schema version. Wanted {0}, Got {1}",
-                                      required_schema_version, db_schema_version))
+                                      config.TARGET_SCHEMA_VERSION, db_schema_version))
 
     else:
         log.info(str.format("Database schema version is {0}", db_schema_version))

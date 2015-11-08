@@ -5,8 +5,7 @@ from flask.ext.autodoc import Autodoc
 
 from openods_api import app, config
 import openods_api.cache as ocache
-from openods_api.cache import cache
-from openods_api.database import db
+from openods_api.database import db, schema_check
 from openods_api.auth import requires_auth
 
 log = logging.getLogger('openods_api')
@@ -16,6 +15,8 @@ ch.setLevel(logging.DEBUG)
 log.addHandler(ch)
 
 auto = Autodoc(app)
+
+schema_check.check_schema_version()
 
 
 @app.route('/')
@@ -30,7 +31,7 @@ def documentation():
 @auto.doc()
 @app.route("/organisations", methods=['GET'])
 @requires_auth
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisations():
 
     """
@@ -65,7 +66,7 @@ def get_organisations():
 @auto.doc()
 @app.route("/organisations/<ods_code>", methods=['GET'])
 @requires_auth
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation(ods_code):
 
     """
@@ -114,7 +115,7 @@ def get_organisation(ods_code):
 @auto.doc()
 @app.route("/organisations/search/<search_text>", methods=['GET'])
 @requires_auth
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def search_organisations(search_text):
 
     """
@@ -144,7 +145,7 @@ def search_organisations(search_text):
 @auto.doc()
 @app.route("/roles", methods=['GET'])
 @requires_auth
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_roles():
 
     """
@@ -165,7 +166,7 @@ def get_roles():
 @auto.doc()
 @app.route("/roles/<role_code>", methods=['GET'])
 @requires_auth
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_role_by_code(role_code):
 
     """
