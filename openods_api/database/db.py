@@ -7,7 +7,6 @@ import openods_api.config as config
 log = logging.getLogger('openods')
 
 
-
 def get_latest_org():
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -118,6 +117,11 @@ def get_organisation_by_odscode(odscode):
             link_target_href = str.format('http://{0}/organisations/{1}',
                                         config.APP_HOSTNAME, relationship['target_odscode'])
 
+            relationship['targetOdsCode'] = relationship.pop('target_odscode')
+            relationship['relationshipCode'] = relationship.pop('relationship_code')
+            relationship['targetOrganisationName'] = relationship.pop('org_name')
+            relationship['relationshipDescription'] = relationship.pop('codesystem_displayname')
+
             relationship['links'] = [{
                     'rel': 'target',
                     'href': link_target_href
@@ -131,24 +135,42 @@ def get_organisation_by_odscode(odscode):
         roles = []
 
         for role in rows_roles:
-            link_role_href = str.format('http://{0}/roles/{1}',
+            link_role_href = str.format('http://{0}/role-types/{1}',
                                         config.APP_HOSTNAME, role['role_code'])
 
+            role['roleTypeCode'] = role.pop('role_code')
+            role['roleTypeName'] = role.pop('codesystem_displayname')
+
+            try:
+                role['roleStatus'] = role['role_status']
+                del role['role_status']
+            except:
+                pass
+
+            try:
+                role['roleUniqueId'] = role['role_unique_id']
+                del role['role_unique_id']
+            except:
+                pass
+
+            try:
+                role['roleStartDate'] = role['role_start_date'].isoformat()
+                del role['role_start_date']
+            except:
+                pass
+
+            try:
+                role['roleEndDate'] = role['role_end_date'].isoformat()
+                del role['role_end_date']
+            except:
+                pass
+
             role['links'] = [{
-                    'rel': 'role',
+                    'rel': 'role-type',
                     'href': link_role_href
                 }]
+
             roles.append({'role': role})
-
-            try:
-                role['role_start_date'] = role['role_start_date'].isoformat()
-            except:
-                pass
-
-            try:
-                role['role_end_date'] = role['role_end_date'].isoformat()
-            except:
-                pass
 
         result_data['roles'] = roles
 
@@ -204,7 +226,7 @@ def search_organisation(search_text):
         log.error(e)
 
 
-def get_roles():
+def get_role_types():
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute("SELECT codesystem_displayname, codesystem_id from codesystems "
@@ -216,7 +238,7 @@ def get_roles():
     for row in rows:
         role_code = row['codesystem_id']
         role_display_name = row['codesystem_displayname']
-        link_self_href = str.format('http://{0}/roles/{1}', config.APP_HOSTNAME, role_code)
+        link_self_href = str.format('http://{0}/role-types/{1}', config.APP_HOSTNAME, role_code)
         link_search_href = str.format('http://{0}/organisations?primaryRoleCode={1}', config.APP_HOSTNAME, role_code)
         result.append({
             'name': role_display_name,
@@ -233,7 +255,7 @@ def get_roles():
     return result
 
 
-def get_role_by_id(role_id):
+def get_role__type_by_id(role_id):
 
     sql = "SELECT codesystem_displayname, codesystem_id from codesystems " \
           "where codesystem_name = 'OrganisationRole' AND codesystem_id = %s;"
@@ -246,7 +268,7 @@ def get_role_by_id(role_id):
 
     role_code = returned_row['codesystem_id']
     role_display_name = returned_row['codesystem_displayname']
-    link_self_href = str.format('http://{0}/roles/{1}', config.APP_HOSTNAME, role_code)
+    link_self_href = str.format('http://{0}/role-types/{1}', config.APP_HOSTNAME, role_code)
     link_search_href = str.format('http://{0}/organisations?primaryRoleCode={1}', config.APP_HOSTNAME, role_code)
     result = {
         'name': role_display_name,
@@ -255,7 +277,7 @@ def get_role_by_id(role_id):
             'rel':'self',
             'href': link_self_href
             }, {
-            'rel':'organisations.searchByPrimaryRoleCode',
+            'rel':'searchOrganisationsWithThisRoleType',
             'href': link_search_href
             }]
     }

@@ -31,5 +31,5 @@ class RouteAuthTests(unittest.TestCase):
 
     def test_roles_request_with_no_auth_returns_403_response(self):
         tester = app.test_client(self)
-        response = tester.get('/roles', content_type='application/json')
+        response = tester.get('/role-types', content_type='application/json')
         self.assertEqual(response.status_code, 401)

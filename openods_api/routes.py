@@ -140,20 +140,20 @@ def search_organisations(search_text):
 
 
 @auto.doc()
-@app.route("/roles", methods=['GET'])
+@app.route("/role-types", methods=['GET'])
 @requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
-def get_roles():
+def route_role_types():
 
     """
 
     Returns the list of available OrganisationRole types
     """
 
-    roles_list = db.get_roles()
+    roles_list = db.get_role_types()
 
     result = {
-        'roles': roles_list
+        'role-types': roles_list
     }
 
     return jsonify(result)
@@ -161,16 +161,16 @@ def get_roles():
 
 
 @auto.doc()
-@app.route("/roles/<role_code>", methods=['GET'])
+@app.route("/role-types/<role_code>", methods=['GET'])
 @requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
-def get_role_by_code(role_code):
+def route_role_type_by_code(role_code):
 
     """
 
     Returns the list of available OrganisationRole types
     """
 
-    result = db.get_role_by_id(role_code)
+    result = db.get_role__type_by_id(role_code)
 
     return jsonify(result)
