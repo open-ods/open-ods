@@ -4,7 +4,7 @@ import dicttoxml
 from flask import jsonify, Response, request
 from flask.ext.autodoc import Autodoc
 
-from openods_api import app, config
+from openods_api import app, config, sample_data
 import openods_api.cache as ocache
 from openods_api.database import db, schema_check
 from openods_api.auth import requires_auth
@@ -174,3 +174,17 @@ def route_role_type_by_code(role_code):
     result = db.get_role__type_by_id(role_code)
 
     return jsonify(result)
+
+
+@auto.doc()
+@app.route("/organisations/<ods_code>/endpoints", methods=['GET'])
+@requires_auth
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+def organisation_endpoints(ods_code):
+
+    """
+
+    Returns the list of available OrganisationRole types
+    """
+
+    return jsonify(sample_data.endpoint_data)
