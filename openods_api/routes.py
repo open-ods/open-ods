@@ -22,7 +22,7 @@ def landing_page():
 
     Returns API documentation as HTML
     """
-    return render_template('index.html')
+    return render_template('index.html', instance_name=config.INSTANCE_NAME, live_deployment=config.LIVE_DEPLOYMENT)
 
 
 @app.route('/documentation')
@@ -192,8 +192,8 @@ def route_role_type_by_code(role_code):
 def organisation_endpoints(ods_code):
 
     """
-
-    Returns the list of available OrganisationRole types
+    FAKE ENDPOINT
+    Returns a list of endpoints for a specific Organisation.
     """
 
     return jsonify(sample_data.endpoint_data)

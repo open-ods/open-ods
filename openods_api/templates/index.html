@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Open-ODS API</title>
+        <title>Open-ODS API  {% if live_deployment == 'FALSE' %}[{{ instance_name }}]{% endif %}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="../static/apple-touch-icon.png">
@@ -36,18 +36,18 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href=".">Open-ODS API</a>
+          <a class="navbar-brand" href=".">Open-ODS API {% if live_deployment == 'FALSE' %}[{{ instance_name }}]{% endif %}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
         </div><!--/.navbar-collapse -->
       </div>
     </nav>
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
-        <h1>Open-ODS API</h1>
-        <p>A unofficial friendly data API for NHS organisational data</p>
+        <h1>Open-ODS API {% if live_deployment == 'FALSE' %}[{{ instance_name }}]{% endif %}</h1>
+        <p><b>A friendly API for the structure of the NHS</b> based firmly on the principle <em>"Make things open: it makes them better"</em></p>
+            <p></p>
         <!-- <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p> -->
       </div>
     </div>
@@ -56,36 +56,38 @@
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
-          <h2>Unofficial project</h2>
-          <p>This is not an official NHS project and it is changing on a regular basis. Therefore the consistency or accuracy of the data returned by the API cannot be guaranteed.</p>
-          <!-- <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p> -->
+          <h2>The Project</h2>
+          <p>This is an <b><u>unofficial</u></b> project and is changing regularly, therefore the consistency or accuracy of the data returned by the API cannot be guaranteed.</p>
+            <p>If you'd think this is interesting and would like to contribute somehow, please do get in touch!</p>
+           <p><a class="btn btn-default" href="mailto:info@openods.co.uk" role="button">Send email to info@openods.co.uk</a></p>
         </div>
         <div class="col-md-4">
-          <h2>Source Data</h2>
-          <p>The source data used by Open-ODS is from the <a href="http://systems.hscic.gov.uk/data/ods">Organisation Data Service</a>, Health and Social Care Information Centre, licenced under the <a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/">Open Government Licence v2.0.</a></p>
+          <h2>The Data</h2>
+          <p>Open-ODS uses source data from the <a href="http://systems.hscic.gov.uk/data/ods">Organisation Data Service</a>, Health and Social Care Information Centre, which is licenced under the <a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/">Open Government Licence v2.0.</a></p>
           <p><a class="btn btn-default" href="http://systems.hscic.gov.uk/data/ods/guidance/responsibility" role="button">View licence responsibilities &raquo;</a></p>
         </div>
         <div class="col-md-4">
-          <h2>API Documentation</h2>
-          <p>Some basic guidance on accessing data via the API (this is currently just an auto-generated page).</p>
+          <h2>The API</h2>
+          <p>Some basic documentation on how to use the API (this is currently an auto-generated page and we have plans to improve it at some point).</p>
           <p><a class="btn btn-default" href="/documentation" role="button">View documentation</a></p>
        </div>
       </div>
 
       <hr>
-
       <footer>
-        <p>Open source under the <a href="https://tldrlegal.com/license/mit-license">MIT License (MIT)</a></p>
+        <p><a href="http://github.com/mattstibbs/open-ods">Open source </a>under the <a href="https://tldrlegal.com/license/mit-license">MIT License (MIT)</a></p>
           <p>Copyright &copy; Open-ODS 2015 </p>
       </footer>
-    </div> <!-- /container -->        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    </div> <!-- /container -->
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
         <script>window.jQuery || document.write('<script src="../static/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
         <script src="../static/js/vendor/bootstrap.min.js"></script>
 
         <script src="../static/js/main.js"></script>
 
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
             function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
