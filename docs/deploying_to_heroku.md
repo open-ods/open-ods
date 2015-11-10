@@ -33,5 +33,5 @@ The following instructions will get you set up with a Heroku app running open-od
 3. Import the data to the remote PostgreSQL database from the URL using the Heroku Toolbelt CLI
 
     ```bash
-    heroku pg:backups restore 'https://s3.amazonaws.com/openods-assets/database_backups/openods003.dump' DATABASE_URL
+    heroku pg:backups restore 'https://s3.amazonaws.com/openods-assets/database_backups/openods006.dump' DATABASE_URL
     ```
