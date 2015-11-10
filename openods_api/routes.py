@@ -22,7 +22,7 @@ def landing_page():
 
     Returns API documentation as HTML
     """
-    return render_template('index.html')
+    return render_template('index.html', instance_name=config.INSTANCE_NAME, live_deployment=config.LIVE_DEPLOYMENT)
 
 
 @app.route('/documentation')
