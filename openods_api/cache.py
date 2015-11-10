@@ -4,11 +4,7 @@ from flask import request
 from openods_api import app
 from flask.ext.cacheify import init_cacheify
 
-log = logging.getLogger('openods_api')
-log.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-log.addHandler(ch)
+log = logging.getLogger('openods')
 
 cache = init_cacheify(app)
 

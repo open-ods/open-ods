@@ -2,14 +2,11 @@ import psycopg2, psycopg2.pool, psycopg2.extras
 from urllib.parse import urlparse as urlparse
 import logging
 import openods_api.config as config
+import sys
 
-log = logging.getLogger('__name__')
-log.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-log.addHandler(ch)
+log = logging.getLogger('openods')
 
-print(config.DATABASE_URL)
+
 url = urlparse(config.DATABASE_URL)
 
 
@@ -26,5 +23,12 @@ def get_connection():
 
     except psycopg2.Error as e:
         log.warning("I am unable to connect to the database")
+        sys.exit(1)
 
     return conn
+
+
+def get_cursor():
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    return cur

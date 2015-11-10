@@ -1,24 +1,31 @@
 import logging
+import status
 import dicttoxml
-from flask import jsonify, Response, request
+from flask import jsonify, Response, request, render_template
 from flask.ext.autodoc import Autodoc
 
-from openods_api import app, config
+from openods_api import app, config, sample_data
 import openods_api.cache as ocache
-from openods_api.cache import cache
-from openods_api.database import db
+from openods_api.database import db, schema_check
+from openods_api.auth import requires_auth
 
-log = logging.getLogger('openods_api')
-log.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-log.addHandler(ch)
+log = logging.getLogger('openods')
 
 auto = Autodoc(app)
 
+schema_check.check_schema_version()
+
 
 @app.route('/')
-@auto.doc()
+def landing_page():
+    """
+
+    Returns API documentation as HTML
+    """
+    return render_template('index.html')
+
+
+@app.route('/documentation')
 def documentation():
     """
 
@@ -27,9 +34,45 @@ def documentation():
     return auto.html()
 
 
-@app.route("/organisations/<ods_code>", methods=['GET'])
 @auto.doc()
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@app.route("/organisations", methods=['GET'])
+@requires_auth
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+def get_organisations():
+
+    """
+
+    Returns a list of ODS organisations
+
+    Params:
+    - offset=x (Offset start of results [0])
+    - limit=y (Limit number of results [1000])
+    - recordclass=HSCOrg/HSCSite/both (filter results by recordclass [both])
+    - primaryRoleCode=xxxx (filter results to only those with a specific primaryRole)
+    """
+
+    log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
+    offset = request.args.get('offset') if request.args.get('offset') else 0
+    limit = request.args.get('limit') if request.args.get('limit') else 1000
+    record_class = request.args.get('recordclass') if request.args.get('recordclass') else 'both'
+    primary_role_code = request.args.get('primaryRoleCode' if request.args.get('primaryRoleCode') else None)
+    log.debug(offset)
+    log.debug(limit)
+    log.debug(record_class)
+    log.debug(primary_role_code)
+    data = db.get_org_list(offset, limit, record_class, primary_role_code)
+
+    if data:
+        result = {'organisations': data}
+        return jsonify(result)
+    else:
+        return Response("404: Not Found", status.HTTP_404_NOT_FOUND )
+
+
+@auto.doc()
+@app.route("/organisations/<ods_code>", methods=['GET'])
+@requires_auth
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation(ods_code):
 
     """
@@ -43,7 +86,7 @@ def get_organisation(ods_code):
     format_type = request.args.get('format')
     log.debug(format_type)
 
-    data = db.get_specific_org(ods_code)
+    data = db.get_organisation_by_odscode(ods_code)
 
     if data:
 
@@ -72,39 +115,13 @@ def get_organisation(ods_code):
             return result
 
     else:
-        return "Not found", 404
+        return "Not found", status.HTTP_404_NOT_FOUND
 
 
-@app.route("/organisations", methods=['GET'])
 @auto.doc()
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
-def get_organisations():
-
-    """
-
-    Returns a list of ODS organisations
-
-    Params:
-    - offset=x (Offset start of results [0])
-    - limit=y (Limit number of results [1000])
-    - recordclass=HSCOrg/HSCSite/both (filter results by recordclass [both])
-    """
-
-    log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
-    offset = request.args.get('offset') if request.args.get('offset') else 0
-    limit = request.args.get('limit') if request.args.get('limit') else 1000
-    recordclass = request.args.get('recordclass') if request.args.get('recordclass') else 'both'
-    log.debug(offset)
-    log.debug(limit)
-    log.debug(recordclass)
-    orgs = db.get_org_list(offset, limit, recordclass)
-    result = {'organisations': orgs}
-    return jsonify(result)
-
-
 @app.route("/organisations/search/<search_text>", methods=['GET'])
-@auto.doc()
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@requires_auth
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def search_organisations(search_text):
 
     """
@@ -128,23 +145,55 @@ def search_organisations(search_text):
         return jsonify(result)
 
     else:
-        return "Not found", 404
+        return "Not found", status.HTTP_404_NOT_FOUND
 
 
-@app.route("/roles", methods=['GET'])
 @auto.doc()
-@cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
-def get_roles():
+@app.route("/role-types", methods=['GET'])
+@requires_auth
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+def route_role_types():
 
     """
 
     Returns the list of available OrganisationRole types
     """
 
-    roles_list = db.get_roles()
+    roles_list = db.get_role_types()
 
     result = {
-        'roles': roles_list
+        'role-types': roles_list
     }
 
     return jsonify(result)
+
+
+
+@auto.doc()
+@app.route("/role-types/<role_code>", methods=['GET'])
+@requires_auth
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+def route_role_type_by_code(role_code):
+
+    """
+
+    Returns the list of available OrganisationRole types
+    """
+
+    result = db.get_role__type_by_id(role_code)
+
+    return jsonify(result)
+
+
+@auto.doc()
+@app.route("/organisations/<ods_code>/endpoints", methods=['GET'])
+@requires_auth
+@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+def organisation_endpoints(ods_code):
+
+    """
+
+    Returns the list of available OrganisationRole types
+    """
+
+    return jsonify(sample_data.endpoint_data)

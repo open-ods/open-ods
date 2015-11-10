@@ -1,25 +1,3 @@
--- Table: versions
-
--- DROP TABLE versions;
-
-CREATE TABLE versions
-(
-  version_ref uuid NOT NULL,
-  import_timestamp timestamp with time zone NOT NULL,
-  publication_date date,
-  publication_seqno integer,
-  file_version character varying(10),
-  publication_type character varying(10),
-  CONSTRAINT versions_pk PRIMARY KEY (version_ref)
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE versions
-  OWNER TO openods;
-
-
-
 -- Table: roles
 
 -- DROP TABLE roles;
@@ -27,7 +5,6 @@ ALTER TABLE versions
 CREATE TABLE roles
 (
   role_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
-  version_ref uuid NOT NULL,
   organisation_ref uuid NOT NULL,
   org_odscode character varying(10),
   role_code character varying(10) NOT NULL,
@@ -39,6 +16,8 @@ WITH (
 ALTER TABLE roles
   OWNER TO openods;
 
+CREATE INDEX role_code_idx ON roles (role_code);
+
 
 
 -- Table: relationships
@@ -48,7 +27,6 @@ ALTER TABLE roles
 CREATE TABLE relationships
 (
   relationship_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
-  version_ref uuid NOT NULL,
   organisation_ref uuid NOT NULL,
   target_ref uuid,
   relationship_code character varying(10),
@@ -71,7 +49,6 @@ ALTER TABLE relationships
 CREATE TABLE organisations
 (
   organisation_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
-  version_ref uuid NOT NULL,
   org_odscode character varying(10),
   org_name character varying(200),
   org_status character varying(10),
@@ -85,6 +62,9 @@ WITH (
 ALTER TABLE organisations
   OWNER TO openods;
 
+CREATE INDEX org_name_idx ON organisations (org_name);
+CREATE INDEX org_odscode_idx ON organisations (org_odscode);
+
 
 
 -- Table: codesystems
@@ -94,7 +74,6 @@ ALTER TABLE organisations
 CREATE TABLE codesystems
 (
   codesystem_name character varying(50),
-  version_ref uuid NOT NULL,
   codesystem_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
   codesystem_id character varying(10),
   codesystem_displayname character varying(200),
@@ -106,7 +85,7 @@ WITH (
 ALTER TABLE codesystems
   OWNER TO openods;
 
-
+CREATE UNIQUE INDEX codesystem_id_idx ON codesystems (codesystem_id);
 
 -- Table: addresses
 
@@ -115,7 +94,6 @@ ALTER TABLE codesystems
 CREATE TABLE addresses
 (
   address_ref uuid NOT NULL DEFAULT uuid_generate_v4(),
-  version_ref uuid NOT NULL,
   organisation_ref uuid NOT NULL,
   org_odscode character varying(10),
   "streetAddressLine1" text,

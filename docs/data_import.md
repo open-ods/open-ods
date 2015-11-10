@@ -7,26 +7,21 @@
 
 ### Steps
 
-1. Execute the SQL scripts in the **sql** folder of the repository in the order they are numbered:
+1. Execute the SQL scripts,  which can be found in the sql sub-directory,  from the root folder of your repository as follows:
 
   ```bash
-  $ cd repo/sql
-
-  $ psql -f 000-create_user_and_database.sql -U postgres
-
-  $ psql -f 001_install_extensions.sql openods -U postgres
-
-  $ psql -f 002-create_tables.sql openods -U postgres
-
-  $ psql -f 00x-etc.sql openods -U postgres
+  $ psql -f sql/create_user_and_database.sql -U postgres
+  
+  $ psql -d openods -f sql/run_migration_scripts.sql -U postgres
   ```
 
 2. In the terminal, navigate to the data sub-directory of the repository and ensure that both `odsfull.xml.zip` and `import_ods_xml.py` files are present in the directory
 
     ```bash
-    $ cd repo/data
-
-    $ ls
+    $ ls -l
+    
+    -rw-r--r--@ 1 matt  staff  19885585  3 Nov 14:56 odsfull.xml.zip
+    -rw-r--r--  1 matt  staff  6930  7 Nov 17:53 import_ods_xml.py
     ```
 
 3. Run the import script:

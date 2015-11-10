@@ -10,6 +10,15 @@ Organisation Data Service, Health and Social Care Information Centre, licenced u
 More information on the Organisation Data Service can be found [on the HSCIC website](http://systems.hscic.gov.uk/data/ods)
 
 
+## Issue Tracker
+[![Stories in Ready](https://badge.waffle.io/mattstibbs/open-ods.png?label=1%20-%20Ready&title=Ready)](http://waffle.io/mattstibbs/open-ods)
+
+## Continuous Integration
+[![Build Status](https://travis-ci.org/mattstibbs/open-ods.svg?branch=develop)](https://travis-ci.org/mattstibbs/open-ods) develop
+
+[![Build Status](https://travis-ci.org/mattstibbs/open-ods.svg?branch=master)](https://travis-ci.org/mattstibbs/open-ods) master
+
+
 ## Getting Started
 
 ### Pre-requisites
@@ -66,3 +75,12 @@ More information on the Organisation Data Service can be found [on the HSCIC web
 
 
 7. Now go import the ODS data into your OpenODS database -> [Instructions for importing the ODS data into your PostgreSQL database](docs/data_import.md)
+
+
+## License
+
+This project is licensed under MIT License.
+
+Copyright (c) 2015 Matt Stibbs
+
+See [LICENSE.md](LICENSE.md).
