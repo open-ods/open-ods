@@ -1,3 +1,9 @@
+0.3 - 10th November 2015
+---
+* Added remaining metadata for roles and relationships
+* Added a simple landing page for users arriving at the site
+* Added fake /organisations/<ods_code>/endpoints route to demonstrate endpoint repository functionality
+
 0.2 - 6th November 2015
 ---
 * Updated docs to try and help people get started / contribute to the project
