@@ -1,7 +1,7 @@
 import logging
 import status
 import dicttoxml
-from flask import jsonify, Response, request
+from flask import jsonify, Response, request, render_template
 from flask.ext.autodoc import Autodoc
 
 from openods_api import app, config, sample_data
@@ -17,6 +17,15 @@ schema_check.check_schema_version()
 
 
 @app.route('/')
+def landing_page():
+    """
+
+    Returns API documentation as HTML
+    """
+    return render_template('index.html')
+
+
+@app.route('/documentation')
 def documentation():
     """
 
