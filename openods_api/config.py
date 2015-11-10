@@ -7,6 +7,8 @@ APP_HOSTNAME = os.environ.get('APP_HOSTNAME', 'localhost:5000')
 API_USER = os.environ.get('API_USER', 'user')
 API_PASS = os.environ.get('API_PASS', 'pass')
 API_USE_AUTH = os.environ.get('API_USE_AUTH', 'FALSE')
+LIVE_DEPLOYMENT = os.environ.get('LIVE_DEPLOYMENT', 'FALSE')
+INSTANCE_NAME = os.environ.get('INSTANCE_NAME', 'Development')
 
 print(str.format("Database URL: {0}", DATABASE_URL))
 print(str.format("Cache Timeout: {0}", CACHE_TIMEOUT))
