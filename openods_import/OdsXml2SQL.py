@@ -1,7 +1,11 @@
 from lxml import etree as xml_tree_parser
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+
+
 import os.path
-import zipfile
 import sys
+import zipfile
 
 
 class OdsXml2SQL(object):
