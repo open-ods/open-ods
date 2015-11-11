@@ -14,18 +14,23 @@ class Organisation(Base):
     """
     __tablename__ = 'organisations'
 
-    organisation_ref = Column(String)
-    org_odscode = Column(String)
-    org_name = Column(String)
-    org_status = Column(String)
-    org_recordclass = Column(String)
-    org_lastchanged = Column(String)
+    organisation_ref = Column(String, primary_key=True)
+    org_odscode = Column(String(10))
+    org_name = Column(String(200))
+    org_status = Column(String(10))
+    org_recordclass = Column(String(10))
+    org_lastchanged = Column(DateTime)
 
     # Returns a printable version of the objects contents
     def __repr__(self):
-        return "<Organisations(ref='%s', org_odscode='%s',\
-            org_name='%s', org_status='%s',\
-            org_recordclass='%s',org_lastchanged='%s')>" % (
+        return "<Organisations(\
+            ref='%s',\
+            org_odscode='%s',\
+            org_name='%s',\
+            org_status='%s',\
+            org_recordclass='%s',\
+            org_lastchanged='%s'\
+            )>" % (
             self.organisation_ref,
             self.org_odscode,
             self.org_name,

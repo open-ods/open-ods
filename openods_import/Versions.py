@@ -22,9 +22,13 @@ class Versions(Base):
 
     # Returns a printable version of the objects contents
     def __repr__(self):
-        return "<Version(ref='%s', import_timestamp='%s',\
-            file_version='%s', publication_seqno='%s',\
-            publication_date='%s',publication_type='%s')>" % (
+        return "<Version(ref='%s',\
+            import_timestamp='%s',\
+            file_version='%s',\
+            publication_seqno='%s',\
+            publication_date='%s',\
+            publication_type='%s'\
+            )>" % (
             self.version_ref,
             self.import_timestamp,
             self.file_version,
