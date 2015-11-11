@@ -23,7 +23,7 @@ class Versions(Base):
     # TODO: implement so a return is formatted nicely
     def __repr__(self):
         return "<Version(ref='%s', import_timestamp='%s',\
-            file_version='%s',\ publication_seqno='%s',\
+            file_version='%s', publication_seqno='%s',\
             publication_date='%s',publication_type='%s')>" % (
             self.version_ref,
             self.import_timestamp,
