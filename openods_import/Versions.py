@@ -20,7 +20,7 @@ class Versions(Base):
     publication_date = Column(String)
     publication_type = Column(String)
 
-    # TODO: implement so a return is formatted nicely
+    # Returns a printable version of the objects contents
     def __repr__(self):
         return "<Version(ref='%s', import_timestamp='%s',\
             file_version='%s', publication_seqno='%s',\

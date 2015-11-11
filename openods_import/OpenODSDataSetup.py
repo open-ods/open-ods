@@ -8,7 +8,7 @@ import sys
 import zipfile
 
 
-class OdsXml2SQL(object):
+class OpenODSDataSetup(object):
 
     __ods_xml_data = None
     __database_connection = None

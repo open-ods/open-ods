@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -21,7 +21,7 @@ class Organisation(Base):
     org_recordclass = Column(String)
     org_lastchanged = Column(String)
 
-    # TODO: implement so a return is formatted nicely
+    # Returns a printable version of the objects contents
     def __repr__(self):
         return "<Organisations(ref='%s', org_odscode='%s',\
             org_name='%s', org_status='%s',\

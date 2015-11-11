@@ -18,7 +18,7 @@ class CodeSystems(Base):
     codesystem_id = Column(String)
     codesystem_displayname = Column(String)
 
-    # TODO: implement so a return is formatted nicely
+    # Returns a printable version of the objects contents
     def __repr__(self):
         return "<CodeSystems(codesystem_name='%s',\
             codesystem_id='%s', codesystem_displayname='%s')>" % (

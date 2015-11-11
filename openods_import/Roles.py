@@ -26,7 +26,7 @@ class Roles(Base):
     role_operational_start_date = Column(String)
     role_operational_end_date = Column(String)
 
-    # TODO: implement so a return is formatted nicely
+    # Returns a printable version of the objects contents
     def __repr__(self):
         return "<Roles(\
             role_ref='%s', \
