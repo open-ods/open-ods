@@ -20,11 +20,15 @@ class Relationships(Base):
     target_odscode = Column(String)
     relationship_code = Column(String)
 
-    # TODO: implement so a return is formatted nicely
+    # Returns a printable version of the objects contents
     def __repr__(self):
-        return "<Relationships(ref='%s', organisation_ref='%s',\
+        return "<Relationships(\
+            ref='%s',\
+            organisation_ref='%s',\
             org_odscode='%s',\
-            target_odscode='%s',relationship_code='%s')>" % (
+            target_odscode='%s',\
+            relationship_code='%s'\
+            )>" % (
             self.version_ref,
             self.organisation_ref,
             self.org_odscode,
