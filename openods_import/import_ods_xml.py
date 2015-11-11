@@ -5,8 +5,8 @@ import time
 import zipfile
 import logging
 import sys
-import elasticsearch
-from elasticsearch_dsl import Search
+# import elasticsearch
+# from elasticsearch_dsl import Search
 
 log = logging.getLogger('import_ods_xml')
 log.setLevel(logging.DEBUG)
