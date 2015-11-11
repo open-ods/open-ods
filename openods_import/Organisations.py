@@ -7,18 +7,19 @@ Base = declarative_base()
 
 
 class Organisation(Base):
-    """Organisations class that keeps track of information about a
+    """
+    Organisations class that keeps track of information about a
     particular organisations. This class uses SQLAlchemy as an ORM
 
     """
     __tablename__ = 'organisations'
 
-    organisation_ref = Column(String),
-    org_odscode = Column(String),
-    org_name = Column(String),
-    org_status = Column(String),
-    org_recordclass = Column(String),
-    org_lastchanged = Column(String),
+    organisation_ref = Column(String)
+    org_odscode = Column(String)
+    org_name = Column(String)
+    org_status = Column(String)
+    org_recordclass = Column(String)
+    org_lastchanged = Column(String)
 
     # TODO: implement so a return is formatted nicely
     def __repr__(self):
