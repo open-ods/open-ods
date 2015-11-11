@@ -14,19 +14,14 @@ class CodeSystems(Base):
     """
     __tablename__ = 'codesystems'
 
-    version_ref = Column(String, primary_key=True)
     codesystem_name = Column(String)
     codesystem_id = Column(String)
     codesystem_displayname = Column(String)
 
     # TODO: implement so a return is formatted nicely
     def __repr__(self):
-        return "<CodeSystems(ref='%s', codesystem_name='%s',\
-            codesystem_id='%s', codesystem_displayname='%s',\
-            publication_date='%s',publication_type='%s')>" % (
-            self.version_ref,
+        return "<CodeSystems(codesystem_name='%s',\
+            codesystem_id='%s', codesystem_displayname='%s')>" % (
             self.codesystem_name,
             self.codesystem_id,
-            self.codesystem_displayname,
-            self.publication_date,
-            self.publication_type)
+            self.codesystem_displayname)
