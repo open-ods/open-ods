@@ -14,9 +14,9 @@ class CodeSystems(Base):
     """
     __tablename__ = 'codesystems'
 
-    codesystem_name = Column(String)
-    codesystem_id = Column(String)
-    codesystem_displayname = Column(String)
+    codesystem_name = Column(String(50))
+    codesystem_id = Column(String(10))
+    codesystem_displayname = Column(String(200))
 
     # Returns a printable version of the objects contents
     def __repr__(self):
