@@ -193,10 +193,6 @@ for node in tree.findall('./Organisations/Organisation'):
                      role_legal_start_date, role_legal_end_date,
                      role_operational_start_date, role_operational_end_date))
 
-        conn.commit()
-
-        cur.close()
-
     log.debug("")
 
     for rel in node.find('Rels'):
@@ -234,7 +230,6 @@ for node in tree.findall('./Organisations/Organisation'):
                     pass
 
         # Add the relationships to the database
-        cur = conn.cursor()
         cur.execute('INSERT INTO relationships (organisation_ref, org_odscode, target_odscode, '
                     'relationship_code, relationship_legal_start_date, relationship_legal_end_date, '
                     'relationship_operational_start_date, relationship_operational_end_date, '
@@ -243,27 +238,16 @@ for node in tree.findall('./Organisations/Organisation'):
                     (organisation_ref, org_odscode, rel_target, relationship_id,
                      relationship_legal_start_date, relationship_legal_end_date,
                      relationship_operational_start_date, relationship_operational_end_date, rel_unique_id, rel_status))
-        conn.commit()
-        cur.close()
 
     log.debug("")
 
     # Add the organisations to the database
-    cur = conn.cursor()
     cur.execute('INSERT INTO organisations (org_odscode, org_name, org_status, org_recordclass, org_lastchanged, '
                 'organisation_ref) '
                 'VALUES (?, ?, ?, ?, ?, ?)',
                 (org_odscode, org_name, org_status, org_recordclass, org_lastchangeddate, organisation_ref))
     conn.commit()
     cur.close()
-
-    doc = {
-        'orgName': org_name,
-        'orgOdsCode': org_odscode,
-        'orgStatus': org_status
-    }
-
-    # add_es_document(doc)
 
     # log.debug a separator between each organisation record
     log.debug("========================")
