@@ -14,16 +14,16 @@ class CodeSystems(Base):
     """
     __tablename__ = 'codesystems'
 
-    codesystem_name = Column(String(50))
-    codesystem_id = Column(String(10))
-    codesystem_displayname = Column(String(200))
+    ref = Column(Integer, primary_key=True)
+    name = Column(String(50))
+    id = Column(String(10))
+    displayname = Column(String(200))
 
     # Returns a printable version of the objects contents
     def __repr__(self):
-        return "<CodeSystems(codesystem_name='%s',\
-            codesystem_id='%s',\
-            codesystem_displayname='%s'\
+        return "<CodeSystems('%s %s %s %s'\
             )>" % (
-            self.codesystem_name,
-            self.codesystem_id,
-            self.codesystem_displayname)
+            self.ref,
+            self.name,
+            self.id,
+            self.displayname)

@@ -13,7 +13,7 @@ class Versions(Base):
     """
     __tablename__ = 'versions'
 
-    version_ref = Column(String, primary_key=True)
+    version_ref = Column(Integer, primary_key=True)
     import_timestamp = Column(String)
     file_version = Column(String)
     publication_seqno = Column(String)
