@@ -14,7 +14,7 @@ class Relationships(Base):
     """
     __tablename__ = 'relationships'
 
-    version_ref = Column(String)
+    version_ref = Column(String, primary_key = True)
     organisation_ref = Column(String)
     org_odscode = Column(String)
     target_odscode = Column(String)
