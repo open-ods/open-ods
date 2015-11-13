@@ -15,7 +15,7 @@ class Addresses(Base):
     __tablename__ = 'addresses'
 
     addresses_ref = Column(Integer, primary_key=True)
-    organisation_ref = Column(Integer, ForeignKey("organisations.organisation_ref"))
+    organisation_ref = Column(Integer)
     org_odscode = Column(String(10))
     street_address_line1 = Column(String)
     street_address_line2 = Column(String)
