@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -14,17 +14,17 @@ class Roles(Base):
     """
     __tablename__ = 'roles'
 
-    role_ref = Column(String)
+    role_ref = Column(String, primary_key=True)
     organisation_ref = Column(String)
-    org_odscode = Column(String)
-    role_code = Column(String)
-    primary_role = Column(String)
-    role_unique_id = Column(String)
-    role_status = Column(String)
-    role_legal_start_date = Column(String)
-    role_legal_end_date = Column(String)
-    role_operational_start_date = Column(String)
-    role_operational_end_date = Column(String)
+    org_odscode = Column(String(10))
+    role_code = Column(String(10))
+    primary_role = Column(Boolean)
+    role_unique_id = Column(String(10))
+    role_status = Column(String(10))
+    role_legal_start_date = Column(DateTime)
+    role_legal_end_date = Column(DateTime)
+    role_operational_start_date = Column(DateTime)
+    role_operational_end_date = Column(DateTime)
 
     # Returns a printable version of the objects contents
     def __repr__(self):
