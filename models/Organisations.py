@@ -14,7 +14,7 @@ class Organisation(Base):
     """
     __tablename__ = 'organisations'
 
-    organisation_ref = Column(String, primary_key=True)
+    organisation_ref = Column(Integer, primary_key=True)
     org_odscode = Column(String(10))
     org_name = Column(String(200))
     org_status = Column(String(10))
