@@ -1,1 +1,1 @@
-web: python run.py --log-file=-
+web: gunicorn openods_api:app --log-file=-
