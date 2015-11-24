@@ -3,6 +3,7 @@ import os.path
 import sys
 import zipfile
 import logging
+import time
 
 log = logging.getLogger('import_ods_xml')
 log.setLevel(logging.DEBUG)
@@ -49,9 +50,12 @@ class ODSFileManager(object):
                 log.info(data_filename)
 
                 with local_zipfile.open(data_filename) as local_datafile:
+                    start_time = time.time()
                     self.__ods_xml_data = xml_tree_parser.parse(local_datafile)
+                    log.info('Data Import Time = %s' % (
+                        time.time() - start_time))
 
-                return True
+                return self.__ods_xml_data
         except:
             print('Unexpected error:', sys.exc_info()[0])
             raise
@@ -63,6 +67,6 @@ class ODSFileManager(object):
 
         if self.__ods_xml_data is None:
             data_filename = self.__retrieve_latest_datafile()
-            self.__ods_xml_data = self.__import_latest_datafile(data_filename)
-        else:
-            return __ods_xml_data
+            self.__import_latest_datafile(data_filename)
+
+        return self.__ods_xml_data

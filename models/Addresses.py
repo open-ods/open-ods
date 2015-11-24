@@ -8,7 +8,7 @@ Base = declarative_base()
 
 class Addresses(Base):
     """
-    Addressess class that keeps track of information about a
+    Addresses class that keeps track of information about a
     particular Addresses. This class uses SQLAlchemy as an ORM
 
     """
