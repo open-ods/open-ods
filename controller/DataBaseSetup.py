@@ -59,28 +59,42 @@ class DataBaseSetup(object):
 
     def __create_codesystems(self):
 
-        # we are going to need to append a lot of data into this array
-        codesystems = {}
+        # these are all code systems, we have a DRY concept here as so much of
+        # this code is common, it doesn't make sense to do it 3 times, lets
+        # loop
+        code_system_types = [
+            './CodeSystems/CodeSystem[@name="OrganisationRelationship"]',
+            './CodeSystems/CodeSystem[@name="OrganisationRecordClass"]',
+            './CodeSystems/CodeSystem[@name="OrganisationRole"]']
 
-        relationships = self.__ods_xml_data.find(
-            './CodeSystems/CodeSystem[@name="OrganisationRelationship"]')
-        relationship_types = {}
+        for code_system_type in code_system_types:
+            # we are going to need to append a lot of data into this array
+            codesystems = {}
 
-        # enumerate the iter as it doesn't provide an index which we need
-        for idx, relationship in enumerate(relationships.iter('concept')):
-            log.info(idx)
-            codesystems[idx] = CodeSystem()
+            relationships = self.__ods_xml_data.find(code_system_type)
+            relationship_types = {}
 
-            relationship_id = relationship.attrib.get('id')
-            display_name = relationship.attrib.get('displayName')
-            relationship_types[relationship_id] = display_name
+            # enumerate the iter as it doesn't provide an index which we need
+            for idx, relationship in enumerate(relationships.iter('concept')):
+                log.info(idx)
+                codesystems[idx] = CodeSystem()
 
-            codesystems[idx].id = relationship_id
-            codesystems[idx].name = 'OrganisationRelationship'
-            codesystems[idx].displayname = display_name
+                relationship_id = relationship.attrib.get('id')
+                display_name = relationship.attrib.get('displayName')
+                relationship_types[relationship_id] = display_name
 
-            # append this instance of code system to the session
-            session.add(codesystems[idx])
+                code_system_type_name = code_system_type
+                code_system_type_name = code_system_type_name.replace(
+                    './CodeSystems/CodeSystem[@name="', '').replace('"]', '')
+
+                codesystems[idx].id = relationship_id
+                codesystems[idx].name = code_system_type_name
+                codesystems[idx].displayname = display_name
+
+                # append this instance of code system to the session
+                session.add(codesystems[idx])
+
+            codesystems = None
 
     def __create_organisations(self):
         pass
