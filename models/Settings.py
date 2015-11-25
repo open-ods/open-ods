@@ -2,8 +2,13 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+import sys
+import os.path
 
-Base = declarative_base()
+# setup path so we can import our own models and controllers
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from models.base import Base
 
 
 class Settings(Base):

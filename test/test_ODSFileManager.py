@@ -50,7 +50,8 @@ class ods_file_manager_test(unittest.TestCase):
         pass
 
     def tearDownClass():
-        os.remove(Dst_file)
+        # os.remove(Dst_file)
+        pass
 
 
 if __name__ == '__main__':
