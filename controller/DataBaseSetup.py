@@ -35,7 +35,7 @@ class DataBaseSetup(object):
 
         address = Addresses()
 
-        #metadata.create_all(engine)
+        metadata.create_all(engine)
 
         address.organisation_ref = 123
         address.org_odscode = '123test'
