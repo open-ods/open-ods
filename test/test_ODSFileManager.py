@@ -2,8 +2,6 @@ from distutils import file_util
 from lxml import etree as xml_tree_parser
 import logging
 import os.path
-import os.path
-import sys
 import sys
 import unittest
 
