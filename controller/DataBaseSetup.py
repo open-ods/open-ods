@@ -41,6 +41,7 @@ class DataBaseSetup(object):
 
     __ods_xml_data = None
     __version = Versions()
+    __code_system_dict = {}
 
     def __init__(self):
         metadata.create_all(engine)
@@ -50,12 +51,6 @@ class DataBaseSetup(object):
         codesystem = CodeSystem()
 
         session.add(codesystem)
-
-    def __create_roles(self):
-
-        role = Role()
-
-        session.add(role)
 
     def __create_codesystems(self):
 
@@ -91,28 +86,47 @@ class DataBaseSetup(object):
                 codesystems[idx].name = code_system_type_name
                 codesystems[idx].displayname = display_name
 
+                # pop these in a global dictionary, we will use these later in
+                # __create_organisations
+                self.__code_system_dict[relationship_id] = display_name
+
                 # append this instance of code system to the session
                 session.add(codesystems[idx])
 
             codesystems = None
 
     def __create_organisations(self):
-        pass
-        # organisation = Organisation()
 
-        # for node in
-        # self.__ods_xml_data.findall('.Organisations/Organisation'):
+        organisations = {}
 
-        #     organisation.odscode = node.find(
-        #         'OrgId').attrib.get('extension')
-        #     organisation.name = node.find('Name').text
-        #     organisation.status = node.find('Status').attrib.get('value')
-        #     organisation.record_class = record_classes[
-        #         node.attrib.get('orgRecordClass')]
-        #     organisation.last_changed = node.find(
-        #         'LastChangeDate').attrib.get('value')
+        for idx, organisation in enumerate(self.__ods_xml_data.findall(
+                '.Organisations/Organisation')):
 
-        # session.add(organisation)
+            organisations[idx] = Organisation()
+
+            organisations[idx].odscode = organisation.find(
+                'OrgId').attrib.get('extension')
+
+            organisations[idx].name = organisation.find('Name').text
+
+            organisations[idx].status = organisation.find(
+                'Status').attrib.get('value')
+
+            organisations[idx].record_class = self.__code_system_dict[
+                organisation.attrib.get('orgRecordClass')]
+
+            organisations[idx].last_changed = organisation.find(
+                'LastChangeDate').attrib.get('value')
+
+            session.add(organisations[idx])
+
+        organisations = None
+
+    def __create_roles(self):
+
+        role = Role()
+
+        session.add(role)
 
     def __create_relationships(self):
         pass
@@ -156,8 +170,9 @@ class DataBaseSetup(object):
 
             self.__create_addresses()
             self.__create_version()
-            self.__create_organisations()
             self.__create_codesystems()
+            self.__create_organisations()
+
             session.commit()
 
 if __name__ == '__main__':

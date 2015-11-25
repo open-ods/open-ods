@@ -24,7 +24,7 @@ class Organisation(Base):
     name = Column(String(200))
     status = Column(String(10))
     record_class = Column(String(10))
-    last_changed = Column(DateTime)
+    last_changed = Column(String)
     legal_start_date = Column(DateTime)
     legal_end_date = Column(DateTime)
     operational_start_date = Column(DateTime)
