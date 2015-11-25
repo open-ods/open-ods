@@ -27,14 +27,15 @@ class Addresses(Base):
 
     # Returns a printable version of the objects contents
     def __repr__(self):
-        return "<Addresses(%s %s %s %s %s %s %s %s %s \)>" \% (
-            self.addresses_ref
-            self.organisation_ref
-            self.org_odscode
-            self.street_address_line1
-            self.street_address_line2
-            self.street_address_line3
-            self.town
-            self.county
-            self.postal_code
-            self.location_id)
+        return "<Addresses(%s %s %s %s %s %s %s %s %s %s\)>" \
+            % (
+                self.addresses_ref,
+                self.organisation_ref,
+                self.org_odscode,
+                self.street_address_line1,
+                self.street_address_line2,
+                self.street_address_line3,
+                self.town,
+                self.county,
+                self.postal_code,
+                self.location_id)
