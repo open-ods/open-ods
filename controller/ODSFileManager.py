@@ -28,7 +28,6 @@ class ODSFileManager(object):
         # TODO: Retrieve latest file from the local directory until
         # such time it is published and retrievable
         if os.path.isfile('controller/odsfull.xml.zip'):
-            log.info('File Found')
             return 'controller/odsfull.xml.zip'
         else:
             raise ValueError('unable to locate the data file')
@@ -47,13 +46,8 @@ class ODSFileManager(object):
                 data_filename = data_filename.split('/', 1)
                 data_filename = data_filename[1]
 
-                log.info(data_filename)
-
                 with local_zipfile.open(data_filename) as local_datafile:
-                    start_time = time.time()
                     self.__ods_xml_data = xml_tree_parser.parse(local_datafile)
-                    log.info('Data Import Time = %s' % (
-                        time.time() - start_time))
 
                 return self.__ods_xml_data
         except:

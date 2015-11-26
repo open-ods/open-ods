@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 import logging
 import os.path
 import sys
+import time
 import zipfile
 
 # setup path so we can import our own models and controllers
@@ -15,13 +16,13 @@ from controller.ODSFileManager import ODSFileManager
 
 # import models
 from models.Addresses import Addresses
-from models.Versions import Versions
+from models.base import Base
+from models.CodeSystem import CodeSystem
 from models.Organisation import Organisation
 from models.Relationship import Relationship
-from models.CodeSystem import CodeSystem
 from models.Role import Role
 from models.Settings import Settings
-from models.base import Base
+from models.Versions import Versions
 
 # Logging Setup
 log = logging.getLogger('import_ods_xml')
@@ -31,7 +32,7 @@ log.setLevel(logging.DEBUG)
 File_manager = ODSFileManager()
 
 # SQLAlchemy objects
-engine = create_engine('sqlite:///openods.sqlite', echo=True)
+engine = create_engine('sqlite:///openods.sqlite', echo=False)
 metadata = Base.metadata
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -53,6 +54,16 @@ class DataBaseSetup(object):
         session.add(codesystem)
 
     def __create_codesystems(self):
+        """Loops through all the code systems in an organisation and adds them
+        to the database
+
+        Parameters
+        ----------
+        None
+        Returns
+        -------
+        None
+        """
 
         # these are all code systems, we have a DRY concept here as so much of
         # this code is common, it doesn't make sense to do it 3 times, lets
@@ -96,6 +107,17 @@ class DataBaseSetup(object):
             codesystems = None
 
     def __create_organisations(self):
+        """Creates the organisations and adds them to the session
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
+        """
 
         organisations = {}
 
@@ -120,19 +142,67 @@ class DataBaseSetup(object):
 
             session.add(organisations[idx])
 
+            self.__create_roles(organisations[idx], organisation)
+
+            self.__create_relationships(organisations[idx], organisation)
+
         organisations = None
 
-    def __create_roles(self):
+    def __create_roles(self, organisation, organisation_xml):
+        """Creates the roles, this should only be called from
+         __create_organisations()
 
-        role = Role()
+        Parameters
+        ----------
+        organisation = xml element of the full organisation
 
-        session.add(role)
+        Returns
+        -------
+        None
+        """
+        roles_xml = organisation_xml.find('Roles')
+        roles = {}
 
-    def __create_relationships(self):
-        pass
-        # relationship = Relationship()
+        for idx, role in enumerate(roles_xml):
 
-        # session.add(relationship)
+            roles[idx] = Role()
+
+            roles[idx].organisation_ref = organisation.ref
+            roles[idx].org_odscode = organisation.odscode
+            roles[idx].code = role.attrib.get('id')
+
+            session.add(roles[idx])
+
+        roles = None
+
+    def __create_relationships(self, organisation, organisation_xml):
+        """Creates the relationships, this should only be called from
+         __create_organisations()
+
+        Parameters
+        ----------
+        organisation = xml element of the full organisation
+
+        Returns
+        -------
+        None
+        """
+        relationships_xml = organisation_xml.find('Rels')
+        relationships = {}
+
+        for idx, relationship in enumerate(relationships_xml):
+
+            relationships[idx] = Relationship()
+
+            relationships[idx].organisation_ref = organisation.ref
+            relationships[idx].org_odscode = organisation.odscode
+            relationships[idx].code = relationship.attrib.get('id')
+            relationships[idx].target_odscode = self.__code_system_dict[
+                relationships[idx].code]
+
+            session.add(relationships[idx])
+
+        relationships = None
 
     def __create_addresses(self):
         pass
@@ -177,5 +247,8 @@ class DataBaseSetup(object):
 
 if __name__ == '__main__':
     # get the latest xml data and get it into an xmltree object
+    start_time = time.time()
     ods_xml_data = File_manager.get_latest_xml()
     DataBaseSetup().create_database(ods_xml_data)
+    log.info('Data Import Time = %s' % (
+        time.time() - start_time))
