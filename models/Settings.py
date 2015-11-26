@@ -24,6 +24,6 @@ class Settings(Base):
 
     # Returns a printable version of the objects contents
     def __repr__(self):
-        return "<Settings('%s %s')>" % (
+        return "<Setting('%s %s')>" % (
             self.key,
             self.value)

@@ -32,7 +32,7 @@ class Organisation(Base):
 
     # Returns a printable version of the objects contents
     def __repr__(self):
-        return "<Organisations('%s %s %s %s %s %s %s %s %s %s'\)>" % (
+        return "<Organisation('%s %s %s %s %s %s %s %s %s %s'\)>" % (
             self.ref,
             self.odscode,
             self.name,
