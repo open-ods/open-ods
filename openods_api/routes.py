@@ -16,6 +16,11 @@ auto = Autodoc(app)
 schema_check.check_schema_version()
 
 
+@app.route('/loaderio-65382ad6fe5e607ac92df47b82787e88/')
+def verify():
+    return "loaderio-65382ad6fe5e607ac92df47b82787e88"
+
+
 @app.route('/')
 def landing_page():
     """
