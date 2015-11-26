@@ -14,6 +14,8 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
 log.addHandler(ch)
 
+start = time.time()
+log.info("Starting timer")
 
 # Open ODS XML file from zip file
 log.info("Loading source data...")
@@ -64,7 +66,6 @@ log.info(str.format("Content Description: ", content_description))
 
 organisation_count = 0
 
-start = time.time()
 log.info("Starting import routine")
 
 # Clear out existing data

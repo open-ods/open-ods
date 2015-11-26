@@ -27,6 +27,9 @@ c.execute('CREATE TABLE roles (role_ref TEXT, organisation_ref TEXT, org_odscode
 conn.commit()
 c.close()
 
+start = time.time()
+log.info("Starting timer...")
+
 # Open ODS XML file from zip file
 log.info("Loading source data...")
 try:
@@ -60,7 +63,6 @@ log.info(str.format("Content Description: ", content_description))
 
 organisation_count = 0
 
-start = time.time()
 log.info("Starting import routine")
 
 log.info("Importing data...")
