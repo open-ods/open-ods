@@ -33,7 +33,7 @@ class Relationship(Base):
 
     # Returns a printable version of the objects contents
     def __repr__(self):
-        return "<Relationships('%s %s %s %s %s %s %s %s %s %s %s'\
+        return "<Relationship('%s %s %s %s %s %s %s %s %s %s %s'\
             )>" % (
             self.ref,
             self.organisation_ref,

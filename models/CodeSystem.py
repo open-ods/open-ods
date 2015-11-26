@@ -26,7 +26,7 @@ class CodeSystem(Base):
 
     # Returns a printable version of the objects contents
     def __repr__(self):
-        return "<CodeSystems('%s %s %s %s'\
+        return "<CodeSystem('%s %s %s %s'\
             )>" % (
             self.ref,
             self.name,
