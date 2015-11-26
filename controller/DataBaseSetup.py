@@ -267,6 +267,8 @@ class DataBaseSetup(object):
             except:
                 # If anything fails, let's not commit anything
                 session.rollback()
+            finally:
+                session.close()
 
 if __name__ == '__main__':
     # get the latest xml data and get it into an xmltree object
