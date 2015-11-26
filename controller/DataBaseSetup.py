@@ -205,8 +205,9 @@ class DataBaseSetup(object):
         relationships = None
 
     def __create_addresses(self):
+
         pass
-        #address = Addresses()
+        # address = Addresses()
 
         # address.organisation_ref = 123
         # address.org_odscode = '123test'
@@ -221,6 +222,15 @@ class DataBaseSetup(object):
         # session.add(address)
 
     def __create_version(self):
+        """adds all the version information to the versions table
+
+        Parameters
+        ----------
+        None
+        Returns
+        -------
+        None
+        """
 
         self.__version.file_version = self.__ods_xml_data.find(
             './Manifest/Version').attrib.get('value')
@@ -233,22 +243,38 @@ class DataBaseSetup(object):
 
         session.add(self.__version)
 
-    # expects and xmltree object
     def create_database(self, ods_xml_data):
+        """creates a sqlite database in the current path with all the data
+
+        Parameters
+        ----------
+        ods_xml_data: xml_tree_parser object required that is valid
+        TODO: check validity here
+        Returns
+        -------
+        None
+        """
+
         self.__ods_xml_data = ods_xml_data
         if self.__ods_xml_data is not None:
+            try:
+                self.__create_addresses()
+                self.__create_version()
+                self.__create_codesystems()
+                self.__create_organisations()
 
-            self.__create_addresses()
-            self.__create_version()
-            self.__create_codesystems()
-            self.__create_organisations()
-
-            session.commit()
+                session.commit()
+            except:
+                # If anything fails, let's not commit anything
+                session.rollback()
 
 if __name__ == '__main__':
     # get the latest xml data and get it into an xmltree object
     start_time = time.time()
+    log.info('Starting data import...')
+
     ods_xml_data = File_manager.get_latest_xml()
     DataBaseSetup().create_database(ods_xml_data)
-    log.info('Data Import Time = %s' % (
-        time.time() - start_time))
+
+    log.info('Data Import Time = %s', time.strftime(
+        "%H:%M:%S", time.gmtime(time.time() - start_time)))
