@@ -45,6 +45,7 @@ class DataBaseSetup(object):
     __code_system_dict = {}
 
     def __init__(self):
+        # Creates the tables of all objects derived from our Base object
         metadata.create_all(engine)
 
     def __create_settings(self):
@@ -82,7 +83,7 @@ class DataBaseSetup(object):
 
             # enumerate the iter as it doesn't provide an index which we need
             for idx, relationship in enumerate(relationships.iter('concept')):
-                log.info(idx)
+
                 codesystems[idx] = CodeSystem()
 
                 relationship_id = relationship.attrib.get('id')
@@ -231,7 +232,7 @@ class DataBaseSetup(object):
         -------
         None
         """
-
+        # TODO: Change to local variable from private class variable
         self.__version.file_version = self.__ods_xml_data.find(
             './Manifest/Version').attrib.get('value')
         self.__version.publication_date = self.__ods_xml_data.find(
