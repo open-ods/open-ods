@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -22,14 +22,14 @@ class Relationship(Base):
     ref = Column(Integer, primary_key=True)
     organisation_ref = Column(Integer)
     code = Column(String(10))
-    target_odscode = Column(String(10))
+    target_odscode = Column(String(50))
     org_odscode = Column(String(10))
-    legal_start_date = Column(DateTime)
-    legal_end_date = Column(DateTime)
-    operational_start_date = Column(DateTime)
-    operational_end_date = Column(DateTime)
+    legal_start_date = Column(Date)
+    legal_end_date = Column(Date)
+    operational_start_date = Column(Date)
+    operational_end_date = Column(Date)
     status = Column(String(10))
-    uid = Column(String)
+    unique_id = Column(String)
 
     # Returns a printable version of the objects contents
     def __repr__(self):

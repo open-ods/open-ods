@@ -1,11 +1,16 @@
+#!/usr/bin/env python
+
+
 from lxml import etree as xml_tree_parser
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import logging
 import os.path
 import sys
+import datetime
 import time
 import zipfile
+import psycopg2
 
 # setup path so we can import our own models and controllers
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -32,7 +37,8 @@ log.setLevel(logging.DEBUG)
 File_manager = ODSFileManager()
 
 # SQLAlchemy objects
-engine = create_engine('sqlite:///openods.sqlite', echo=False)
+#engine = create_engine('sqlite:///openods.sqlite', echo=False)
+engine = create_engine("postgresql://openods:openods@localhost/openods", isolation_level="READ UNCOMMITTED")
 metadata = Base.metadata
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -141,6 +147,30 @@ class DataBaseSetup(object):
             organisations[idx].last_changed = organisation.find(
                 'LastChangeDate').attrib.get('value')
 
+            for date in organisation.iter('Date'):
+                if date.find('Type').attrib.get('value') == 'Legal':
+
+                    try:
+                        organisations[idx].legal_start_date = date.find('Start').attrib.get('value')
+                    except:
+                        pass
+
+                    try:
+                        organisations[idx].legal_end_date = date.find('End').attrib.get('value')
+                    except:
+                        pass
+
+                elif date.find('Type').attrib.get('value') == 'Operational':
+                    try:
+                        organisations[idx].operational_start_date = date.find('Start').attrib.get('value')
+                    except:
+                        pass
+
+                    try:
+                        organisations[idx].operational_end_date = date.find('End').attrib.get('value')
+                    except:
+                        pass
+
             session.add(organisations[idx])
 
             self.__create_roles(organisations[idx], organisation)
@@ -171,6 +201,30 @@ class DataBaseSetup(object):
             roles[idx].organisation_ref = organisation.ref
             roles[idx].org_odscode = organisation.odscode
             roles[idx].code = role.attrib.get('id')
+            roles[idx].primary_role = bool(role.attrib.get('primaryRole'))
+            roles[idx].status = role.find('Status').attrib.get('value')
+            roles[idx].unique_id = role.attrib.get('uniqueRoleId')
+
+            # Add Operational and Legal start/end dates if present
+            for date in role.iter('Date'):
+                if date.find('Type').attrib.get('value') == 'Legal':
+                    try:
+                        roles[idx].legal_start_date = date.find('Start').attrib.get('value')
+                    except:
+                        pass
+                    try:
+                        roles[idx].legal_end_date = date.find('End').attrib.get('value')
+                    except:
+                        pass
+                elif date.find('Type').attrib.get('value') == 'Operational':
+                    try:
+                        roles[idx].operational_start_date = date.find('Start').attrib.get('value')
+                    except:
+                        pass
+                    try:
+                        roles[idx].operational_end_date = date.find('End').attrib.get('value')
+                    except:
+                        pass
 
             session.add(roles[idx])
 
@@ -198,8 +252,32 @@ class DataBaseSetup(object):
             relationships[idx].organisation_ref = organisation.ref
             relationships[idx].org_odscode = organisation.odscode
             relationships[idx].code = relationship.attrib.get('id')
-            relationships[idx].target_odscode = self.__code_system_dict[
-                relationships[idx].code]
+            relationships[idx].target_odscode = relationship.find(
+                'Target/OrgId').attrib.get('extension')
+            relationships[idx].status = relationship.find('Status').attrib.get('value')
+            relationships[idx].unique_id = relationship.attrib.get('uniqueRelId')
+
+            for date in relationship.iter('Date'):
+                if date.find('Type').attrib.get('value') == 'Legal':
+                    try:
+                        relationships[idx].legal_start_date = date.find('Start').attrib.get('value')
+                    except:
+                        pass
+                    try:
+                        relationships[idx].legal_end_date = date.find('End').attrib.get('value')
+                    except:
+                        pass
+                elif date.find('Type').attrib.get('value') == 'Operational':
+                    try:
+                        relationships[idx].operational_start_date = date.find('Start').attrib.get('value')
+                    except:
+                        pass
+                    try:
+                        relationships[idx].operational_end_date = date.find('End').attrib.get('value')
+                    except:
+                        pass
+
+            # self.__code_system_dict[]
 
             session.add(relationships[idx])
 
@@ -241,6 +319,7 @@ class DataBaseSetup(object):
             './Manifest/PublicationType').attrib.get('value')
         self.__version.publication_seqno = self.__ods_xml_data.find(
             './Manifest/PublicationSeqNum').attrib.get('value')
+        self.__version.import_timestamp = datetime.datetime.now()
 
         session.add(self.__version)
 
@@ -265,9 +344,14 @@ class DataBaseSetup(object):
                 self.__create_organisations()
 
                 session.commit()
-            except:
+
+            except Exception as e:
                 # If anything fails, let's not commit anything
                 session.rollback()
+                print("Unexpected error:", sys.exc_info()[0])
+                log.error(e)
+                raise
+
             finally:
                 session.close()
 

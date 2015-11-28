@@ -185,7 +185,7 @@ def route_role_type_by_code(role_code):
     Returns the list of available OrganisationRole types
     """
 
-    result = db.get_role__type_by_id(role_code)
+    result = db.get_role_type_by_id(role_code)
 
     return jsonify(result)
 

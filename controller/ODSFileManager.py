@@ -36,8 +36,8 @@ class ODSFileManager(object):
 
         # TODO: Retrieve latest file from the local directory until
         # such time it is published and retrievable
-        if os.path.isfile('controller/odsfull.xml.zip'):
-            return 'controller/odsfull.xml.zip'
+        if os.path.isfile('data/HSCOrgRefData_Full_20151130.xml.zip'):
+            return 'data/HSCOrgRefData_Full_20151130.xml.zip'
         else:
             raise ValueError('unable to locate the data file')
 

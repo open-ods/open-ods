@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -25,10 +25,10 @@ class Organisation(Base):
     status = Column(String(10))
     record_class = Column(String(10))
     last_changed = Column(String)
-    legal_start_date = Column(DateTime)
-    legal_end_date = Column(DateTime)
-    operational_start_date = Column(DateTime)
-    operational_end_date = Column(DateTime)
+    legal_start_date = Column(Date)
+    legal_end_date = Column(Date)
+    operational_start_date = Column(Date)
+    operational_end_date = Column(Date)
 
     # Returns a printable version of the objects contents
     def __repr__(self):
