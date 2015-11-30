@@ -7,10 +7,11 @@ import openods_api.config as config
 log = logging.getLogger('openods')
 
 
+# TODO: Is this method even needed any more?
 def get_latest_org():
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("SELECT * from organisations order by org_lastchanged desc limit 1;")
+    cur.execute("SELECT * from organisations order by lastchanged desc limit 1;")
     rows = cur.fetchall()
 
     for row in rows:
@@ -25,15 +26,18 @@ def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=Non
     record_class_param = '%' if recordclass == 'both' else recordclass
 
     if primary_role_code:
-        sql = "SELECT org_odscode, org_name, org_recordclass from organisations_primary_roles " \
-                "WHERE org_recordclass LIKE %s AND role_code = %s " \
-                "order by org_name OFFSET %s LIMIT %s;"
+        sql = "SELECT odscode, name, record_class from organisations " \
+                "WHERE record_class LIKE %s AND odscode in " \
+                "(SELECT org_odscode from roles WHERE primary_role = TRUE " \
+                "AND status = 'Active' " \
+                "AND code = %s)" \
+                "order by name OFFSET %s LIMIT %s;"
         data = (record_class_param, primary_role_code, offset, limit)
 
     else:
-        sql = "SELECT org_odscode, org_name, org_recordclass from organisations " \
-                "WHERE org_recordclass LIKE %s " \
-                "order by org_name OFFSET %s LIMIT %s;"
+        sql = "SELECT odscode, name, record_class from organisations " \
+                "WHERE record_class LIKE %s " \
+                "order by name OFFSET %s LIMIT %s;"
         data = (record_class_param, offset, limit)
 
     log.debug(sql)
@@ -43,11 +47,11 @@ def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=Non
     result = []
 
     for row in rows:
-        link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, row['org_odscode'])
+        link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, row['odscode'])
         item = {
-            'odsCode': row['org_odscode'],
-            'name': row['org_name'],
-            'recordClass': row['org_recordclass'],
+            'odsCode': row['odscode'],
+            'name': row['name'],
+            'recordClass': row['record_class'],
             'links': [{
                 'rel':'self',
                 'href': link_self_href
@@ -69,7 +73,7 @@ def get_organisation_by_odscode(odscode):
     # Try and retrieve the organisation record for the provided ODS code
     try:
         sql = "SELECT * from organisations " \
-              "WHERE org_odscode = %s "\
+              "WHERE odscode = %s "\
               "limit 1;"
         data = (odscode,)
 
@@ -82,27 +86,28 @@ def get_organisation_by_odscode(odscode):
             raise Exception("Record Not Found")
 
         # Get the organisation_ref from the retrieved record
-        organisation_ref = row_org['organisation_ref']
+        organisation_odscode = row_org['odscode']
 
         # Retrieve the roles for the organisation
-        sql = "SELECT r.role_code, csr.codesystem_displayname, r.role_unique_id, r.role_status, " \
-              "r.role_operational_start_date, r.role_operational_end_date, r.role_legal_start_date, " \
-              "r.role_legal_end_date, r.primary_role from roles r " \
-              "left join codesystems csr on r.role_code = csr.codesystem_id " \
-              "WHERE r.organisation_ref = %s; "
-        data = (organisation_ref,)
+        sql = "SELECT r.code, csr.displayname, r.unique_id, r.status, " \
+              "r.operational_start_date, r.operational_end_date, r.legal_start_date, " \
+              "r.legal_end_date, r.primary_role from roles r " \
+              "left join codesystems csr on r.code = csr.id " \
+              "WHERE r.org_odscode = %s; "
+        data = (organisation_odscode,)
 
         cur.execute(sql, data)
         rows_roles = cur.fetchall()
         log.debug(rows_roles)
 
         # Retrieve the relationships for the organisation
-        sql = "SELECT rs.relationship_code, csr.codesystem_displayname, rs.target_odscode, rs.relationship_status, " \
-              "o.org_name from relationships rs " \
-            "left join codesystems csr on rs.relationship_code = csr.codesystem_id " \
-            "left join organisations o on rs.target_odscode = o.org_odscode " \
-            "WHERE rs.organisation_ref = %s; "
-        data = (organisation_ref,)
+        sql = "SELECT rs.code, csr.displayname, rs.target_odscode, rs.status, " \
+              "rs.operational_start_date, rs.operational_end_date, rs.legal_start_date, " \
+              "rs.legal_end_date, o.name from relationships rs " \
+            "left join codesystems csr on rs.code = csr.id " \
+            "left join organisations o on rs.target_odscode = o.odscode " \
+            "WHERE rs.org_odscode = %s; "
+        data = (organisation_odscode,)
 
         cur.execute(sql, data)
         rows_relationships = cur.fetchall()
@@ -120,10 +125,34 @@ def get_organisation_by_odscode(odscode):
                                         config.APP_HOSTNAME, relationship['target_odscode'])
 
             relationship['relatedOdsCode'] = relationship.pop('target_odscode')
-            relationship['code'] = relationship.pop('relationship_code')
-            relationship['relatedOrganisationName'] = relationship.pop('org_name')
-            relationship['description'] = relationship.pop('codesystem_displayname')
-            relationship['status'] = relationship.pop('relationship_status')
+            # relationship['code'] = relationship.pop('code')
+            relationship['relatedOrganisationName'] = relationship.pop('name')
+            relationship['description'] = relationship.pop('displayname')
+            relationship['status'] = relationship.pop('status')
+
+            if relationship['operational_start_date']:
+                relationship['operationalStartDate'] = relationship.pop('operational_start_date').isoformat()
+
+            elif relationship['operational_start_date'] is None:
+                relationship.pop('operational_start_date')
+
+            if relationship['legal_end_date']:
+                relationship['legalEndDate'] = relationship.pop('legal_end_date').isoformat()
+
+            elif relationship['legal_end_date'] is None:
+                relationship.pop('legal_end_date')
+
+            if relationship['legal_start_date']:
+                relationship['legalStartDate'] = relationship.pop('legal_start_date').isoformat()
+
+            elif relationship['legal_start_date'] is None:
+                relationship.pop('legal_start_date')
+
+            if relationship['operational_end_date']:
+                relationship['operationalEndDate'] = relationship.pop('operational_end_date').isoformat()
+
+            elif relationship['operational_end_date'] is None:
+                relationship.pop('operational_end_date')
 
             relationship['links'] = [{
                     'rel': 'target',
@@ -139,45 +168,45 @@ def get_organisation_by_odscode(odscode):
 
         for role in rows_roles:
             link_role_href = str.format('http://{0}/role-types/{1}',
-                                        config.APP_HOSTNAME, role['role_code'])
+                                        config.APP_HOSTNAME, role['code'])
 
-            role['code'] = role.pop('role_code')
-            role['description'] = role.pop('codesystem_displayname')
+            role['code'] = role.pop('code')
+            role['description'] = role.pop('displayname')
             role['primaryRole'] = role.pop('primary_role')
 
             try:
-                role['status'] = role.pop('role_status')
+                role['status'] = role.pop('status')
             except:
                 pass
 
             try:
-                role['uniqueId'] = role.pop('role_unique_id')
+                role['uniqueId'] = role.pop('unique_id')
             except:
                 pass
 
-            if role['role_operational_start_date']:
-                role['operationalStartDate'] = role.pop('role_operational_start_date').isoformat()
+            if role['operational_start_date']:
+                role['operationalStartDate'] = role.pop('operational_start_date').isoformat()
 
-            elif role['role_operational_start_date'] is None:
-                role['operationalStartDate'] =  role.pop('role_operational_start_date')
+            elif role['operational_start_date'] is None:
+                role.pop('operational_start_date')
 
-            if role['role_legal_end_date']:
-                role['legalEndDate'] = role.pop('role_legal_end_date').isoformat()
+            if role['legal_end_date']:
+                role['legalEndDate'] = role.pop('legal_end_date').isoformat()
 
-            elif role['role_legal_end_date'] is None:
-                role['legalEndDate'] =  role.pop('role_legal_end_date')
+            elif role['legal_end_date'] is None:
+                role.pop('legal_end_date')
 
-            if role['role_legal_start_date']:
-                role['legalStartDate'] = role.pop('role_legal_start_date').isoformat()
+            if role['legal_start_date']:
+                role['legalStartDate'] = role.pop('legal_start_date').isoformat()
 
-            elif role['role_legal_start_date'] is None:
-                role['legalStartDate'] =  role.pop('role_legal_start_date')
+            elif role['legal_start_date'] is None:
+                role.pop('legal_start_date')
 
-            if role['role_operational_end_date']:
-                role['operationalEndDate'] = role.pop('role_operational_end_date').isoformat()
+            if role['operational_end_date']:
+                role['operationalEndDate'] = role.pop('operational_end_date').isoformat()
 
-            elif role['role_operational_end_date'] is None:
-                role['operationalEndDate'] =  role.pop('role_operational_end_date')
+            elif role['operational_end_date'] is None:
+                role.pop('operational_end_date')
 
             role['links'] = [{
                     'rel': 'role-type',
@@ -188,17 +217,43 @@ def get_organisation_by_odscode(odscode):
 
         # Tidy up the field names etc. in the organisation dictionary before it's returned
         result_data['roles'] = roles
-        result_data['name'] = result_data.pop('org_name')
-        result_data['odsCode'] = result_data.pop('org_odscode')
-        result_data['recordClass'] = result_data.pop('org_recordclass')
-        result_data['status'] = result_data.pop('org_status')
-        result_data.pop('organisation_ref')
+        # result_data['name'] = result_data.pop('name')
+        result_data['odsCode'] = result_data.pop('odscode')
+        result_data['recordClass'] = result_data.pop('record_class')
+        # result_data['status'] = result_data.pop('status')
+        result_data.pop('ref')
 
         link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, result_data['odsCode'])
         result_data['links'] = [
             {'rel': 'self',
             'href': link_self_href
             }]
+
+        print(result_data)
+
+        if result_data['operational_start_date']:
+            result_data['operationalStartDate'] = result_data.pop('operational_start_date').isoformat()
+
+        elif result_data['operational_start_date'] is None:
+            result_data.pop('operational_start_date')
+
+        if result_data['legal_end_date']:
+            result_data['legalEndDate'] = result_data.pop('legal_end_date').isoformat()
+
+        elif result_data['legal_end_date'] is None:
+            result_data.pop('legal_end_date')
+
+        if result_data['legal_start_date']:
+            result_data['legalStartDate'] = result_data.pop('legal_start_date').isoformat()
+
+        elif result_data['legal_start_date'] is None:
+            result_data.pop('legal_start_date')
+
+        if result_data['operational_end_date']:
+            result_data['operationalEndDate'] = result_data.pop('operational_end_date').isoformat()
+
+        elif result_data['operational_end_date'] is None:
+            result_data.pop('operational_end_date')
 
         return result_data
 
@@ -220,7 +275,7 @@ def search_organisation(search_text):
     try:
         search_term = str.format("%{0}%", search_text)
         sql = "SELECT * from organisations " \
-              "WHERE org_name like UPPER(%s) and org_status = 'ACTIVE';"
+              "WHERE name like UPPER(%s) and status = 'ACTIVE';"
         data = (search_term,)
 
         cur.execute(sql, data)
@@ -234,11 +289,11 @@ def search_organisation(search_text):
         result = []
 
         for row in rows:
-            link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, row['org_odscode'])
+            link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, row['odscode'])
             item = {
-                'code': row['org_odscode'],
-                'name': row['org_name'],
-                'recordClass': row['org_recordclass'],
+                'odsCode': row['odscode'],
+                'name': row['name'],
+                'recordClass': row['record_class'],
                 'links': [{
                     'rel': 'self',
                     'href': link_self_href
@@ -255,15 +310,15 @@ def search_organisation(search_text):
 def get_role_types():
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("SELECT codesystem_displayname, codesystem_id from codesystems "
-                "where codesystem_name = 'OrganisationRole' "\
-                "order by codesystem_displayname;")
+    cur.execute("SELECT displayname, id from codesystems "
+                "where name = 'OrganisationRole' "\
+                "order by displayname;")
     rows = cur.fetchall()
     result = []
 
     for row in rows:
-        role_code = row['codesystem_id']
-        role_display_name = row['codesystem_displayname']
+        role_code = row['id']
+        role_display_name = row['displayname']
         link_self_href = str.format('http://{0}/role-types/{1}', config.APP_HOSTNAME, role_code)
         link_search_href = str.format('http://{0}/organisations?primaryRoleCode={1}', config.APP_HOSTNAME, role_code)
         result.append({
@@ -281,10 +336,10 @@ def get_role_types():
     return result
 
 
-def get_role__type_by_id(role_id):
+def get_role_type_by_id(role_id):
 
-    sql = "SELECT codesystem_displayname, codesystem_id from codesystems " \
-          "where codesystem_name = 'OrganisationRole' AND codesystem_id = %s;"
+    sql = "SELECT displayname, id from codesystems " \
+          "where name = 'OrganisationRole' AND id = %s;"
     data = (role_id,)
 
     cur = connect.get_cursor()
@@ -292,8 +347,8 @@ def get_role__type_by_id(role_id):
 
     returned_row = cur.fetchone()
 
-    role_code = returned_row['codesystem_id']
-    role_display_name = returned_row['codesystem_displayname']
+    role_code = returned_row['id']
+    role_display_name = returned_row['displayname']
     link_self_href = str.format('http://{0}/role-types/{1}', config.APP_HOSTNAME, role_code)
     link_search_href = str.format('http://{0}/organisations?primaryRoleCode={1}', config.APP_HOSTNAME, role_code)
     result = {
