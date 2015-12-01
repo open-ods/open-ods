@@ -272,7 +272,7 @@ def search_organisation(search_text):
     try:
         search_term = str.format("%{0}%", search_text)
         sql = "SELECT * from organisations " \
-              "WHERE name like UPPER(%s) and status = 'ACTIVE';"
+              "WHERE name like UPPER(%s) and status = 'Active';"
         data = (search_term,)
 
         cur.execute(sql, data)
