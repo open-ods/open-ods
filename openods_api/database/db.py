@@ -326,7 +326,8 @@ def get_role_types():
         role_code = row['id']
         role_display_name = row['displayname']
         link_self_href = str.format('http://{0}/role-types/{1}', config.APP_HOSTNAME, role_code)
-        link_search_href = str.format('http://{0}/organisations?primaryRoleCode={1}', config.APP_HOSTNAME, role_code)
+        link_search_primary_role_code_href = str.format('http://{0}/organisations?primaryRoleCode={1}', config.APP_HOSTNAME, role_code)
+        link_search_role_code_href = str.format('http://{0}/organisations?roleCode={1}', config.APP_HOSTNAME, role_code)
         result.append({
             'name': role_display_name,
             'code': role_code,
@@ -334,8 +335,11 @@ def get_role_types():
                 'rel':'self',
                 'href': link_self_href
                 }, {
+                'rel':'organisations.searchByPrimaryRoleCode',
+                'href': link_search_primary_role_code_href
+                }, {
                 'rel':'organisations.searchByRoleCode',
-                'href': link_search_href
+                'href': link_search_role_code_href
                 }]
         })
 
