@@ -54,6 +54,7 @@ def get_organisations():
     - limit=y (Limit number of results [1000])
     - recordclass=HSCOrg/HSCSite/both (filter results by recordclass [both])
     - primaryRoleCode=xxxx (filter results to only those with a specific primaryRole)
+    - roleCode=xxxx (filter result to only those with a specific role)
     """
 
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
@@ -61,11 +62,13 @@ def get_organisations():
     limit = request.args.get('limit') if request.args.get('limit') else 1000
     record_class = request.args.get('recordclass') if request.args.get('recordclass') else 'both'
     primary_role_code = request.args.get('primaryRoleCode' if request.args.get('primaryRoleCode') else None)
+    role_code = request.args.get('roleCode' if request.args.get('roleCode') else None)
     log.debug(offset)
     log.debug(limit)
     log.debug(record_class)
     log.debug(primary_role_code)
-    data = db.get_org_list(offset, limit, record_class, primary_role_code)
+    log.debug(role_code)
+    data = db.get_org_list(offset, limit, record_class, primary_role_code, role_code)
 
     if data:
         result = {'organisations': data}

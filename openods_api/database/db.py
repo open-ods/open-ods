@@ -24,13 +24,22 @@ def get_latest_org():
         return row
 
 
-def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=None):
+def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=None, role_code=None):
     log.debug(str.format("Offset: {0} Limit: {1}, RecordClass: {2}", offset, limit, recordclass))
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     record_class_param = '%' if recordclass == 'both' else recordclass
 
-    if primary_role_code:
+    if role_code:
+        sql = "SELECT odscode, name, record_class from organisations " \
+                "WHERE record_class LIKE %s AND odscode in " \
+                "(SELECT org_odscode from roles " \
+                "WHERE status = 'Active' " \
+                "AND code = %s)" \
+                "order by name OFFSET %s LIMIT %s;"
+        data = (record_class_param, role_code, offset, limit)
+
+    elif primary_role_code:
         sql = "SELECT odscode, name, record_class from organisations " \
                 "WHERE record_class LIKE %s AND odscode in " \
                 "(SELECT org_odscode from roles WHERE primary_role = TRUE " \
