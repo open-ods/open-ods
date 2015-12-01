@@ -7,6 +7,11 @@ import openods_api.config as config
 log = logging.getLogger('openods')
 
 
+def remove_none_values_from_dictionary(dirty_dict):
+    clean_dict = dict((k, v) for k, v in dirty_dict.items() if v is not None)
+    return clean_dict
+
+
 # TODO: Is this method even needed any more?
 def get_latest_org():
     conn = connect.get_connection()
@@ -85,6 +90,8 @@ def get_organisation_by_odscode(odscode):
         if row_org is None:
             raise Exception("Record Not Found")
 
+        row_org = remove_none_values_from_dictionary(row_org)
+
         # Get the organisation_ref from the retrieved record
         organisation_odscode = row_org['odscode']
 
@@ -121,38 +128,35 @@ def get_organisation_by_odscode(odscode):
 
         for relationship in rows_relationships:
 
+            relationship = remove_none_values_from_dictionary(relationship)
+
             link_target_href = str.format('http://{0}/organisations/{1}',
                                         config.APP_HOSTNAME, relationship['target_odscode'])
 
             relationship['relatedOdsCode'] = relationship.pop('target_odscode')
-            # relationship['code'] = relationship.pop('code')
             relationship['relatedOrganisationName'] = relationship.pop('name')
             relationship['description'] = relationship.pop('displayname')
             relationship['status'] = relationship.pop('status')
 
-            if relationship['operational_start_date']:
+            try:
                 relationship['operationalStartDate'] = relationship.pop('operational_start_date').isoformat()
+            except:
+                pass
 
-            elif relationship['operational_start_date'] is None:
-                relationship.pop('operational_start_date')
-
-            if relationship['legal_end_date']:
+            try:
                 relationship['legalEndDate'] = relationship.pop('legal_end_date').isoformat()
+            except:
+                pass
 
-            elif relationship['legal_end_date'] is None:
-                relationship.pop('legal_end_date')
-
-            if relationship['legal_start_date']:
+            try:
                 relationship['legalStartDate'] = relationship.pop('legal_start_date').isoformat()
+            except:
+                pass
 
-            elif relationship['legal_start_date'] is None:
-                relationship.pop('legal_start_date')
-
-            if relationship['operational_end_date']:
+            try:
                 relationship['operationalEndDate'] = relationship.pop('operational_end_date').isoformat()
-
-            elif relationship['operational_end_date'] is None:
-                relationship.pop('operational_end_date')
+            except:
+                pass
 
             relationship['links'] = [{
                     'rel': 'target',
@@ -167,6 +171,9 @@ def get_organisation_by_odscode(odscode):
         roles = []
 
         for role in rows_roles:
+
+            role = remove_none_values_from_dictionary(role)
+
             link_role_href = str.format('http://{0}/role-types/{1}',
                                         config.APP_HOSTNAME, role['code'])
 
@@ -184,29 +191,25 @@ def get_organisation_by_odscode(odscode):
             except:
                 pass
 
-            if role['operational_start_date']:
+            try:
                 role['operationalStartDate'] = role.pop('operational_start_date').isoformat()
+            except Exception as e:
+                pass
 
-            elif role['operational_start_date'] is None:
-                role.pop('operational_start_date')
-
-            if role['legal_end_date']:
+            try:
                 role['legalEndDate'] = role.pop('legal_end_date').isoformat()
+            except Exception as e:
+                pass
 
-            elif role['legal_end_date'] is None:
-                role.pop('legal_end_date')
-
-            if role['legal_start_date']:
+            try:
                 role['legalStartDate'] = role.pop('legal_start_date').isoformat()
+            except Exception as e:
+                pass
 
-            elif role['legal_start_date'] is None:
-                role.pop('legal_start_date')
-
-            if role['operational_end_date']:
+            try:
                 role['operationalEndDate'] = role.pop('operational_end_date').isoformat()
-
-            elif role['operational_end_date'] is None:
-                role.pop('operational_end_date')
+            except Exception as e:
+                pass
 
             role['links'] = [{
                     'rel': 'role-type',
@@ -229,31 +232,25 @@ def get_organisation_by_odscode(odscode):
             'href': link_self_href
             }]
 
-        print(result_data)
-
-        if result_data['operational_start_date']:
+        try:
             result_data['operationalStartDate'] = result_data.pop('operational_start_date').isoformat()
+        except:
+            pass
 
-        elif result_data['operational_start_date'] is None:
-            result_data.pop('operational_start_date')
-
-        if result_data['legal_end_date']:
+        try:
             result_data['legalEndDate'] = result_data.pop('legal_end_date').isoformat()
+        except:
+            pass
 
-        elif result_data['legal_end_date'] is None:
-            result_data.pop('legal_end_date')
-
-        if result_data['legal_start_date']:
+        try:
             result_data['legalStartDate'] = result_data.pop('legal_start_date').isoformat()
+        except:
+            pass
 
-        elif result_data['legal_start_date'] is None:
-            result_data.pop('legal_start_date')
-
-        if result_data['operational_end_date']:
+        try:
             result_data['operationalEndDate'] = result_data.pop('operational_end_date').isoformat()
-
-        elif result_data['operational_end_date'] is None:
-            result_data.pop('operational_end_date')
+        except:
+            pass
 
         return result_data
 
