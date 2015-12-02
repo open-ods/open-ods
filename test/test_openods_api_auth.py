@@ -16,20 +16,20 @@ class RouteAuthTests(unittest.TestCase):
 
     def test_organisations_request_with_no_auth_returns_403_response(self):
         tester = app.test_client(self)
-        response = tester.get('/organisations', content_type='application/json')
+        response = tester.get('/organisations/', content_type='application/json')
         self.assertEqual(response.status_code, 401)
 
     def test_organisations_search_request_with_no_auth_returns_403_response(self):
         tester = app.test_client(self)
-        response = tester.get('/organisations/search/test', content_type='application/json')
+        response = tester.get('/organisations/search/test/', content_type='application/json')
         self.assertEqual(response.status_code, 401)
 
     def test_organisations_single_request_with_no_auth_returns_403_response(self):
         tester = app.test_client(self)
-        response = tester.get('/organisations/RFF', content_type='application/json')
+        response = tester.get('/organisations/RFF/', content_type='application/json')
         self.assertEqual(response.status_code, 401)
 
     def test_roles_request_with_no_auth_returns_403_response(self):
         tester = app.test_client(self)
-        response = tester.get('/role-types', content_type='application/json')
+        response = tester.get('/role-types/', content_type='application/json')
         self.assertEqual(response.status_code, 401)
