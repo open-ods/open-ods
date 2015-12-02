@@ -359,6 +359,7 @@ def get_role_type_by_id(role_id):
 
     role_code = returned_row['id']
     role_display_name = returned_row['displayname']
+    link_self_href = str.format('http://{0}/role-types/{1}', config.APP_HOSTNAME, role_code)
     link_search_primary_role_code_href = str.format('http://{0}/organisations?primaryRoleCode={1}', config.APP_HOSTNAME, role_code)
     link_search_role_code_href = str.format('http://{0}/organisations?roleCode={1}', config.APP_HOSTNAME, role_code)
     result = {
