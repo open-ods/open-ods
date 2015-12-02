@@ -30,7 +30,12 @@ def landing_page():
     return render_template('index.html', instance_name=config.INSTANCE_NAME, live_deployment=config.LIVE_DEPLOYMENT)
 
 
-@app.route('/documentation')
+@app.route('/try/')
+def tryit_page():
+    return render_template('tryit.html')
+
+
+@app.route('/documentation/')
 def documentation():
     """
 
@@ -40,7 +45,7 @@ def documentation():
 
 
 @auto.doc()
-@app.route("/organisations", methods=['GET'])
+@app.route("/organisations/", methods=['GET'])
 @requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisations():
@@ -78,7 +83,7 @@ def get_organisations():
 
 
 @auto.doc()
-@app.route("/organisations/<ods_code>", methods=['GET'])
+@app.route("/organisations/<ods_code>/", methods=['GET'])
 @requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation(ods_code):
@@ -127,7 +132,7 @@ def get_organisation(ods_code):
 
 
 @auto.doc()
-@app.route("/organisations/search/<search_text>", methods=['GET'])
+@app.route("/organisations/search/<search_text>/", methods=['GET'])
 @requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def search_organisations(search_text):
@@ -157,7 +162,7 @@ def search_organisations(search_text):
 
 
 @auto.doc()
-@app.route("/role-types", methods=['GET'])
+@app.route("/role-types/", methods=['GET'])
 @requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def route_role_types():
@@ -178,7 +183,7 @@ def route_role_types():
 
 
 @auto.doc()
-@app.route("/role-types/<role_code>", methods=['GET'])
+@app.route("/role-types/<role_code>/", methods=['GET'])
 @requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def route_role_type_by_code(role_code):
@@ -194,7 +199,7 @@ def route_role_type_by_code(role_code):
 
 
 @auto.doc()
-@app.route("/organisations/<ods_code>/endpoints", methods=['GET'])
+@app.route("/organisations/<ods_code>/endpoints/", methods=['GET'])
 @requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def organisation_endpoints(ods_code):
