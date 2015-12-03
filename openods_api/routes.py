@@ -46,7 +46,6 @@ def documentation():
 
 @auto.doc()
 @app.route("/api/organisations/", methods=['GET'])
-@requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisations():
 
@@ -84,7 +83,6 @@ def get_organisations():
 
 @auto.doc()
 @app.route("/api/organisations/<ods_code>/", methods=['GET'])
-@requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation(ods_code):
 
@@ -133,7 +131,6 @@ def get_organisation(ods_code):
 
 @auto.doc()
 @app.route("/api/organisations/search/<search_text>/", methods=['GET'])
-@requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def search_organisations(search_text):
 
@@ -163,7 +160,6 @@ def search_organisations(search_text):
 
 @auto.doc()
 @app.route("/api/role-types/", methods=['GET'])
-@requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def route_role_types():
 
@@ -184,7 +180,6 @@ def route_role_types():
 
 @auto.doc()
 @app.route("/api/role-types/<role_code>/", methods=['GET'])
-@requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def route_role_type_by_code(role_code):
 
@@ -200,12 +195,12 @@ def route_role_type_by_code(role_code):
 
 @auto.doc()
 @app.route("/api/organisations/<ods_code>/endpoints/", methods=['GET'])
-@requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def organisation_endpoints(ods_code):
 
     """
     FAKE ENDPOINT
+
     Returns a list of endpoints for a specific Organisation.
     """
 
