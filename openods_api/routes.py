@@ -45,6 +45,17 @@ def documentation():
 
 
 @auto.doc()
+@app.route("/api/", methods=['GET'])
+@ocache.cache.cached(timeout=3600, key_prefix=ocache.generate_cache_key)
+def get_root():
+    root_resource = {
+        'organisations': str.format('http://{0}/organisations/', config.APP_HOSTNAME),
+        'role-types': str.format('http://{0}/role-types/', config.APP_HOSTNAME)
+    }
+    return jsonify(root_resource)
+
+
+@auto.doc()
 @app.route("/api/organisations/", methods=['GET'])
 @requires_auth
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
