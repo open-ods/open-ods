@@ -356,7 +356,6 @@ class DataBaseSetup(object):
                 session.close()
 
 if __name__ == '__main__':
-    # get the latest xml data and get it into an xmltree object
     start_time = time.time()
     log.info('Starting data import...')
 
