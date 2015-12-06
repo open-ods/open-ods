@@ -31,6 +31,11 @@ def check_schema_version():
         result = cur.fetchone()
         db_schema_version = result['value']
 
+    except TypeError as e:
+        log.error("Unable to read schema version from the database")
+        log.error("Exception: %s" % e)
+        sys.exit(1)
+
     except psycopg2.Error as e:
         log.error("Error retrieving schema_version from database")
         raise
