@@ -16,3 +16,10 @@ before_script:
 env:
 - API_USER=env_test_user API_PASS=env_test_pass CACHE_TIMEOUT=10 APP_HOSTNAME=localhost:5000 API_USE_AUTH=TRUE
 script: nosetests
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/851a4ac2b018f8ca6deb
+    on_success: always  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
