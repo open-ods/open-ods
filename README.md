@@ -1,5 +1,7 @@
 # open-ods
 
+[![Join the chat at https://gitter.im/open-ods/open-ods](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/open-ods/open-ods?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 **This is an unofficial personal project making use of open data and is unrelated to the NHS and associated organisations**
 
 **The data is regularly changing and so there is absolutely no guarantee on stability or accuracy.**
