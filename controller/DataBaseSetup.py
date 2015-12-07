@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-
-from lxml import etree as xml_tree_parser
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import logging
@@ -9,25 +7,23 @@ import os.path
 import sys
 import datetime
 import time
-import zipfile
-import psycopg2
 
 # setup path so we can import our own models and controllers
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 
 # import controllers
 from controller.ODSFileManager import ODSFileManager
 
 # import models
-from models.Addresses import Addresses
+from models.Address import Address
 from models.base import Base
 from models.CodeSystem import CodeSystem
 from models.Organisation import Organisation
 from models.Relationship import Relationship
 from models.Role import Role
-from models.Settings import Settings
-from models.Versions import Versions
+from models.Successor import Successor
+from models.Version import Version
+from models.Setting import Setting
 
 # Logging Setup
 log = logging.getLogger('import_ods_xml')
@@ -44,10 +40,13 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 
+def convert_string_to_date(string):
+    return datetime.datetime.strptime(string, '%Y-%m-%d')
+
+
 class DataBaseSetup(object):
 
     __ods_xml_data = None
-    __version = Versions()
     __code_system_dict = {}
 
     def __init__(self):
@@ -56,9 +55,12 @@ class DataBaseSetup(object):
 
     def __create_settings(self):
 
-        codesystem = CodeSystem()
+        setting = Setting()
 
-        session.add(codesystem)
+        setting.key = 'schema_version'
+        setting.value = '008'
+
+        session.add(setting)
 
     def __create_codesystems(self):
         """Loops through all the code systems in an organisation and adds them
@@ -111,8 +113,6 @@ class DataBaseSetup(object):
                 # append this instance of code system to the session
                 session.add(codesystems[idx])
 
-            codesystems = None
-
     def __create_organisations(self):
         """Creates the organisations and adds them to the session
 
@@ -133,49 +133,53 @@ class DataBaseSetup(object):
 
             organisations[idx] = Organisation()
 
-            organisations[idx].odscode = organisation.find(
-                'OrgId').attrib.get('extension')
+            organisations[idx].odscode = organisation.find('OrgId').attrib.get('extension')
 
             organisations[idx].name = organisation.find('Name').text
 
-            organisations[idx].status = organisation.find(
-                'Status').attrib.get('value')
+            organisations[idx].status = organisation.find('Status').attrib.get('value')
 
-            organisations[idx].record_class = self.__code_system_dict[
-                organisation.attrib.get('orgRecordClass')]
+            organisations[idx].record_class = self.__code_system_dict[organisation.attrib.get('orgRecordClass')]
 
-            organisations[idx].last_changed = organisation.find(
-                'LastChangeDate').attrib.get('value')
+            organisations[idx].last_changed = organisation.find('LastChangeDate').attrib.get('value')
 
             for date in organisation.iter('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
 
                     try:
-                        organisations[idx].legal_start_date = date.find('Start').attrib.get('value')
+                        organisations[idx].legal_start_date = \
+                            convert_string_to_date(date.find('Start').attrib.get('value'))
                     except:
                         pass
 
                     try:
-                        organisations[idx].legal_end_date = date.find('End').attrib.get('value')
+                        organisations[idx].legal_end_date = \
+                            convert_string_to_date(date.find('End').attrib.get('value'))
                     except:
                         pass
 
                 elif date.find('Type').attrib.get('value') == 'Operational':
                     try:
-                        organisations[idx].operational_start_date = date.find('Start').attrib.get('value')
+                        organisations[idx].operational_start_date = \
+                            convert_string_to_date(date.find('Start').attrib.get('value'))
                     except:
                         pass
 
                     try:
-                        organisations[idx].operational_end_date = date.find('End').attrib.get('value')
+                        organisations[idx].operational_end_date = \
+                            convert_string_to_date(date.find('End').attrib.get('value'))
                     except:
                         pass
 
             session.add(organisations[idx])
 
+            self.__create_addresses(organisations[idx], organisation)
+
             self.__create_roles(organisations[idx], organisation)
 
             self.__create_relationships(organisations[idx], organisation)
+
+            self.__create_successors(organisations[idx], organisation)
 
         organisations = None
 
@@ -209,20 +213,24 @@ class DataBaseSetup(object):
             for date in role.iter('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
                     try:
-                        roles[idx].legal_start_date = date.find('Start').attrib.get('value')
+                        roles[idx].legal_start_date = \
+                            convert_string_to_date(date.find('Start').attrib.get('value'))
                     except:
                         pass
                     try:
-                        roles[idx].legal_end_date = date.find('End').attrib.get('value')
+                        roles[idx].legal_end_date = \
+                            convert_string_to_date(date.find('End').attrib.get('value'))
                     except:
                         pass
                 elif date.find('Type').attrib.get('value') == 'Operational':
                     try:
-                        roles[idx].operational_start_date = date.find('Start').attrib.get('value')
+                        roles[idx].operational_start_date = \
+                            convert_string_to_date(date.find('Start').attrib.get('value'))
                     except:
                         pass
                     try:
-                        roles[idx].operational_end_date = date.find('End').attrib.get('value')
+                        roles[idx].operational_end_date = \
+                            convert_string_to_date(date.find('End').attrib.get('value'))
                     except:
                         pass
 
@@ -260,20 +268,24 @@ class DataBaseSetup(object):
             for date in relationship.iter('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
                     try:
-                        relationships[idx].legal_start_date = date.find('Start').attrib.get('value')
+                        relationships[idx].legal_start_date = \
+                            convert_string_to_date(date.find('Start').attrib.get('value'))
                     except:
                         pass
                     try:
-                        relationships[idx].legal_end_date = date.find('End').attrib.get('value')
+                        relationships[idx].legal_end_date = \
+                            convert_string_to_date(date.find('End').attrib.get('value'))
                     except:
                         pass
                 elif date.find('Type').attrib.get('value') == 'Operational':
                     try:
-                        relationships[idx].operational_start_date = date.find('Start').attrib.get('value')
+                        relationships[idx].operational_start_date = \
+                            convert_string_to_date(date.find('Start').attrib.get('value'))
                     except:
                         pass
                     try:
-                        relationships[idx].operational_end_date = date.find('End').attrib.get('value')
+                        relationships[idx].operational_end_date = \
+                            convert_string_to_date(date.find('End').attrib.get('value'))
                     except:
                         pass
 
@@ -283,22 +295,118 @@ class DataBaseSetup(object):
 
         relationships = None
 
-    def __create_addresses(self):
+    def __create_addresses(self, organisation, organisation_xml):
 
-        pass
-        # address = Addresses()
+        for idx, location in enumerate(organisation_xml.findall(
+                'GeoLoc/Location')):
 
-        # address.organisation_ref = 123
-        # address.org_odscode = '123test'
-        # address.street_address_line1 = '123test'
-        # address.street_address_line2 = '123test'
-        # address.street_address_line3 = '123test'
-        # address.town = '123test'
-        # address.county = '123test'
-        # address.postal_code = '123test'
-        # address.location_id = '123test'
+            address = Address()
 
-        # session.add(address)
+            try:
+                address.org_odscode = organisation.odscode
+                # print(organisation.odscode)
+            except AttributeError:
+                pass
+
+            try:
+                address.street_address_line1 = location.find('StreetAddressLine1').text
+                # print(location.find('StreetAddressLine1').text)
+            except AttributeError:
+                pass
+
+            try:
+                address.street_address_line2 = location.find('StreetAddressLine2').text
+                # print(location.find('StreetAddressLine2').text)
+            except AttributeError:
+                pass
+
+            try:
+                address.street_address_line3 = location.find('StreetAddressLine3').text
+                # print(location.find('StreetAddressLine3').text)
+            except AttributeError:
+                pass
+
+            try:
+                address.town = location.find('Town').text
+                # print(location.find('Town').text)
+            except AttributeError:
+                pass
+
+            try:
+                address.county = location.find('County').text
+                # print(location.find('County').text)
+            except AttributeError:
+                pass
+
+            try:
+                address.postal_code = location.find('PostalCode').text
+                # print(location.find('Postcode').text)
+            except AttributeError:
+                pass
+
+            try:
+                address.country = location.find('Country').text
+                # print(location.find('Country').text)
+            except AttributeError:
+                pass
+
+            try:
+                address.uprn = location.find('UPRN').text
+                # print(location.find('UPRN').text)
+            except AttributeError:
+                pass
+
+            session.add(address)
+
+    def __create_successors(self, organisation, organisation_xml):
+
+        for idx, succ in enumerate(organisation_xml.findall(
+                'Succs/Succ')):
+
+            successor = Successor()
+
+            try:
+                successor.unique_id = succ.attrib.get('uniqueSuccId')
+                # print(successor.unique_id)
+            except AttributeError:
+                pass
+
+            try:
+                successor.legal_start_date = \
+                    convert_string_to_date(succ.find('Date/Start').attrib.get('value'))
+                # print(successor.legal_start_date)
+            except AttributeError:
+                pass
+
+            try:
+                successor.type = \
+                    succ.find('Type').text
+                # print(successor.type)
+            except AttributeError:
+                pass
+
+            try:
+                successor.target_odscode = \
+                    succ.find('Target/OrgId').attrib.get('extension')
+                # print(successor.target_odscode)
+            except AttributeError:
+                pass
+
+            try:
+                successor.target_primary_role_code = \
+                    succ.find('Target/PrimaryRoleId').attrib.get('id')
+                # print(successor.target_primary_role_code)
+            except AttributeError:
+                pass
+
+            try:
+                successor.target_unique_role_id = \
+                    succ.find('Target/PrimaryRoleId').attrib.get('uniqueRoleId')
+                # print(successor.target_unique_role_id)
+            except AttributeError:
+                pass
+
+            session.add(successor)
 
     def __create_version(self):
         """adds all the version information to the versions table
@@ -310,18 +418,20 @@ class DataBaseSetup(object):
         -------
         None
         """
-        # TODO: Change to local variable from private class variable
-        self.__version.file_version = self.__ods_xml_data.find(
-            './Manifest/Version').attrib.get('value')
-        self.__version.publication_date = self.__ods_xml_data.find(
-            './Manifest/PublicationDate').attrib.get('value')
-        self.__version.publication_type = self.__ods_xml_data.find(
-            './Manifest/PublicationType').attrib.get('value')
-        self.__version.publication_seqno = self.__ods_xml_data.find(
-            './Manifest/PublicationSeqNum').attrib.get('value')
-        self.__version.import_timestamp = datetime.datetime.now()
 
-        session.add(self.__version)
+        version = Version()
+
+        version.file_version = self.__ods_xml_data.find(
+            './Manifest/Version').attrib.get('value')
+        version.publication_date = self.__ods_xml_data.find(
+            './Manifest/PublicationDate').attrib.get('value')
+        version.publication_type = self.__ods_xml_data.find(
+            './Manifest/PublicationType').attrib.get('value')
+        version.publication_seqno = self.__ods_xml_data.find(
+            './Manifest/PublicationSeqNum').attrib.get('value')
+        version.import_timestamp = datetime.datetime.now()
+
+        session.add(version)
 
     def create_database(self, ods_xml_data):
         """creates a sqlite database in the current path with all the data
@@ -338,10 +448,10 @@ class DataBaseSetup(object):
         self.__ods_xml_data = ods_xml_data
         if self.__ods_xml_data is not None:
             try:
-                self.__create_addresses()
                 self.__create_version()
                 self.__create_codesystems()
                 self.__create_organisations()
+                self.__create_settings()
 
                 session.commit()
 
