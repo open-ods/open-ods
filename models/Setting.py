@@ -1,7 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String
 import sys
 import os.path
 
@@ -11,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from models.base import Base
 
 
-class Settings(Base):
+class Setting(Base):
     """
     Settings class that keeps track of information about a
     particular Settings. This class uses SQLAlchemy as an ORM

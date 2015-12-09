@@ -1,7 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String
 import sys
 import os.path
 
@@ -11,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from models.base import Base
 
 
-class Versions(Base):
+class Version(Base):
     """Versions class that keeps track of information about a
     particular ods file update. This class uses SQLAlchemy as an ORM
 
