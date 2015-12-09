@@ -37,8 +37,9 @@ log.setLevel(logging.DEBUG)
 File_manager = ODSFileManager()
 
 # SQLAlchemy objects
-#engine = create_engine('sqlite:///openods.sqlite', echo=False)
-engine = create_engine("postgresql://openods:openods@localhost/openods", isolation_level="READ UNCOMMITTED")
+# engine = create_engine('sqlite:///openods.sqlite', echo=True)
+engine = create_engine(
+    "postgresql://openods:openods@localhost/openods", isolation_level="READ UNCOMMITTED")
 metadata = Base.metadata
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -151,23 +152,27 @@ class DataBaseSetup(object):
                 if date.find('Type').attrib.get('value') == 'Legal':
 
                     try:
-                        organisations[idx].legal_start_date = date.find('Start').attrib.get('value')
+                        organisations[idx].legal_start_date = date.find(
+                            'Start').attrib.get('value')
                     except:
                         pass
 
                     try:
-                        organisations[idx].legal_end_date = date.find('End').attrib.get('value')
+                        organisations[idx].legal_end_date = date.find(
+                            'End').attrib.get('value')
                     except:
                         pass
 
                 elif date.find('Type').attrib.get('value') == 'Operational':
                     try:
-                        organisations[idx].operational_start_date = date.find('Start').attrib.get('value')
+                        organisations[idx].operational_start_date = date.find(
+                            'Start').attrib.get('value')
                     except:
                         pass
 
                     try:
-                        organisations[idx].operational_end_date = date.find('End').attrib.get('value')
+                        organisations[idx].operational_end_date = date.find(
+                            'End').attrib.get('value')
                     except:
                         pass
 
@@ -209,20 +214,24 @@ class DataBaseSetup(object):
             for date in role.iter('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
                     try:
-                        roles[idx].legal_start_date = date.find('Start').attrib.get('value')
+                        roles[idx].legal_start_date = date.find(
+                            'Start').attrib.get('value')
                     except:
                         pass
                     try:
-                        roles[idx].legal_end_date = date.find('End').attrib.get('value')
+                        roles[idx].legal_end_date = date.find(
+                            'End').attrib.get('value')
                     except:
                         pass
                 elif date.find('Type').attrib.get('value') == 'Operational':
                     try:
-                        roles[idx].operational_start_date = date.find('Start').attrib.get('value')
+                        roles[idx].operational_start_date = date.find(
+                            'Start').attrib.get('value')
                     except:
                         pass
                     try:
-                        roles[idx].operational_end_date = date.find('End').attrib.get('value')
+                        roles[idx].operational_end_date = date.find(
+                            'End').attrib.get('value')
                     except:
                         pass
 
@@ -254,26 +263,32 @@ class DataBaseSetup(object):
             relationships[idx].code = relationship.attrib.get('id')
             relationships[idx].target_odscode = relationship.find(
                 'Target/OrgId').attrib.get('extension')
-            relationships[idx].status = relationship.find('Status').attrib.get('value')
-            relationships[idx].unique_id = relationship.attrib.get('uniqueRelId')
+            relationships[idx].status = relationship.find(
+                'Status').attrib.get('value')
+            relationships[idx].unique_id = relationship.attrib.get(
+                'uniqueRelId')
 
             for date in relationship.iter('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
                     try:
-                        relationships[idx].legal_start_date = date.find('Start').attrib.get('value')
+                        relationships[idx].legal_start_date = date.find(
+                            'Start').attrib.get('value')
                     except:
                         pass
                     try:
-                        relationships[idx].legal_end_date = date.find('End').attrib.get('value')
+                        relationships[idx].legal_end_date = date.find(
+                            'End').attrib.get('value')
                     except:
                         pass
                 elif date.find('Type').attrib.get('value') == 'Operational':
                     try:
-                        relationships[idx].operational_start_date = date.find('Start').attrib.get('value')
+                        relationships[idx].operational_start_date = date.find(
+                            'Start').attrib.get('value')
                     except:
                         pass
                     try:
-                        relationships[idx].operational_end_date = date.find('End').attrib.get('value')
+                        relationships[idx].operational_end_date = date.find(
+                            'End').attrib.get('value')
                     except:
                         pass
 

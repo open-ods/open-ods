@@ -1,10 +1,12 @@
+from distutils import file_util
 from lxml import etree as xml_tree_parser
+import logging
 import lxml
 import os.path
 import sys
-import zipfile
-import logging
 import time
+import urllib.request
+import zipfile
 
 log = logging.getLogger('import_ods_xml')
 log.setLevel(logging.DEBUG)
@@ -36,18 +38,23 @@ class ODSFileManager(object):
         String: Filename if found
         """
 
-        # TODO: Retrieve latest file from the local directory until
-        # such time it is published and retrievable
-        if os.path.isfile('data/HSCOrgRefData_Full_20151130.xml.zip'):
-            return 'data/HSCOrgRefData_Full_20151130.xml.zip'
-        # if os.path.isfile('data/test.xml.zip'):
-        #     return 'data/test.xml.zip'
-        else:
-            raise ValueError('unable to locate the data file')
+        url = "http://systems.hscic.gov.uk/data/ods/" \
+            "interfacechanges/fullfile.zip"
 
+        file_name = 'data/fullfile.zip'
 
-    def retrieve_latest_schema(self):
-        """Get the latest XSD for the ODS XML data and return it as an XMLSchema object
+        with urllib.request.urlopen(url) as response:
+            with open(file_name, 'wb') as out_file:
+                out_file.write(response.read())
+
+                if os.path.isfile(file_name):
+                    return file_name
+                else:
+                    raise ValueError('unable to locate the data file')
+
+    def __retrieve_latest_schema(self):
+        """Get the latest XSD for the ODS XML data and return it as an
+        XMLSchema object
 
         Parameters
         ----------
@@ -86,12 +93,11 @@ class ODSFileManager(object):
         try:
             with zipfile.ZipFile(data_filename) as local_zipfile:
                 # get to the name of the actual zip file
-                # TODO: this is a horrible impementation
-                data_filename = data_filename.replace('.zip', '')
-                data_filename = data_filename.split('/', 1)
-                data_filename = data_filename[1]
+                zip_info = local_zipfile.namelist()
 
-                with local_zipfile.open(data_filename) as local_datafile:
+                # extract the first file in the zip, assumption there will be
+                # only one
+                with local_zipfile.open(zip_info[0]) as local_datafile:
                     self.__ods_xml_data = xml_tree_parser.parse(local_datafile)
 
         except:
@@ -128,7 +134,7 @@ class ODSFileManager(object):
         """
 
         if self.__ods_schema is None:
-            self.__ods_schema = self.retrieve_latest_schema()
+            self.__ods_schema = self.__retrieve_latest_schema()
 
         if self.__ods_xml_data is None:
             data_filename = self.__retrieve_latest_datafile()
