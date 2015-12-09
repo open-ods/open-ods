@@ -33,8 +33,9 @@ log.setLevel(logging.DEBUG)
 File_manager = ODSFileManager()
 
 # SQLAlchemy objects
-#engine = create_engine('sqlite:///openods.sqlite', echo=False)
-engine = create_engine("postgresql://openods:openods@localhost/openods", isolation_level="READ UNCOMMITTED")
+# engine = create_engine('sqlite:///openods.sqlite', echo=True)
+engine = create_engine(
+    "postgresql://openods:openods@localhost/openods", isolation_level="READ UNCOMMITTED")
 metadata = Base.metadata
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -222,6 +223,7 @@ class DataBaseSetup(object):
                             convert_string_to_date(date.find('End').attrib.get('value'))
                     except:
                         pass
+
                 elif date.find('Type').attrib.get('value') == 'Operational':
                     try:
                         roles[idx].operational_start_date = \
@@ -262,8 +264,10 @@ class DataBaseSetup(object):
             relationships[idx].code = relationship.attrib.get('id')
             relationships[idx].target_odscode = relationship.find(
                 'Target/OrgId').attrib.get('extension')
-            relationships[idx].status = relationship.find('Status').attrib.get('value')
-            relationships[idx].unique_id = relationship.attrib.get('uniqueRelId')
+            relationships[idx].status = relationship.find(
+                'Status').attrib.get('value')
+            relationships[idx].unique_id = relationship.attrib.get(
+                'uniqueRelId')
 
             for date in relationship.iter('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
@@ -277,6 +281,7 @@ class DataBaseSetup(object):
                             convert_string_to_date(date.find('End').attrib.get('value'))
                     except:
                         pass
+
                 elif date.find('Type').attrib.get('value') == 'Operational':
                     try:
                         relationships[idx].operational_start_date = \
@@ -304,55 +309,46 @@ class DataBaseSetup(object):
 
             try:
                 address.org_odscode = organisation.odscode
-                # print(organisation.odscode)
             except AttributeError:
                 pass
 
             try:
                 address.street_address_line1 = location.find('StreetAddressLine1').text
-                # print(location.find('StreetAddressLine1').text)
             except AttributeError:
                 pass
 
             try:
                 address.street_address_line2 = location.find('StreetAddressLine2').text
-                # print(location.find('StreetAddressLine2').text)
             except AttributeError:
                 pass
 
             try:
                 address.street_address_line3 = location.find('StreetAddressLine3').text
-                # print(location.find('StreetAddressLine3').text)
             except AttributeError:
                 pass
 
             try:
                 address.town = location.find('Town').text
-                # print(location.find('Town').text)
             except AttributeError:
                 pass
 
             try:
                 address.county = location.find('County').text
-                # print(location.find('County').text)
             except AttributeError:
                 pass
 
             try:
                 address.postal_code = location.find('PostalCode').text
-                # print(location.find('Postcode').text)
             except AttributeError:
                 pass
 
             try:
                 address.country = location.find('Country').text
-                # print(location.find('Country').text)
             except AttributeError:
                 pass
 
             try:
                 address.uprn = location.find('UPRN').text
-                # print(location.find('UPRN').text)
             except AttributeError:
                 pass
 
@@ -367,42 +363,36 @@ class DataBaseSetup(object):
 
             try:
                 successor.unique_id = succ.attrib.get('uniqueSuccId')
-                # print(successor.unique_id)
             except AttributeError:
                 pass
 
             try:
                 successor.legal_start_date = \
                     convert_string_to_date(succ.find('Date/Start').attrib.get('value'))
-                # print(successor.legal_start_date)
             except AttributeError:
                 pass
 
             try:
                 successor.type = \
                     succ.find('Type').text
-                # print(successor.type)
             except AttributeError:
                 pass
 
             try:
                 successor.target_odscode = \
                     succ.find('Target/OrgId').attrib.get('extension')
-                # print(successor.target_odscode)
             except AttributeError:
                 pass
 
             try:
                 successor.target_primary_role_code = \
                     succ.find('Target/PrimaryRoleId').attrib.get('id')
-                # print(successor.target_primary_role_code)
             except AttributeError:
                 pass
 
             try:
                 successor.target_unique_role_id = \
                     succ.find('Target/PrimaryRoleId').attrib.get('uniqueRoleId')
-                # print(successor.target_unique_role_id)
             except AttributeError:
                 pass
 
