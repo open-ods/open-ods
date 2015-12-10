@@ -13,18 +13,32 @@ def remove_none_values_from_dictionary(dirty_dict):
 
 
 # TODO: Is this method even needed any more?
-def get_latest_org():
-    conn = connect.get_connection()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("SELECT * from organisations order by lastchanged desc limit 1;")
-    rows = cur.fetchall()
-
-    for row in rows:
-        print(row)
-        return row
+# def get_latest_org():
+#     conn = connect.get_connection()
+#     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+#     cur.execute("SELECT * from organisations order by lastchanged desc limit 1;")
+#     rows = cur.fetchall()
+#
+#     for row in rows:
+#         print(row)
+#         return row
 
 
 def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=None, role_code=None):
+    """Retrieves a list of organisations
+
+    Parameters
+    ----------
+    offset = the record from which to start
+    limit = the maximum number of records to return
+    recordclass = the type of record to return (HSCSite, HSCOrg, Both)
+    primary_role_code = filter organisations to only those where this is their primary role code
+    role_code = filter organisations to only those a role with this code
+
+    Returns
+    -------
+    List of organisations
+    """
     log.debug(str.format("Offset: {0} Limit: {1}, RecordClass: {2}", offset, limit, recordclass))
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -117,7 +131,7 @@ def get_organisation_by_odscode(odscode):
         log.debug(rows_roles)
 
         # Retrieve the relationships for the organisation
-        sql = "SELECT rs.code, csr.displayname, rs.target_odscode, rs.status, " \
+        sql = "SELECT rs.code, csr.displayname, rs.unique_id, rs.target_odscode, rs.status, " \
               "rs.operational_start_date, rs.operational_end_date, rs.legal_start_date, " \
               "rs.legal_end_date, o.name from relationships rs " \
             "left join codesystems csr on rs.code = csr.id " \
@@ -128,6 +142,42 @@ def get_organisation_by_odscode(odscode):
         cur.execute(sql, data)
         rows_relationships = cur.fetchall()
         log.debug(rows_relationships)
+
+        try:
+            # Retrieve the addresses for the organisation
+            sql = "SELECT street_address_line1, " \
+                  "street_address_line2, " \
+                  "street_address_line3, " \
+                  "town, county, " \
+                  "postal_code, " \
+                  "country, uprn, " \
+                  "location_id " \
+                  "FROM addresses a " \
+                  "WHERE a.org_odscode = %s;"
+            data = (organisation_odscode,)
+
+            cur.execute(sql, data)
+            rows_addresses = cur.fetchall()
+            log.debug("Addresses: %s" % rows_addresses)
+
+        except Exception as e:
+            raise
+
+        try:
+            # Retrieve the successors / predecessors for the organisation
+            sql = "SELECT type, target_odscode as targetOdsCode, " \
+                  "target_primary_role_code as targetPrimaryRoleCode, " \
+                  "unique_id as uniqueId " \
+                  "FROM successors s " \
+                  "WHERE s.org_odscode = %s;"
+            data = (organisation_odscode,)
+
+            cur.execute(sql, data)
+            rows_successors = cur.fetchall()
+            log.debug("Successors: %s" % rows_successors)
+
+        except Exception as e:
+            raise
 
         # Create an object from the returned organisation record to hold the data to be returned
         result_data = row_org
@@ -142,6 +192,7 @@ def get_organisation_by_odscode(odscode):
             link_target_href = str.format('http://{0}/organisations/{1}',
                                         config.APP_HOSTNAME, relationship['target_odscode'])
 
+            relationship['uniqueId'] = int(relationship.pop('unique_id'))
             relationship['relatedOdsCode'] = relationship.pop('target_odscode')
             relationship['relatedOrganisationName'] = relationship.pop('name')
             relationship['description'] = relationship.pop('displayname')
@@ -196,7 +247,7 @@ def get_organisation_by_odscode(odscode):
                 pass
 
             try:
-                role['uniqueId'] = role.pop('unique_id')
+                role['uniqueId'] = int(role.pop('unique_id'))
             except:
                 pass
 
@@ -227,12 +278,63 @@ def get_organisation_by_odscode(odscode):
 
             roles.append({'role': role})
 
-        # Tidy up the field names etc. in the organisation dictionary before it's returned
         result_data['roles'] = roles
-        # result_data['name'] = result_data.pop('name')
+
+        # Add the addresses to the object
+        addresses = []
+
+        for address in rows_addresses:
+            address = remove_none_values_from_dictionary(address)
+
+            try:
+                address['streetAddressLine1'] = address.pop('street_address_line1')
+            except:
+                pass
+
+            try:
+                address['streetAddressLine2'] = address.pop('street_address_line2')
+            except:
+                pass
+
+            try:
+                address['streetAddressLine3'] = address.pop('street_address_line3')
+            except:
+                pass
+
+            try:
+                address['postcalCode'] = address.pop('postal_code')
+            except:
+                pass
+
+            addresses.append({'address': address})
+
+        result_data['addresses'] = addresses
+
+        # Add the successors to the object
+        successors = []
+
+        for successor in rows_successors:
+            link_successor_href = str.format('http://{0}/organisations/{1}',
+                                             config.APP_HOSTNAME, successor['targetodscode'])
+
+            successor = remove_none_values_from_dictionary(successor)
+
+            successor['targetOdsCode'] = successor.pop('targetodscode')
+            successor['uniqueId'] = successor.pop('uniqueid')
+
+            successor['links'] = [{
+                    'rel': str.lower(successor['type']),
+                    'href': link_successor_href
+                }]
+
+            successors.append({'successor': successor})
+
+        result_data['successors'] = successors
+
+        # Tidy up the field names etc. in the organisation dictionary before it's returned
         result_data['odsCode'] = result_data.pop('odscode')
+        result_data['refOnly'] = bool(result_data.pop('ref_only'))
         result_data['recordClass'] = result_data.pop('record_class')
-        # result_data['status'] = result_data.pop('status')
         result_data.pop('ref')
 
         link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, result_data['odsCode'])

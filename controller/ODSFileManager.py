@@ -45,6 +45,7 @@ class ODSFileManager(object):
 
         with urllib.request.urlopen(url) as response:
             with open(file_name, 'wb') as out_file:
+                log.info("Retrieving data")
                 out_file.write(response.read())
 
                 if os.path.isfile(file_name):
@@ -141,4 +142,5 @@ class ODSFileManager(object):
             self.__import_latest_datafile(data_filename)
             self.__validate_xml_against_schema()
 
+        log.info("Data loaded")
         return self.__ods_xml_data

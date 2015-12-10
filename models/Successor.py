@@ -18,6 +18,7 @@ class Successor(Base):
 
     ref = Column(Integer, primary_key=True)
     unique_id = Column(Integer)
+    org_odscode = Column(String(10))
     legal_start_date = Column(Date)
     type = Column(String(12))
     target_odscode = Column(String(10))
@@ -26,10 +27,11 @@ class Successor(Base):
 
     # Returns a printable version of the objects contents
     def __repr__(self):
-        return "<Successor(%s %s %s %s %s %s %s\)>" \
+        return "<Successor(%s %s %s %s %s %s %s %s\)>" \
             % (
                 self.ref,
                 self.unique_id,
+                self.org_odscode,
                 self.legal_start_date,
                 self.type,
                 self.target_odscode,

@@ -25,6 +25,8 @@ from models.Successor import Successor
 from models.Version import Version
 from models.Setting import Setting
 
+schema_version = '009'
+
 # Logging Setup
 log = logging.getLogger('import_ods_xml')
 log.setLevel(logging.DEBUG)
@@ -33,7 +35,7 @@ log.setLevel(logging.DEBUG)
 File_manager = ODSFileManager()
 
 # SQLAlchemy objects
-# engine = create_engine('sqlite:///openods.sqlite', echo=True)
+# engine = create_engine('sqlite:///openods.sqlite', echo=False)
 engine = create_engine(
     "postgresql://openods:openods@localhost/openods", isolation_level="READ UNCOMMITTED")
 metadata = Base.metadata
@@ -59,7 +61,7 @@ class DataBaseSetup(object):
         setting = Setting()
 
         setting.key = 'schema_version'
-        setting.value = '008'
+        setting.value = schema_version
 
         session.add(setting)
 
@@ -143,6 +145,8 @@ class DataBaseSetup(object):
             organisations[idx].record_class = self.__code_system_dict[organisation.attrib.get('orgRecordClass')]
 
             organisations[idx].last_changed = organisation.find('LastChangeDate').attrib.get('value')
+
+            organisations[idx].ref_only = bool(organisation.attrib.get('refOnly'))
 
             for date in organisation.iter('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
@@ -367,6 +371,11 @@ class DataBaseSetup(object):
                 pass
 
             try:
+                successor.org_odscode = organisation.odscode
+            except AttributeError:
+                pass
+
+            try:
                 successor.legal_start_date = \
                     convert_string_to_date(succ.find('Date/Start').attrib.get('value'))
             except AttributeError:
@@ -434,6 +443,7 @@ class DataBaseSetup(object):
         -------
         None
         """
+        log.info('Starting import')
 
         self.__ods_xml_data = ods_xml_data
         if self.__ods_xml_data is not None:
@@ -457,7 +467,6 @@ class DataBaseSetup(object):
 
 if __name__ == '__main__':
     start_time = time.time()
-    log.info('Starting data import...')
 
     ods_xml_data = File_manager.get_latest_xml()
     DataBaseSetup().create_database(ods_xml_data)
