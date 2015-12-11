@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, Date, Boolean
 import sys
 import os.path
 
@@ -26,10 +26,11 @@ class Organisation(Base):
     legal_end_date = Column(Date)
     operational_start_date = Column(Date)
     operational_end_date = Column(Date)
+    ref_only = Column(Boolean)
 
     # Returns a printable version of the objects contents
     def __repr__(self):
-        return "<Organisation('%s %s %s %s %s %s %s %s %s %s'\)>" % (
+        return "<Organisation('%s %s %s %s %s %s %s %s %s %s %s'\)>" % (
             self.ref,
             self.odscode,
             self.name,
@@ -39,4 +40,5 @@ class Organisation(Base):
             self.legal_start_date,
             self.legal_end_date,
             self.operational_start_date,
-            self.operational_end_date)
+            self.operational_end_date,
+            self.ref_only)
