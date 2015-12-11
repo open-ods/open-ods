@@ -219,7 +219,7 @@ def get_organisation_by_odscode(odscode):
                 pass
 
             relationship['links'] = [{
-                    'rel': 'target',
+                    'rel': 'related-organisation',
                     'href': link_target_href
                 }]
 
