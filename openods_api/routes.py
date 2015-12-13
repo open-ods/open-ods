@@ -30,12 +30,12 @@ def landing_page():
     return render_template('index.html', instance_name=config.INSTANCE_NAME, live_deployment=config.LIVE_DEPLOYMENT)
 
 
-@app.route('/try/')
+@app.route('/try')
 def tryit_page():
     return render_template('tryit.html')
 
 
-@app.route('/documentation/')
+@app.route('/documentation')
 def documentation():
     """
 
@@ -45,21 +45,20 @@ def documentation():
 
 
 @auto.doc()
-@app.route("/api/", methods=['GET'])
+@app.route("/api", methods=['GET'])
 @ocache.cache.cached(timeout=3600, key_prefix=ocache.generate_cache_key)
 def get_root():
     root_resource = {
-        'organisations': str.format('http://{0}/organisations/', config.APP_HOSTNAME),
-        'role-types': str.format('http://{0}/role-types/', config.APP_HOSTNAME)
+        'organisations': str.format('http://{0}/organisations', config.APP_HOSTNAME),
+        'role-types': str.format('http://{0}/role-types', config.APP_HOSTNAME)
     }
     return jsonify(root_resource)
 
 
 @auto.doc()
-@app.route("/api/organisations/", methods=['GET'])
+@app.route("/api/organisations", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisations():
-
     """
 
     Returns a list of ODS organisations
@@ -75,28 +74,31 @@ def get_organisations():
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
     offset = request.args.get('offset') if request.args.get('offset') else 0
     limit = request.args.get('limit') if request.args.get('limit') else 1000
-    record_class = request.args.get('recordclass') if request.args.get('recordclass') else 'both'
-    primary_role_code = request.args.get('primaryRoleCode' if request.args.get('primaryRoleCode') else None)
-    role_code = request.args.get('roleCode' if request.args.get('roleCode') else None)
+    record_class = request.args.get(
+        'recordclass') if request.args.get('recordclass') else 'both'
+    primary_role_code = request.args.get(
+        'primaryRoleCode' if request.args.get('primaryRoleCode') else None)
+    role_code = request.args.get(
+        'roleCode' if request.args.get('roleCode') else None)
     log.debug(offset)
     log.debug(limit)
     log.debug(record_class)
     log.debug(primary_role_code)
     log.debug(role_code)
-    data = db.get_org_list(offset, limit, record_class, primary_role_code, role_code)
+    data = db.get_org_list(offset, limit, record_class,
+                           primary_role_code, role_code)
 
     if data:
         result = {'organisations': data}
         return jsonify(result)
     else:
-        return Response("404: Not Found", status.HTTP_404_NOT_FOUND )
+        return Response("404: Not Found", status.HTTP_404_NOT_FOUND)
 
 
 @auto.doc()
-@app.route("/api/organisations/<ods_code>/", methods=['GET'])
+@app.route("/api/organisations/<ods_code>", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation(ods_code):
-
     """
 
     Returns a specific organisation resource
@@ -120,7 +122,8 @@ def get_organisation(ods_code):
 
         if format_type == 'xml':
             log.debug("Returning xml")
-            result = dicttoxml.dicttoxml(data, attr_type=False, custom_root='organisation')
+            result = dicttoxml.dicttoxml(
+                data, attr_type=False, custom_root='organisation')
             # log.debug(result)
             return Response(result, mimetype='text/xml')
 
@@ -141,10 +144,9 @@ def get_organisation(ods_code):
 
 
 @auto.doc()
-@app.route("/api/organisations/search/<search_text>/", methods=['GET'])
+@app.route("/api/organisations/search/<search_text>", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def search_organisations(search_text):
-
     """
 
     Returns a list of organisations
@@ -173,7 +175,6 @@ def search_organisations(search_text):
 @app.route("/api/role-types/", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def route_role_types():
-
     """
 
     Returns the list of available OrganisationRole types
@@ -188,12 +189,10 @@ def route_role_types():
     return jsonify(result)
 
 
-
 @auto.doc()
-@app.route("/api/role-types/<role_code>/", methods=['GET'])
+@app.route("/api/role-types/<role_code>", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def route_role_type_by_code(role_code):
-
     """
 
     Returns the list of available OrganisationRole types
@@ -205,10 +204,9 @@ def route_role_type_by_code(role_code):
 
 
 @auto.doc()
-@app.route("/api/organisations/<ods_code>/endpoints/", methods=['GET'])
+@app.route("/api/organisations/<ods_code>/endpoints", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def organisation_endpoints(ods_code):
-
     """
     FAKE ENDPOINT
 
