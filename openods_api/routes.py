@@ -56,6 +56,15 @@ def get_root():
 
 
 @auto.doc()
+@app.route("/api/info", methods=['GET'])
+@ocache.cache.cached(timeout=3600, key_prefix=ocache.generate_cache_key)
+def get_info():
+    dataset_info = db.get_dataset_info()
+    return jsonify(dataset_info)
+
+
+
+@auto.doc()
 @app.route("/api/organisations", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisations():
