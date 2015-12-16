@@ -13,25 +13,16 @@
     $ pip install -r requirements.txt
     ```
 
-2. Open DataBaseSetup.py in your code editor and find the line configuring the SQL engine - configure it either for Postgres or SQLite:
-
-    ```python
-    engine = create_engine('sqlite:///openods.sqlite', echo=True)
-    
-    engine = create_engine(
-    "postgresql://openods:openods@localhost/openods", isolation_level="READ UNCOMMITTED")
-    ```
-
-
-3. From the root of your repo directory, run the database import script
+2. From the root of your repo directory, run the database import script
 
     ```bash
-    $ python controller/DataBaseSetup.py
-    
-    Starting import
-    Import took 00:04:12
-    
-    Schema version is 008
-    
-    $ 
+    $ python import.py
     ```
+
+For details of available arguments, run:
+
+    ```bash
+    $ python import.py -h
+    ```
+    
+All of the arguments are optional, and without them the script will just use its default DBMS, file locations, and connection string.
