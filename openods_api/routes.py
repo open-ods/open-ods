@@ -151,9 +151,6 @@ def search_organisations(search_text):
 
     Returns a list of organisations
 
-    Params:
-    - offset=x (Offset start of results by x)
-    - limit=y (Retrieve y results)
     """
 
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
