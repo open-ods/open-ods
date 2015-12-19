@@ -493,7 +493,6 @@ def get_dataset_info():
     row_settings = cur.fetchone()
 
     result = {
-        'versionRef': row_settings['version_ref'],
         'importTimestamp': row_settings['import_timestamp'],
         'fileVersion': row_settings['file_version'],
         'publicationSeqNo': row_settings['publication_seqno'],
