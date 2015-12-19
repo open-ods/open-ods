@@ -151,6 +151,9 @@ def search_organisations(search_text):
 
     Returns a list of organisations
 
+    Params:
+    - offset=x (Offset start of results [0])
+    - limit=y (Limit number of results [1000])
     """
 
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
@@ -158,7 +161,7 @@ def search_organisations(search_text):
     limit = request.args.get('limit') if request.args.get('limit') else 1000
     log.debug(offset)
     log.debug(limit)
-    orgs = db.search_organisation(search_text)
+    orgs = db.search_organisation(search_text, offset, limit)
 
     if orgs:
         result = {'organisations': orgs}

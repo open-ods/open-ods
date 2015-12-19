@@ -49,7 +49,7 @@ def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=Non
                 "WHERE record_class LIKE %s AND odscode in " \
                 "(SELECT org_odscode from roles " \
                 "WHERE status = 'Active' " \
-                "AND code = %s)" \
+                "AND code = %s) " \
                 "order by name OFFSET %s LIMIT %s;"
         data = (record_class_param, role_code, offset, limit)
 
@@ -58,7 +58,7 @@ def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=Non
                 "WHERE record_class LIKE %s AND odscode in " \
                 "(SELECT org_odscode from roles WHERE primary_role = TRUE " \
                 "AND status = 'Active' " \
-                "AND code = %s)" \
+                "AND code = %s) " \
                 "order by name OFFSET %s LIMIT %s;"
         data = (record_class_param, primary_role_code, offset, limit)
 
@@ -372,7 +372,7 @@ def get_organisation_by_odscode(odscode):
         log.error(e)
 
 
-def search_organisation(search_text):
+def search_organisation(search_text, offset=0, limit=1000,):
 
     # Get a database connection
     conn = connect.get_connection()
@@ -383,8 +383,9 @@ def search_organisation(search_text):
     try:
         search_term = str.format("%{0}%", search_text)
         sql = "SELECT * from organisations " \
-              "WHERE name like UPPER(%s) and status = 'Active';"
-        data = (search_term,)
+              "WHERE name like UPPER(%s) and status = 'Active' " \
+              "ORDER BY name OFFSET %s LIMIT %s;;"
+        data = (search_term, offset, limit)
 
         cur.execute(sql, data)
         rows = cur.fetchall()
