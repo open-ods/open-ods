@@ -72,11 +72,11 @@ def get_organisations():
 
     Returns a list of ODS organisations
 
-    Params:
+    Query Parameters:
     - q=xxx (Filter results by names containing q)
     - offset=x (Offset start of results [0])
     - limit=y (Limit number of results [1000])
-    - recordClass=HSCOrg/HSCSite/both (filter results by recordclass [both])
+    - recordClass=HSCOrg/HSCSite (filter results by a specific recordclass)
     - primaryRoleCode=xxxx (filter results to only those with a specific primaryRole)
     - roleCode=xxxx (filter result to only those with a specific role)
     """
@@ -115,7 +115,7 @@ def get_organisation(ods_code):
 
     Returns a specific organisation resource
 
-    Params:
+    Query Parameters:
     - format=xml/json (Return the data in specified format - defaults to json)
     """
 
@@ -161,9 +161,11 @@ def get_organisation(ods_code):
 def search_organisations(search_text):
     """
 
-    Returns a list of organisations
+    Returns a list of organisations (SOON TO BE DEPRECATED)
 
-    Params:
+    Note: You can now use a 'q' query parameter on the /organisations route to filter search results by name
+
+    Query Parameters:
     - offset=x (Offset start of results [0])
     - limit=y (Limit number of results [1000])
     """
@@ -215,7 +217,6 @@ def route_role_type_by_code(role_code):
     return jsonify(result)
 
 
-@auto.doc()
 @app.route("/api/organisations/<ods_code>/endpoints", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def organisation_endpoints(ods_code):
