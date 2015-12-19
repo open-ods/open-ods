@@ -24,11 +24,12 @@ def remove_none_values_from_dictionary(dirty_dict):
 #         return row
 
 
-def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=None, role_code=None):
+def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=None, role_code=None, query=None):
     """Retrieves a list of organisations
 
     Parameters
     ----------
+    q = search term
     offset = the record from which to start
     limit = the maximum number of records to return
     recordclass = the type of record to return (HSCSite, HSCOrg, Both)
@@ -37,38 +38,58 @@ def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=Non
 
     Returns
     -------
-    List of organisations
+    List of organisations filtered by provided parameters
     """
-    log.debug(str.format("Offset: {0} Limit: {1}, RecordClass: {2}", offset, limit, recordclass))
+    log.debug(str.format("Offset: {0} Limit: {1}, RecordClass: {2}, Query: {3}", offset, limit, recordclass, query))
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     record_class_param = '%' if recordclass == 'both' else recordclass
 
+    # Start the select statement with the field list and from clause
+    sql = "SELECT odscode, name, record_class from organisations WHERE TRUE "
+    data = ()
+
+    # If a record_class parameter was specified, add that to the statement
+    if recordclass:
+        log.debug('add record_class parameter')
+        sql = str.format("{0} {1}", sql, "AND record_class LIKE %s ")
+        data = (recordclass,)
+
+    # If a query parameter was specified, add that to the statement
+    if query:
+        print('add search query')
+        sql = str.format("{0} {1}", sql, "AND name like UPPER(%s) ")
+        search_query = str.format("%{0}%", query)
+        data = data + (search_query,)
+
+    # If a role_code parameter was specified, add that to the statement
     if role_code:
-        sql = "SELECT odscode, name, record_class from organisations " \
-                "WHERE record_class LIKE %s AND odscode in " \
-                "(SELECT org_odscode from roles " \
-                "WHERE status = 'Active' " \
-                "AND code = %s) " \
-                "order by name OFFSET %s LIMIT %s;"
-        data = (record_class_param, role_code, offset, limit)
+        print('add role_code')
+        sql = str.format("{0} {1}",
+                         sql,
+                         "AND odscode in "
+                         "(SELECT org_odscode from roles "
+                         "WHERE status = 'Active' "
+                         "AND code = %s) ")
+        data = data + (role_code,)
 
+    # Or if a primary_role_code parameter was specified, add that to the statement
     elif primary_role_code:
-        sql = "SELECT odscode, name, record_class from organisations " \
-                "WHERE record_class LIKE %s AND odscode in " \
-                "(SELECT org_odscode from roles WHERE primary_role = TRUE " \
-                "AND status = 'Active' " \
-                "AND code = %s) " \
-                "order by name OFFSET %s LIMIT %s;"
-        data = (record_class_param, primary_role_code, offset, limit)
+        print('add primary_role_code')
+        sql = str.format("{0} {1}",
+                         sql,
+                         "AND odscode in "
+                         "(SELECT org_odscode from roles WHERE primary_role = TRUE "
+                         "AND status = 'Active' "
+                         "AND code = %s) " )
+        data = data + (primary_role_code,)
 
-    else:
-        sql = "SELECT odscode, name, record_class from organisations " \
-                "WHERE record_class LIKE %s " \
-                "order by name OFFSET %s LIMIT %s;"
-        data = (record_class_param, offset, limit)
+    # Lastly, add the offset and limit clauses
+    sql = str.format("{0} {1}", sql, "ORDER BY name OFFSET %s LIMIT %s;")
+    data = data + (offset, limit)
 
     log.debug(sql)
+    log.debug(data)
     cur.execute(sql, data)
     rows = cur.fetchall()
     log.debug(str.format("{0} rows in result", len(rows)))
