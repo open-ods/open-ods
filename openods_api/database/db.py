@@ -481,3 +481,23 @@ def get_role_type_by_id(role_id):
     }
 
     return result
+
+
+def get_dataset_info():
+
+    sql = "SELECT * from versions; "
+
+    cur = connect.get_cursor()
+    cur.execute(sql)
+
+    row_settings = cur.fetchone()
+
+    result = {
+        'importTimestamp': row_settings['import_timestamp'],
+        'fileVersion': row_settings['file_version'],
+        'publicationSeqNo': row_settings['publication_seqno'],
+        'publicationDate': row_settings['publication_date'],
+        'publicationType': row_settings['publication_type']
+    }
+
+    return result
