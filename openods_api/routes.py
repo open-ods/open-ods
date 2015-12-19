@@ -73,18 +73,20 @@ def get_organisations():
     Returns a list of ODS organisations
 
     Params:
+    - q=xxx (Filter results by names containing q)
     - offset=x (Offset start of results [0])
     - limit=y (Limit number of results [1000])
-    - recordclass=HSCOrg/HSCSite/both (filter results by recordclass [both])
+    - recordClass=HSCOrg/HSCSite/both (filter results by recordclass [both])
     - primaryRoleCode=xxxx (filter results to only those with a specific primaryRole)
     - roleCode=xxxx (filter result to only those with a specific role)
     """
 
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
+    query = request.args.get('q') if request.args.get('q') else None
     offset = request.args.get('offset') if request.args.get('offset') else 0
     limit = request.args.get('limit') if request.args.get('limit') else 1000
     record_class = request.args.get(
-        'recordclass') if request.args.get('recordclass') else 'both'
+        'recordClass') if request.args.get('recordClass') else None
     primary_role_code = request.args.get(
         'primaryRoleCode' if request.args.get('primaryRoleCode') else None)
     role_code = request.args.get(
@@ -94,8 +96,9 @@ def get_organisations():
     log.debug(record_class)
     log.debug(primary_role_code)
     log.debug(role_code)
+    log.debug(query)
     data = db.get_org_list(offset, limit, record_class,
-                           primary_role_code, role_code)
+                           primary_role_code, role_code, query)
 
     if data:
         result = {'organisations': data}
