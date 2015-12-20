@@ -35,13 +35,31 @@ def tryit_page():
     return render_template('tryit.html')
 
 
-@app.route('/documentation')
-def documentation():
+@app.route('/apidoc')
+def apidoc():
     """
 
     Returns API documentation as HTML
     """
     return auto.html()
+
+
+@app.route('/documentation')
+def template_documentation():
+    """
+
+    Returns API documentation as HTML
+    """
+    return render_template('getting_started.html')
+
+
+@app.route('/resources')
+def template_resources():
+    """
+
+    Returns API documentation as HTML
+    """
+    return render_template('resources.html')
 
 
 @auto.doc()
@@ -163,7 +181,6 @@ def get_organisation(ods_code):
         return "Not found", status.HTTP_404_NOT_FOUND
 
 
-@auto.doc()
 @app.route("/api/organisations/search/<search_text>", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def search_organisations(search_text):
