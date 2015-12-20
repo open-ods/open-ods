@@ -24,7 +24,7 @@ def remove_none_values_from_dictionary(dirty_dict):
 #         return row
 
 
-def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=None, role_code=None, query=None):
+def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None, role_code=None, query=None):
     """Retrieves a list of organisations
 
     Parameters
@@ -47,18 +47,21 @@ def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=Non
 
     # Start the select statement with the field list and from clause
     sql = "SELECT odscode, name, record_class from organisations WHERE TRUE "
+    sql_count = "SELECT COUNT(*) from organisations WHERE TRUE "
     data = ()
 
     # If a record_class parameter was specified, add that to the statement
     if recordclass:
         log.debug('add record_class parameter')
         sql = str.format("{0} {1}", sql, "AND record_class LIKE %s ")
+        sql_count = str.format("{0} {1}", sql_count, "AND record_class LIKE %s ")
         data = (recordclass,)
 
     # If a query parameter was specified, add that to the statement
     if query:
         print('add search query')
         sql = str.format("{0} {1}", sql, "AND name like UPPER(%s) ")
+        sql_count = str.format("{0} {1}", sql_count, "AND name like UPPER(%s) ")
         search_query = str.format("%{0}%", query)
         data = data + (search_query,)
 
@@ -67,6 +70,12 @@ def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=Non
         print('add role_code')
         sql = str.format("{0} {1}",
                          sql,
+                         "AND odscode in "
+                         "(SELECT org_odscode from roles "
+                         "WHERE status = 'Active' "
+                         "AND code = %s) ")
+        sql_count = str.format("{0} {1}",
+                         sql_count,
                          "AND odscode in "
                          "(SELECT org_odscode from roles "
                          "WHERE status = 'Active' "
@@ -82,14 +91,28 @@ def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=Non
                          "(SELECT org_odscode from roles WHERE primary_role = TRUE "
                          "AND status = 'Active' "
                          "AND code = %s) " )
+        sql_count = str.format("{0} {1}",
+                         sql_count,
+                         "AND odscode in "
+                         "(SELECT org_odscode from roles WHERE primary_role = TRUE "
+                         "AND status = 'Active' "
+                         "AND code = %s) " )
         data = data + (primary_role_code,)
 
-    # Lastly, add the offset and limit clauses
+    # Quickly get total number of query results before applying offset and limit
+    log.debug(sql_count)
+    log.debug(data)
+    cur.execute(sql_count, data)
+    count = cur.fetchone()['count']
+
+    # Lastly, add the offset and limit clauses to the main select statement
     sql = str.format("{0} {1}", sql, "ORDER BY name OFFSET %s LIMIT %s;")
     data = data + (offset, limit)
 
     log.debug(sql)
     log.debug(data)
+
+    # Execute the main query
     cur.execute(sql, data)
     rows = cur.fetchall()
     log.debug(str.format("{0} rows in result", len(rows)))
@@ -108,7 +131,8 @@ def get_org_list(offset=0, limit=1000, recordclass='both', primary_role_code=Non
         }
         result.append(item)
 
-    return result
+    # Return both the paged results and the count of total results
+    return result, count
 
 
 def get_organisation_by_odscode(odscode):

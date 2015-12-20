@@ -1,7 +1,7 @@
 import logging
 import status
 import dicttoxml
-from flask import jsonify, Response, request, render_template
+from flask import jsonify, Response, request, render_template, json
 from flask.ext.autodoc import Autodoc
 
 from openods_api import app, config, sample_data
@@ -75,7 +75,7 @@ def get_organisations():
     Query Parameters:
     - q=xxx (Filter results by names containing q)
     - offset=x (Offset start of results [0])
-    - limit=y (Limit number of results [1000])
+    - limit=y (Limit number of results [20])
     - recordClass=HSCOrg/HSCSite (filter results by a specific recordclass)
     - primaryRoleCode=xxxx (filter results to only those with a specific primaryRole)
     - roleCode=xxxx (filter result to only those with a specific role)
@@ -84,7 +84,7 @@ def get_organisations():
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
     query = request.args.get('q') if request.args.get('q') else None
     offset = request.args.get('offset') if request.args.get('offset') else 0
-    limit = request.args.get('limit') if request.args.get('limit') else 1000
+    limit = request.args.get('limit') if request.args.get('limit') else 20
     record_class = request.args.get(
         'recordClass') if request.args.get('recordClass') else None
     primary_role_code = request.args.get(
@@ -97,12 +97,15 @@ def get_organisations():
     log.debug(primary_role_code)
     log.debug(role_code)
     log.debug(query)
-    data = db.get_org_list(offset, limit, record_class,
+    data, count = db.get_org_list(offset, limit, record_class,
                            primary_role_code, role_code, query)
 
     if data:
         result = {'organisations': data}
-        return jsonify(result)
+        resp = Response(json.dumps(result), status=200, mimetype='application/json')
+        resp.headers['X-Total-Count'] = count
+
+        return resp
     else:
         return Response("404: Not Found", status.HTTP_404_NOT_FOUND)
 
