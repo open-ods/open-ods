@@ -107,18 +107,17 @@ def get_engine():
 
 if __name__ == '__main__':
     total_start_time = time.time()
-    download_start_time = time.time()
     ods_xml_data = File_manager.get_latest_xml()
     log.debug('Data Load Time = %s', time.strftime(
-        "%H:%M:%S", time.gmtime(time.time() - download_start_time)))
+        "%H:%M:%S", time.gmtime(time.time() - total_start_time)))
 
     engine = get_engine()
 
     import_start_time = time.time()
     ODSDBCreator(engine).create_database(ods_xml_data)
     log.debug('Data Import Time = %s', time.strftime(
-        "%H:%M:%S", time.gmtime(time.time() - start_time)))
+        "%H:%M:%S", time.gmtime(time.time() - import_start_time)))
 
     log.debug('Total Time = %s', time.strftime(
-        "%H:%M:%S", time.gmtime(time.time() - start_time)))
+        "%H:%M:%S", time.gmtime(time.time() - total_start_time)))
 
