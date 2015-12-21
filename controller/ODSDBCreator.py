@@ -76,7 +76,7 @@ class ODSDBCreator(object):
             relationship_types = {}
 
             # enumerate the iter as it doesn't provide an index which we need
-            for idx, relationship in enumerate(relationships.iter('concept')):
+            for idx, relationship in enumerate(relationships.findall('concept')):
 
                 codesystems[idx] = CodeSystem()
 
@@ -133,7 +133,7 @@ class ODSDBCreator(object):
 
             organisations[idx].ref_only = bool(organisation.attrib.get('refOnly'))
 
-            for date in organisation.iter('Date'):
+            for date in organisation.findall('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
 
                     try:
@@ -200,7 +200,7 @@ class ODSDBCreator(object):
             roles[idx].unique_id = role.attrib.get('uniqueRoleId')
 
             # Add Operational and Legal start/end dates if present
-            for date in role.iter('Date'):
+            for date in role.findall('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
                     try:
                         roles[idx].legal_start_date = \
@@ -258,7 +258,7 @@ class ODSDBCreator(object):
             relationships[idx].unique_id = relationship.attrib.get(
                 'uniqueRelId')
 
-            for date in relationship.iter('Date'):
+            for date in relationship.findall('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
                     try:
                         relationships[idx].legal_start_date = \
