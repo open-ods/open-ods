@@ -53,18 +53,25 @@ class ODSFileManager(object):
         """
 
         file_name = self.xml_file_path
+        tmp_file_name = str.format("%s.tmp" % file_name)
 
         # If we are not running in local mode, we attempt to download the latest zip file first
         if not self.__local_mode:
             url = self.xml_url
 
             with urllib.request.urlopen(url) as response:
-                with open(file_name, 'wb') as out_file:
+                # Download the file and save it to a temporary file name
+                with open(tmp_file_name, 'wb') as out_file:
                     log.info("Downloading data")
                     out_file.write(response.read())
 
-                    if os.path.isfile(file_name):
-
+                    # Check that the temporary file has downloaded properly
+                    if os.path.isfile(tmp_file_name):
+                        # If the data file already exists, remove it
+                        if os.path.isfile(file_name):
+                            os.remove(file_name)
+                        # Rename the temporary download file to the xml file name
+                        os.rename(tmp_file_name, file_name)
                         log.info("Download complete")
                         return file_name
                     else:
