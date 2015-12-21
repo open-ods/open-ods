@@ -1,18 +1,7 @@
-#!/usr/bin/env python
-
-from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import logging
-import os.path
 import sys
 import datetime
-import time
-
-# setup path so we can import our own models and controllers
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
-# import controllers
-from controller.ODSFileManager import ODSFileManager
 
 # import models
 from models.Address import Address
@@ -27,43 +16,35 @@ from models.Setting import Setting
 
 schema_version = '009'
 
-# Logging Setup
+# Get a logger
 log = logging.getLogger('import_ods_xml')
-log.setLevel(logging.DEBUG)
-
-# We need a filemanager to bring the xml data tree structure in
-File_manager = ODSFileManager()
-
-# SQLAlchemy objects
-# engine = create_engine('sqlite:///openods.sqlite', echo=False)
-engine = create_engine(
-    "postgresql://openods:openods@localhost/openods", isolation_level="READ UNCOMMITTED")
-metadata = Base.metadata
-Session = sessionmaker(bind=engine)
-session = Session()
-
 
 def convert_string_to_date(string):
     return datetime.datetime.strptime(string, '%Y-%m-%d')
 
 
-class DataBaseSetup(object):
+class ODSDBCreator(object):
 
     __ods_xml_data = None
     __code_system_dict = {}
 
-    def __init__(self):
+    def __init__(self, engine):
+        # Create the SQLAlchemy session
+        log.debug("Creating SQLAlchemy session")
+        Session = sessionmaker(bind=engine)
+        self.session = Session()
+
         # Creates the tables of all objects derived from our Base object
+        metadata = Base.metadata
         metadata.create_all(engine)
 
     def __create_settings(self):
 
+        log.debug("Setting schema version")
         setting = Setting()
-
         setting.key = 'schema_version'
         setting.value = schema_version
-
-        session.add(setting)
+        self.session.add(setting)
 
     def __create_codesystems(self):
         """Loops through all the code systems in an organisation and adds them
@@ -76,6 +57,8 @@ class DataBaseSetup(object):
         -------
         None
         """
+
+        log.debug("Adding codesystem information")
 
         # these are all code systems, we have a DRY concept here as so much of
         # this code is common, it doesn't make sense to do it 3 times, lets
@@ -93,7 +76,7 @@ class DataBaseSetup(object):
             relationship_types = {}
 
             # enumerate the iter as it doesn't provide an index which we need
-            for idx, relationship in enumerate(relationships.iter('concept')):
+            for idx, relationship in enumerate(relationships.findall('concept')):
 
                 codesystems[idx] = CodeSystem()
 
@@ -114,7 +97,7 @@ class DataBaseSetup(object):
                 self.__code_system_dict[relationship_id] = display_name
 
                 # append this instance of code system to the session
-                session.add(codesystems[idx])
+                self.session.add(codesystems[idx])
 
     def __create_organisations(self):
         """Creates the organisations and adds them to the session
@@ -128,6 +111,8 @@ class DataBaseSetup(object):
         None
 
         """
+
+        log.debug("Adding organisation information")
 
         organisations = {}
 
@@ -148,7 +133,7 @@ class DataBaseSetup(object):
 
             organisations[idx].ref_only = bool(organisation.attrib.get('refOnly'))
 
-            for date in organisation.iter('Date'):
+            for date in organisation.findall('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
 
                     try:
@@ -176,7 +161,7 @@ class DataBaseSetup(object):
                     except:
                         pass
 
-            session.add(organisations[idx])
+            self.session.add(organisations[idx])
 
             self.__create_addresses(organisations[idx], organisation)
 
@@ -215,7 +200,7 @@ class DataBaseSetup(object):
             roles[idx].unique_id = role.attrib.get('uniqueRoleId')
 
             # Add Operational and Legal start/end dates if present
-            for date in role.iter('Date'):
+            for date in role.findall('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
                     try:
                         roles[idx].legal_start_date = \
@@ -240,7 +225,7 @@ class DataBaseSetup(object):
                     except:
                         pass
 
-            session.add(roles[idx])
+            self.session.add(roles[idx])
 
         roles = None
 
@@ -273,7 +258,7 @@ class DataBaseSetup(object):
             relationships[idx].unique_id = relationship.attrib.get(
                 'uniqueRelId')
 
-            for date in relationship.iter('Date'):
+            for date in relationship.findall('Date'):
                 if date.find('Type').attrib.get('value') == 'Legal':
                     try:
                         relationships[idx].legal_start_date = \
@@ -300,7 +285,7 @@ class DataBaseSetup(object):
 
             # self.__code_system_dict[]
 
-            session.add(relationships[idx])
+            self.session.add(relationships[idx])
 
         relationships = None
 
@@ -356,7 +341,7 @@ class DataBaseSetup(object):
             except AttributeError:
                 pass
 
-            session.add(address)
+            self.session.add(address)
 
     def __create_successors(self, organisation, organisation_xml):
 
@@ -405,7 +390,7 @@ class DataBaseSetup(object):
             except AttributeError:
                 pass
 
-            session.add(successor)
+            self.session.add(successor)
 
     def __create_version(self):
         """adds all the version information to the versions table
@@ -418,6 +403,7 @@ class DataBaseSetup(object):
         None
         """
 
+        log.debug("Adding version information")
         version = Version()
 
         version.file_version = self.__ods_xml_data.find(
@@ -430,7 +416,7 @@ class DataBaseSetup(object):
             './Manifest/PublicationSeqNum').attrib.get('value')
         version.import_timestamp = datetime.datetime.now()
 
-        session.add(version)
+        self.session.add(version)
 
     def create_database(self, ods_xml_data):
         """creates a sqlite database in the current path with all the data
@@ -453,23 +439,15 @@ class DataBaseSetup(object):
                 self.__create_organisations()
                 self.__create_settings()
 
-                session.commit()
+                log.debug("Committing session")
+                self.session.commit()
 
             except Exception as e:
                 # If anything fails, let's not commit anything
-                session.rollback()
+                self.session.rollback()
                 print("Unexpected error:", sys.exc_info()[0])
                 log.error(e)
                 raise
 
             finally:
-                session.close()
-
-if __name__ == '__main__':
-    start_time = time.time()
-
-    ods_xml_data = File_manager.get_latest_xml()
-    DataBaseSetup().create_database(ods_xml_data)
-
-    log.info('Data Import Time = %s', time.strftime(
-        "%H:%M:%S", time.gmtime(time.time() - start_time)))
+                self.session.close()
