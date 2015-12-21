@@ -108,7 +108,11 @@ def get_organisations():
 
         return resp
     else:
-        return Response("404: Not Found", status.HTTP_404_NOT_FOUND)
+        result = {'organisations': [] }
+        resp = Response(json.dumps(result), status=200, mimetype='application/json')
+        resp.headers['X-Total-Count'] = count
+        resp.headers['Access-Control-Expose-Headers'] = 'X-Total-Count'
+        return resp
 
 
 @auto.doc()
