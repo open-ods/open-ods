@@ -30,7 +30,7 @@ class ODSFileManager(object):
                 self.xml_url = xml_url
                 log.debug('xml_url is %s' % self.xml_url)
 
-            # Otherwise we will skip the download and just look for the zip file locally
+            # Otherwise we will set local_mode which will skip the download and just look for the zip file locally
             else:
                 self.__local_mode = True
 
