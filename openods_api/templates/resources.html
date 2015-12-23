@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-2 col-md-2">
+    <h4>Resources</h4>
+    <ul class="list-group">
+        <li class="list-group-item"><a href="#root">Root</a></li>
+        <li class="list-group-item"><a href="#info">Info</a></li>
+        <li class="list-group-item"><a href="#organisations">Organisations</a></li>
+    </ul>
+    <ul class="list-group">
+        <li class="list-group-item"><a href="/documentation">Getting Started</a></li>
+    </ul>
+</div>
+<div class="col-sm-10 col-md-10">
+    <a class="anchor" id="resources"></a>
+    <h2>Resources</h2>
+
+    <div class="openods-resource">
+    <a class="anchor" id="root"></a>
+    <h3>Root</h3>
+    <p>The Root resource provides information about all available resources through the API.</p>
+    <b>Example HTTP Request:</b>
+    <pre>http://wwww.openods.co.uk/api</pre>
+    <b>Example Response:</b>
+    <pre>
+HTTP/1.0 200 OK
+Content-Type: application/json
+{
+  "organisations": "http://www.openods.co.uk/api/organisations",
+  "role-types": "http://www.openods.co.uk/api/role-types"
+}
+    </pre>
+    <b>Attributes:</b>
+    <ul>
+        <li><code>organisations</code><em>string</em> - The URL root for Organisation resources</li>
+        <li><code>role-types</code><em>string</em> - The URL root for Role-Type resources</li>
+    </ul>
+    </div>
+
+    <div class="openods-resource">
+    <a class="anchor" id="info"></a>
+    <h3>Info</h3>
+    <p>The Info resource returns metadata about the source ODS data currently being served by the API.</p>
+    <b>Example HTTP Request:</b>
+    <pre>http://wwww.openods.co.uk/api/info</pre>
+    <b>Example Response:</b>
+    <pre>
+HTTP/1.0 200 OK
+Content-Type: application/json
+{
+  "fileVersion": "1.0.0",
+  "importTimestamp": "2015-12-11 09:05:30.916881",
+  "publicationDate": "2015-11-30",
+  "publicationSeqNo": "1",
+  "publicationType": "Full"
+}
+    </pre>
+    <b>Attributes:</b>
+    <ul>
+        <li><code>fileVersion</code><em>string</em> - The version of the file containing the source data used to populate to <OpenODS class=""></OpenODS></li>
+        <li><code>importTimestamp</code><em>string</em> - The timestamp representing when the current data was imported into the OpenODS database.</li>
+        <li><code>publicationDate</code><em>string</em> - The publication date of the current data.</li>
+        <li><code>publicationSeqNo</code><em>string</em> - The publication sequence number of the current data.</li>
+        <li><code>publicationType</code><em>string</em> - The publication type of the current data (this will almost always be <code>Full</code>.</li>
+    </ul>
+    </div>
+
+    <div class="openods-resource">
+    <a class="anchor" id="organisations"></a>
+    <h3>Organisations</h3>
+    <p>An Organisation resource is a single organisation within ODS.</p>
+    <b>Endpoints:</b>
+        <ul>
+            <li><code>/organisations</code><em>string</em> - get all the Organisation resources (will return a list of 'summary' resource records).</li>
+            <li><code>/organisations/:odsCode</code><em>string</em> - get a specific Organisation resource by its ODS code (will return the full resource).</li>
+        </ul>
+    <b>Query Parameters:</b>
+        <ul>
+            <li><code>q</code><em>string</em> - Filter results to those containing specified string in their name attribute</li>
+            <li><code>offset</code><em>integer</em> - Return results offset by specified number</li>
+            <li><code>limit</code><em>integer</em> - Limit number of results returned to specified number</li>
+            <li><code>recordClass</code><em>string</em> - Filter results by their record class (HSCOrg or HSCSite)</li>
+            <li><code>roleCode</code><em>string</em> - Filter results to only those which have the specified role</li>
+            <li><code>primaryRoleCode</code><em>string</em> - Filter results to only those which have the specified primary role (ignored if roleCode is also specified)</li>
+        </ul>
+
+    <br>
+    <b>Example HTTP Request:</b>
+    <pre>http://www.openods.co.uk/api/organisations?q=barnsley&limit=10&roleCode=RO197</pre>
+    <b>Example Response:</b>
+        <pre>
+HTTP/1.0 200 OK
+Content-Type: application/json
+{
+  "organisations": [
+    {
+      "links": [
+        {
+          "href": "http://www.openods.co.uk/api/organisations/RFF",
+          "rel": "self"
+        }
+      ],
+      "name": "BARNSLEY HOSPITAL NHS FOUNDATION TRUST",
+      "odsCode": "RFF",
+      "recordClass": "HSCOrg"
+    }
+  ]
+}
+        </pre>
+        <br>
+    <b>Example HTTP Request:</b>
+    <pre>http://www.openods.co.uk/api/organisations/RFF</pre>
+    <b>Example Response:</b>
+    <pre>
+HTTP/1.0 200 OK
+Content-Type: application/json
+{
+  "name": "BARNSLEY HOSPITAL NHS FOUNDATION TRUST",
+  "odsCode": "RFF",
+  "operationalStartDate": "2002-03-31",
+  "recordClass": "HSCOrg",
+  "refOnly": false,
+  "addresses": [
+    {
+      "address": {
+        "country": "ENGLAND",
+        "county": "SOUTH YORKSHIRE",
+        "postcalCode": "S75 2EP",
+        "streetAddressLine1": "GAWBER ROAD",
+        "town": "BARNSLEY"
+      }
+    }
+  ],
+  "last_changed": "2015-05-26",
+  "legalStartDate": "1993-04-01",
+  "links": [
+    {
+      "href": "http://www.openods.co.uk/api/organisations/RFF",
+      "rel": "self"
+    }
+  ],
+  "relationships": [
+    {
+      "relationship": {
+        "code": "RE1",
+        "description": "HAS A LEGACY RELATIONSHIP TO",
+        "links": [
+          {
+            "href": "http://www.openods.co.uk/api/organisations/Y02",
+            "rel": "related-organisation"
+          }
+        ],
+        "operationalEndDate": "2002-03-31",
+        "operationalStartDate": "1993-04-01",
+        "relatedOdsCode": "Y02",
+        "relatedOrganisationName": "TRENT REGIONAL OFFICE",
+        "status": "Inactive",
+        "uniqueId": 13388
+      }
+    }
+  ],
+  "roles": [
+    {
+      "role": {
+        "code": "RO197",
+        "description": "NHS TRUST",
+        "links": [
+          {
+            "href": "http://www.openods.co.uk/api/role-types/RO197",
+            "rel": "role-type"
+          }
+        ],
+        "operationalStartDate": "1993-04-01",
+        "primaryRole": true,
+        "status": "Active",
+        "uniqueId": 126697
+      }
+    }
+  ],
+  "status": "Active",
+  "successors": [
+    {
+      "successor": {
+        "links": [
+          {
+            "href": "http://www.openods.co.uk/api/organisations/CJA",
+            "rel": "predecessor"
+          }
+        ],
+        "targetOdsCode": "CJA",
+        "targetprimaryrolecode": "RO111",
+        "type": "Predecessor",
+        "uniqueId": 11545
+      }
+    }
+  ]
+}
+    </pre>
+    <b>Attributes:</b>
+    <ul>
+        <li><code>name</code><em>string</em> - The name of this organisation.</li>
+        <li><code>odsCode</code><em>string</em> - The ODS code of this organisation.</li>
+        <li><code>last_changed</code><em>string</em> - The date on which this organisation record was list updated.</li>
+        <li><code>operationalStartDate</code><em>string</em> - The Operational Start Date for this organisation.</li>
+        <li><code>operationalEndDate</code><em>string</em> - The Operational End Date for this organisation.</li>
+        <li><code>legalStartDate</code><em>string</em> - The Legal End Date for this organisation.</li>
+        <li><code>legalEndDate</code><em>string</em> - The Legal End Date for this organisation.</li>
+        <li><code>recordClass</code><em>string</em> - The record class of the organisation - currently either HSCOrg or HSCSite.</li>
+        <li><code>refOnly</code><em>boolean</em> - Whether the record is included just for reference (will soon be moved to archived data).</li>
+        <li><code>status</code><em>string</em> - The status of this organisation record - either <code>Active</code> or <code>Inactive</code></li>
+        <li><code>addresses</code><em>array</em> - An array of address objects related to this organisation record.</li>
+        <li><code>relationships</code><em>array</em> - An array of relationship objects related to this organisation record.</li>
+        <li><code>roles</code><em>array</em> - An array of role objects related to this organisation record.</li>
+        <li><code>successors</code><em>array</em> - An array of successor objects related to this organisation record.</li>
+        <li><code>links</code><em>array</em> - An array of hypermedia links relevant to this resource.</li>
+
+    </ul>
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}
