@@ -8,8 +8,10 @@
     <h4>Getting Started</Started></h4>
     <ul class="list-group">
         <li class="list-group-item"><a href="#intro">Introduction</a></li>
+        <li class="list-group-item"><a href="#endpoint">Endpoint</a></li>
         <li class="list-group-item"><a href="#rate">Rate Limiting</a></li>
         <li class="list-group-item"><a href="#auth">Authentication</a></li>
+        <li class="list-group-item"><a href="#versioning">Versioning</a></li>
         <li class="list-group-item"><a href="#paging">Paging</a></li>
         <li class="list-group-item"><a href="#responses">Responses</a></li>
 
@@ -25,13 +27,23 @@
     <p>OpenODS is a data API built following REST principles using open access NHS organisational data from the NHS Organisation Data Service (ODS).</p>
     <p>Please feel free to use OpenODS to support your projects as you like - all we ask is that you give us feedback and contribute any suggestions you might have to help us to continuously improve it.</p>
 
+    <a class="anchor" id="endpoint"></a>
+    <h2>Endpoint</h2>
+    <p>OpenODS API can be accessed at the following endpoint:</p>
+    <code>www.openods.co.uk/api</code>
+
     <a class="anchor" id="rate"></a>
     <h2 >Rate Limiting</h2>
     <p>We don't apply rate-limiting to client requests as we don't see enough traffic at this point in time - but please do be considerate and avoid inadvertent DOS attacks :)</p>
 
     <a class="anchor" id="auth"></a>
     <h2 >Authentication</h2>
-    OpenODS is a completely open API. No authentication is required to access data via the API.
+    No authentication is required to access data via the OpenODS API.
+
+    <a class="anchor" id="versioning"></a>
+    <h2>Versioning</h2>
+    <p>Whilst in Alpha, the API does not use any form of versioning. Breaking changes may be made to the API although we will try and avoid this where not necessary.</p>
+    <p>In the future, we will look to introduce versioned endpoints to handle backwards-incompatible changes.</p>
 
     <a class="anchor" id="paging"></a>
     <h2>Pagination</h2>

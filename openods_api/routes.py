@@ -50,7 +50,7 @@ def template_documentation():
 
     Returns API documentation as HTML
     """
-    return render_template('getting_started.html')
+    return render_template('documentation.html')
 
 
 @app.route('/resources')
