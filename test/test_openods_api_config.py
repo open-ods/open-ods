@@ -1,5 +1,5 @@
 import unittest
-import openods_api.config as config
+import openods_core.config as config
 
 
 class ConfigTests(unittest.TestCase):

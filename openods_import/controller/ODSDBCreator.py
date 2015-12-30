@@ -1,18 +1,19 @@
-from sqlalchemy.orm import sessionmaker
+import datetime
 import logging
 import sys
-import datetime
+from tqdm import tqdm
 
+from sqlalchemy.orm import sessionmaker
 # import models
-from models.Address import Address
-from models.base import Base
-from models.CodeSystem import CodeSystem
-from models.Organisation import Organisation
-from models.Relationship import Relationship
-from models.Role import Role
-from models.Successor import Successor
-from models.Version import Version
-from models.Setting import Setting
+from openods_import.models.Address import Address
+from openods_import.models.base import Base
+from openods_import.models.CodeSystem import CodeSystem
+from openods_import.models.Organisation import Organisation
+from openods_import.models.Relationship import Relationship
+from openods_import.models.Role import Role
+from openods_import.models.Successor import Successor
+from openods_import.models.Version import Version
+from openods_import.models.Setting import Setting
 
 schema_version = '009'
 
@@ -68,7 +69,7 @@ class ODSDBCreator(object):
             './CodeSystems/CodeSystem[@name="OrganisationRecordClass"]',
             './CodeSystems/CodeSystem[@name="OrganisationRole"]']
 
-        for code_system_type in code_system_types:
+        for code_system_type in tqdm(code_system_types):
             # we are going to need to append a lot of data into this array
             codesystems = {}
 
@@ -116,8 +117,8 @@ class ODSDBCreator(object):
 
         organisations = {}
 
-        for idx, organisation in enumerate(self.__ods_xml_data.findall(
-                '.Organisations/Organisation')):
+        for idx, organisation in tqdm(enumerate(self.__ods_xml_data.findall(
+                '.Organisations/Organisation'))):
 
             organisations[idx] = Organisation()
 

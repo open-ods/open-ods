@@ -4,10 +4,10 @@ import dicttoxml
 from flask import jsonify, Response, request, render_template, json
 from flask.ext.autodoc import Autodoc
 
-from openods_api import app, config, sample_data
-import openods_api.cache as ocache
-from openods_api.database import db, schema_check
-from openods_api.auth import requires_auth
+from openods_core import app, config, sample_data
+import openods_core.cache as ocache
+from openods_core.database import db, schema_check
+from openods_core.auth import requires_auth
 
 log = logging.getLogger('openods')
 

@@ -1,10 +1,11 @@
 import argparse
-from sqlalchemy import create_engine
 import logging
 import time
 
-from controller.ODSDBCreator import ODSDBCreator
-from controller.ODSFileManager import ODSFileManager
+from openods_import.controller.ODSFileManager import ODSFileManager
+
+from openods_import.controller.ODSDBCreator import ODSDBCreator
+from sqlalchemy import create_engine
 
 # Set up logging
 log = logging.getLogger('import_ods_xml')
@@ -115,9 +116,11 @@ if __name__ == '__main__':
 
     import_start_time = time.time()
     ODSDBCreator(engine).create_database(ods_xml_data)
-    log.debug('Data Import Time = %s', time.strftime(
+    log.debug('Data Processing Time = %s', time.strftime(
         "%H:%M:%S", time.gmtime(time.time() - import_start_time)))
 
-    log.debug('Total Time = %s', time.strftime(
+    log.debug('Total Import Time = %s', time.strftime(
         "%H:%M:%S", time.gmtime(time.time() - total_start_time)))
+
+    log.info("Database Import Finished")
 

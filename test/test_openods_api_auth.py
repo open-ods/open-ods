@@ -1,6 +1,6 @@
 import unittest
-from openods_api import app
-import openods_api.auth as auth
+from openods_core import app
+import openods_core.auth as auth
 
 
 class AuthTests(unittest.TestCase):

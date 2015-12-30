@@ -1,11 +1,12 @@
-from sqlalchemy import Column, Integer, String, Date
 import sys
+
 import os.path
+from sqlalchemy import Column, Integer, String, Date
 
 # setup path so we can import our own models and controllers
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from models.base import Base
+from openods_import.models.base import Base
 
 
 class Successor(Base):

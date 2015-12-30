@@ -1,8 +1,8 @@
 import psycopg2, psycopg2.pool, psycopg2.extras
 import logging
 
-import openods_api.database.connection as connect
-import openods_api.config as config
+import openods_core.database.connection as connect
+import openods_core.config as config
 
 log = logging.getLogger('openods')
 
