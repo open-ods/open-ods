@@ -69,7 +69,7 @@ class ODSDBCreator(object):
             './CodeSystems/CodeSystem[@name="OrganisationRecordClass"]',
             './CodeSystems/CodeSystem[@name="OrganisationRole"]']
 
-        for code_system_type in tqdm(code_system_types):
+        for code_system_type in code_system_types:
             # we are going to need to append a lot of data into this array
             codesystems = {}
 

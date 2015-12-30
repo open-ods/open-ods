@@ -122,5 +122,5 @@ if __name__ == '__main__':
     log.debug('Total Import Time = %s', time.strftime(
         "%H:%M:%S", time.gmtime(time.time() - total_start_time)))
 
-    log.info("Database Import Finished")
+    log.info("Database import finished")
 
