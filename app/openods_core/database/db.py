@@ -4,7 +4,7 @@ import config as config
 import psycopg2
 import psycopg2.extras
 import psycopg2.pool
-from app import openods_core as connect
+from app.openods_core.database import connection as connect
 
 log = logging.getLogger('openods')
 
