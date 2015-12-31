@@ -2,9 +2,9 @@ import argparse
 import logging
 import time
 
-from openods_import.controller.ODSFileManager import ODSFileManager
+from import_tool.controller.ODSFileManager import ODSFileManager
 
-from openods_import.controller.ODSDBCreator import ODSDBCreator
+from import_tool.controller.ODSDBCreator import ODSDBCreator
 from sqlalchemy import create_engine
 
 # Set up logging

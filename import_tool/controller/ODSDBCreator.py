@@ -5,15 +5,15 @@ from tqdm import tqdm
 
 from sqlalchemy.orm import sessionmaker
 # import models
-from openods_import.models.Address import Address
-from openods_import.models.base import Base
-from openods_import.models.CodeSystem import CodeSystem
-from openods_import.models.Organisation import Organisation
-from openods_import.models.Relationship import Relationship
-from openods_import.models.Role import Role
-from openods_import.models.Successor import Successor
-from openods_import.models.Version import Version
-from openods_import.models.Setting import Setting
+from import_tool.models.Address import Address
+from import_tool.models.base import Base
+from import_tool.models.CodeSystem import CodeSystem
+from import_tool.models.Organisation import Organisation
+from import_tool.models.Relationship import Relationship
+from import_tool.models.Role import Role
+from import_tool.models.Successor import Successor
+from import_tool.models.Version import Version
+from import_tool.models.Setting import Setting
 
 schema_version = '009'
 
