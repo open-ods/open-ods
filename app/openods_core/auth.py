@@ -1,4 +1,4 @@
-import openods_core.config as config
+import config as config
 from flask import Response, request
 from functools import wraps
 

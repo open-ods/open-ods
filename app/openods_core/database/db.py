@@ -1,8 +1,10 @@
-import psycopg2, psycopg2.pool, psycopg2.extras
 import logging
 
-import openods_core.database.connection as connect
-import openods_core.config as config
+import config as config
+import psycopg2
+import psycopg2.extras
+import psycopg2.pool
+from app import openods_core as connect
 
 log = logging.getLogger('openods')
 
@@ -235,7 +237,7 @@ def get_organisation_by_odscode(odscode):
             relationship = remove_none_values_from_dictionary(relationship)
 
             link_target_href = str.format('http://{0}/organisations/{1}',
-                                        config.APP_HOSTNAME, relationship['target_odscode'])
+                                          config.APP_HOSTNAME, relationship['target_odscode'])
 
             relationship['uniqueId'] = int(relationship.pop('unique_id'))
             relationship['relatedOdsCode'] = relationship.pop('target_odscode')

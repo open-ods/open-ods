@@ -1,38 +1,20 @@
 import logging
-import status
-import dicttoxml
-from flask import jsonify, Response, request, render_template, json
 from flask.ext.autodoc import Autodoc
 
-from openods_core import app, config, sample_data
-import openods_core.cache as ocache
-from openods_core.database import db, schema_check
-from openods_core.auth import requires_auth
+import config
+import dicttoxml
+import status
+from app import app
+from app.openods_core import cache as ocache
+from app.openods_core import sample_data
+from app.openods_core.database import db, schema_check
+from flask import jsonify, Response, request, render_template, json
 
 log = logging.getLogger('openods')
 
 auto = Autodoc(app)
 
 schema_check.check_schema_version()
-
-
-@app.route('/loaderio-65382ad6fe5e607ac92df47b82787e88/')
-def verify():
-    return "loaderio-65382ad6fe5e607ac92df47b82787e88"
-
-
-@app.route('/')
-def landing_page():
-    """
-
-    Returns API documentation as HTML
-    """
-    return render_template('index.html', instance_name=config.INSTANCE_NAME, live_deployment=config.LIVE_DEPLOYMENT)
-
-
-@app.route('/try')
-def tryit_page():
-    return render_template('tryit.html')
 
 
 @app.route('/apidoc')
@@ -42,24 +24,6 @@ def apidoc():
     Returns API documentation as HTML
     """
     return auto.html()
-
-
-@app.route('/documentation')
-def template_documentation():
-    """
-
-    Returns API documentation as HTML
-    """
-    return render_template('documentation.html')
-
-
-@app.route('/resources')
-def template_resources():
-    """
-
-    Returns API documentation as HTML
-    """
-    return render_template('resources.html')
 
 
 @auto.doc()
@@ -116,7 +80,7 @@ def get_organisations():
     log.debug(role_code)
     log.debug(query)
     data, count = db.get_org_list(offset, limit, record_class,
-                           primary_role_code, role_code, query)
+                                  primary_role_code, role_code, query)
 
     if data:
         result = {'organisations': data}

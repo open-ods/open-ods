@@ -1,8 +1,11 @@
-import psycopg2, psycopg2.extras
-from urllib.parse import urlparse as urlparse
-import logging
-import openods_core.config as config
 import sys
+
+import logging
+from urllib.parse import urlparse as urlparse
+
+import config as config
+import psycopg2
+import psycopg2.extras
 
 log = logging.getLogger('openods')
 
