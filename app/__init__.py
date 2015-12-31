@@ -44,10 +44,3 @@ app.register_blueprint(site_module)
 # Build the database:
 # This will create the database file using SQLAlchemy
 db.create_all()
-
-
-def list_routes():
-    for rule in app.url_map.iter_rules():
-        print(rule)
-
-list_routes()
