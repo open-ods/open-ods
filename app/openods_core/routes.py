@@ -145,37 +145,8 @@ def get_organisation(ods_code):
         return "Not found", status.HTTP_404_NOT_FOUND
 
 
-@app.route("/api/organisations/search/<search_text>", methods=['GET'])
-@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
-def search_organisations(search_text):
-    """
-
-    Returns a list of organisations (SOON TO BE DEPRECATED)
-
-    Note: You can now use a 'q' query parameter on the /organisations route to filter search results by name
-
-    Query Parameters:
-    - offset=x (Offset start of results [0])
-    - limit=y (Limit number of results [1000])
-    """
-
-    log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
-    offset = request.args.get('offset') if request.args.get('offset') else 0
-    limit = request.args.get('limit') if request.args.get('limit') else 1000
-    log.debug(offset)
-    log.debug(limit)
-    orgs = db.search_organisation(search_text, offset, limit)
-
-    if orgs:
-        result = {'organisations': orgs}
-        return jsonify(result)
-
-    else:
-        return "Not found", status.HTTP_404_NOT_FOUND
-
-
 @auto.doc()
-@app.route("/api/role-types/", methods=['GET'])
+@app.route("/api/role-types", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def route_role_types():
     """
