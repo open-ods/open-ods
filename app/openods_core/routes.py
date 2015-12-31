@@ -64,35 +64,42 @@ def get_organisations():
     """
 
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
+
+    # Collect any query parameters that were supplied
     query = request.args.get('q') if request.args.get('q') else None
+
     offset = request.args.get('offset') if request.args.get('offset') else 0
+
     limit = request.args.get('limit') if request.args.get('limit') else 20
+
     record_class = request.args.get(
         'recordClass') if request.args.get('recordClass') else None
+
     primary_role_code = request.args.get(
         'primaryRoleCode' if request.args.get('primaryRoleCode') else None)
+
     role_code = request.args.get(
         'roleCode' if request.args.get('roleCode') else None)
-    log.debug(offset)
-    log.debug(limit)
-    log.debug(record_class)
-    log.debug(primary_role_code)
-    log.debug(role_code)
-    log.debug(query)
-    data, count = db.get_org_list(offset, limit, record_class,
+
+    log.debug("Offset: %s Limit: %s RecordClass: %s PrimaryRoleCode: %s RoleCode: %s Query: %s",
+              offset, limit, record_class,primary_role_code,role_code,query)
+
+    # Call the get_org_list method from the database controller, passing in parameters.
+    # Method will return a tuple containing the data and the total record count for the specified filter.
+    data, total_record_count = db.get_org_list(offset, limit, record_class,
                                   primary_role_code, role_code, query)
 
     if data:
         result = {'organisations': data}
         resp = Response(json.dumps(result), status=200, mimetype='application/json')
-        resp.headers['X-Total-Count'] = count
+        resp.headers['X-Total-Count'] = total_record_count
         resp.headers['Access-Control-Expose-Headers'] = 'X-Total-Count'
 
         return resp
     else:
         result = {'organisations': [] }
         resp = Response(json.dumps(result), status=200, mimetype='application/json')
-        resp.headers['X-Total-Count'] = count
+        resp.headers['X-Total-Count'] = total_record_count
         resp.headers['Access-Control-Expose-Headers'] = 'X-Total-Count'
         return resp
 
