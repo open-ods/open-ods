@@ -11,8 +11,7 @@ services:
 install: "pip install -r requirements.txt"
 before_script:
   - psql -f sql/create_user_and_database.sql -U postgres
-  - psql -d openods -f sql/run_migration_scripts.sql
-  - psql -d openods -f sql/import_test_data.sql
+  - pg_restore -d openods assets/openods.sampledb
 env:
 - API_USER=env_test_user API_PASS=env_test_pass CACHE_TIMEOUT=10 APP_HOSTNAME=localhost:5000 API_USE_AUTH=TRUE
 script: nosetests
