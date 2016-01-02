@@ -1,3 +1,27 @@
+0.4 - 2nd January 2015
+---
+This release is a significant refactor of the code and brings a more tidy API and landing page.
+
+#### Web Site
+* Updated landing page, added 'TryIt' page, added simple documentation and guidance for API
+* Refactor web site code to be a Flask blueprint [(http://flask.pocoo.org/docs/0.10/blueprints/)](http://flask.pocoo.org/docs/0.10/blueprints/)
+
+#### Core API
+* Added all remaining ODS data items to data returned by the API
+* Moved all resource endpoints to sit under /api route
+* Added CORS support on all /api routes
+* Added proper filtering on organisation name using the 'q=' query parameter (and deprecated /organisations/search route)
+* Added X-Total-Count for total filtered results returned via /organisations route (to assist with pagination of results)
+* Added /api and /api/info routes for additional information about resources and ODS metadata
+
+#### Database
+* Significant updates to the import tool which now uses SQLAlchemy to create the database and import the data
+* Removed deprecated SQL scripts (due to use of SQLAlchemy in import)
+
+#### Documentation
+* Updated docs to reflect new data import method
+
+
 0.3 - 10th November 2015
 ---
 * Added remaining metadata for roles and relationships
