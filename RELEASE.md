@@ -1,3 +1,7 @@
+0.4a - 2nd January 2015
+---
+Fixed up Procfile for Heroku deployment following refactoring.
+
 0.4 - 2nd January 2015
 ---
 This release is a significant refactor of the code and brings a more tidy API and landing page.
