@@ -1,3 +1,7 @@
+0.4b - 7th January 2016
+---
+Fixed typo on 'postalCode' field name.
+
 0.4a - 2nd January 2016
 ---
 Fixed up Procfile for Heroku deployment following refactoring.
