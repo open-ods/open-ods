@@ -1,8 +1,12 @@
-0.4a - 2nd January 2015
+0.4b - 7th January 2016
+---
+Fixed typo on 'postalCode' field name.
+
+0.4a - 2nd January 2016
 ---
 Fixed up Procfile for Heroku deployment following refactoring.
 
-0.4 - 2nd January 2015
+0.4 - 2nd January 2016
 ---
 This release is a significant refactor of the code and brings a more tidy API and landing page.
 
