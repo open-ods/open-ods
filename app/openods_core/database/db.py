@@ -349,7 +349,7 @@ def get_organisation_by_odscode(odscode):
                 pass
 
             try:
-                address['postcalCode'] = address.pop('postal_code')
+                address['postalCode'] = address.pop('postal_code')
             except:
                 pass
 
