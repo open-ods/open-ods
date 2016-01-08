@@ -353,7 +353,7 @@ def get_organisation_by_odscode(odscode):
             except:
                 pass
 
-            addresses.append({'address': address})
+            addresses.append(address)
 
         result_data['addresses'] = addresses
 

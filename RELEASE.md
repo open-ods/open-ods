@@ -1,3 +1,7 @@
+0.4c - 8th January 2016
+---
+Remove the 'address' property from address objects in the 'addresses' array.
+
 0.4b - 7th January 2016
 ---
 Fixed typo on 'postalCode' field name.
