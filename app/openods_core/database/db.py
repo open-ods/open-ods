@@ -333,20 +333,25 @@ def get_organisation_by_odscode(odscode):
         for address in rows_addresses:
             address = remove_none_values_from_dictionary(address)
 
+            address_lines = []
+
             try:
-                address['streetAddressLine1'] = address.pop('street_address_line1')
+                address_lines.append(address.pop('street_address_line1'))
             except:
                 pass
 
             try:
-                address['streetAddressLine2'] = address.pop('street_address_line2')
+                address_lines.append(address.pop('street_address_line2'))
             except:
                 pass
 
             try:
-                address['streetAddressLine3'] = address.pop('street_address_line3')
+                address_lines.append(address.pop('street_address_line3'))
             except:
                 pass
+
+            if len(address_lines) > 0:
+                address['addressLines'] = address_lines
 
             try:
                 address['postalCode'] = address.pop('postal_code')
