@@ -270,7 +270,7 @@ def get_organisation_by_odscode(odscode):
                     'href': link_target_href
                 }]
 
-            relationships.append({'relationship': relationship})
+            relationships.append(relationship)
 
         result_data['relationships'] = relationships
 
@@ -323,7 +323,7 @@ def get_organisation_by_odscode(odscode):
                     'href': link_role_href
                 }]
 
-            roles.append({'role': role})
+            roles.append(role)
 
         result_data['roles'] = roles
 
@@ -379,7 +379,7 @@ def get_organisation_by_odscode(odscode):
                     'href': link_successor_href
                 }]
 
-            successors.append({'successor': successor})
+            successors.append(successor)
 
         result_data['successors'] = successors
 
