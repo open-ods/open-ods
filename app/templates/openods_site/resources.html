@@ -118,84 +118,109 @@ Content-Type: application/json
     <pre>
 HTTP/1.0 200 OK
 Content-Type: application/json
+
 {
-  "name": "BARNSLEY HOSPITAL NHS FOUNDATION TRUST",
-  "odsCode": "RFF",
-  "operationalStartDate": "2002-03-31",
-  "recordClass": "HSCOrg",
-  "refOnly": false,
   "addresses": [
     {
-      "address": {
-        "country": "ENGLAND",
-        "county": "SOUTH YORKSHIRE",
-        "postalCode": "S75 2EP",
-        "streetAddressLine1": "GAWBER ROAD",
-        "town": "BARNSLEY"
-      }
+      "addressLines": [
+        "GAWBER ROAD"
+      ],
+      "country": "ENGLAND",
+      "county": "SOUTH YORKSHIRE",
+      "postalCode": "S75 2EP",
+      "town": "BARNSLEY"
     }
   ],
-  "last_changed": "2015-05-26",
-  "legalStartDate": "1993-04-01",
+  "lastChanged": "2015-05-26",
   "links": [
     {
-      "href": "http://www.openods.co.uk/api/organisations/RFF",
+      "href": "http://test.openods.co.uk/api/organisations/RFF",
       "rel": "self"
     }
   ],
+  "name": "BARNSLEY HOSPITAL NHS FOUNDATION TRUST",
+  "odsCode": "RFF",
+  "operationalStartDate": "1993-04-01",
+  "recordClass": "HSCOrg",
+  "refOnly": false,
   "relationships": [
     {
-      "relationship": {
-        "code": "RE1",
-        "description": "HAS A LEGACY RELATIONSHIP TO",
-        "links": [
-          {
-            "href": "http://www.openods.co.uk/api/organisations/Y02",
-            "rel": "related-organisation"
-          }
-        ],
-        "operationalEndDate": "2002-03-31",
-        "operationalStartDate": "1993-04-01",
-        "relatedOdsCode": "Y02",
-        "relatedOrganisationName": "TRENT REGIONAL OFFICE",
-        "status": "Inactive",
-        "uniqueId": 13388
-      }
+      "code": "RE1",
+      "description": "HAS A LEGACY RELATIONSHIP TO",
+      "links": [
+        {
+          "href": "http://test.openods.co.uk/api/organisations/D",
+          "rel": "related-organisation"
+        }
+      ],
+      "operationalStartDate": "2004-04-01",
+      "relatedOdsCode": "D",
+      "relatedOrganisationName": "YORKSHIRE & THE HUMBER GOVERNMENT OFFICE REGION",
+      "status": "Active",
+      "uniqueId": 417
+    },
+    {
+      "code": "RE1",
+      "description": "HAS A LEGACY RELATIONSHIP TO",
+      "legalEndDate": "2013-03-31",
+      "legalStartDate": "2006-07-01",
+      "links": [
+        {
+          "href": "http://test.openods.co.uk/api/organisations/Q32",
+          "rel": "related-organisation"
+        }
+      ],
+      "operationalEndDate": "2014-08-31",
+      "operationalStartDate": "2006-07-01",
+      "relatedOdsCode": "Q32",
+      "relatedOrganisationName": "YORKSHIRE AND THE HUMBER STRATEGIC HEALTH AUTHORITY",
+      "status": "Inactive",
+      "uniqueId": 51767
     }
   ],
   "roles": [
     {
-      "role": {
-        "code": "RO197",
-        "description": "NHS TRUST",
-        "links": [
-          {
-            "href": "http://www.openods.co.uk/api/role-types/RO197",
-            "rel": "role-type"
-          }
-        ],
-        "operationalStartDate": "1993-04-01",
-        "primaryRole": true,
-        "status": "Active",
-        "uniqueId": 126697
-      }
+      "code": "RO57",
+      "description": "FOUNDATION TRUST",
+      "links": [
+        {
+          "href": "http://test.openods.co.uk/api/role-types/RO57",
+          "rel": "role-type"
+        }
+      ],
+      "operationalStartDate": "2005-01-01",
+      "primaryRole": false,
+      "status": "Active",
+      "uniqueId": 154857
+    },
+    {
+      "code": "RO197",
+      "description": "NHS TRUST",
+      "links": [
+        {
+          "href": "http://test.openods.co.uk/api/role-types/RO197",
+          "rel": "role-type"
+        }
+      ],
+      "operationalStartDate": "1993-04-01",
+      "primaryRole": true,
+      "status": "Active",
+      "uniqueId": 126697
     }
   ],
   "status": "Active",
   "successors": [
     {
-      "successor": {
-        "links": [
-          {
-            "href": "http://www.openods.co.uk/api/organisations/CJA",
-            "rel": "predecessor"
-          }
-        ],
-        "targetOdsCode": "CJA",
-        "targetprimaryrolecode": "RO111",
-        "type": "Predecessor",
-        "uniqueId": 11545
-      }
+      "links": [
+        {
+          "href": "http://test.openods.co.uk/api/organisations/CJA",
+          "rel": "predecessor"
+        }
+      ],
+      "targetOdsCode": "CJA",
+      "targetprimaryrolecode": "RO111",
+      "type": "Predecessor",
+      "uniqueId": 11545
     }
   ]
 }
