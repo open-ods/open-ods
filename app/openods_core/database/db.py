@@ -382,6 +382,7 @@ def get_organisation_by_odscode(odscode):
             successor = remove_none_values_from_dictionary(successor)
 
             successor['targetOdsCode'] = successor.pop('targetodscode')
+            successor['targetPrimaryRoleCode'] = successor.pop('targetprimaryrolecode')
             successor['targetName'] = successor.pop('targetname')
             successor['uniqueId'] = successor.pop('uniqueid')
 
