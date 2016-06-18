@@ -20,6 +20,7 @@ schema_version = '009'
 # Get a logger
 log = logging.getLogger('import_ods_xml')
 
+
 def convert_string_to_date(string):
     return datetime.datetime.strptime(string, '%Y-%m-%d')
 
@@ -245,48 +246,50 @@ class ODSDBCreator(object):
         relationships_xml = organisation_xml.find('Rels')
         relationships = {}
 
-        for idx, relationship in enumerate(relationships_xml):
+        if relationships_xml is not None:
 
-            relationships[idx] = Relationship()
+            for idx, relationship in enumerate(relationships_xml):
 
-            relationships[idx].organisation_ref = organisation.ref
-            relationships[idx].org_odscode = organisation.odscode
-            relationships[idx].code = relationship.attrib.get('id')
-            relationships[idx].target_odscode = relationship.find(
-                'Target/OrgId').attrib.get('extension')
-            relationships[idx].status = relationship.find(
-                'Status').attrib.get('value')
-            relationships[idx].unique_id = relationship.attrib.get(
-                'uniqueRelId')
+                relationships[idx] = Relationship()
 
-            for date in relationship.findall('Date'):
-                if date.find('Type').attrib.get('value') == 'Legal':
-                    try:
-                        relationships[idx].legal_start_date = \
-                            convert_string_to_date(date.find('Start').attrib.get('value'))
-                    except:
-                        pass
-                    try:
-                        relationships[idx].legal_end_date = \
-                            convert_string_to_date(date.find('End').attrib.get('value'))
-                    except:
-                        pass
+                relationships[idx].organisation_ref = organisation.ref
+                relationships[idx].org_odscode = organisation.odscode
+                relationships[idx].code = relationship.attrib.get('id')
+                relationships[idx].target_odscode = relationship.find(
+                    'Target/OrgId').attrib.get('extension')
+                relationships[idx].status = relationship.find(
+                    'Status').attrib.get('value')
+                relationships[idx].unique_id = relationship.attrib.get(
+                    'uniqueRelId')
 
-                elif date.find('Type').attrib.get('value') == 'Operational':
-                    try:
-                        relationships[idx].operational_start_date = \
-                            convert_string_to_date(date.find('Start').attrib.get('value'))
-                    except:
-                        pass
-                    try:
-                        relationships[idx].operational_end_date = \
-                            convert_string_to_date(date.find('End').attrib.get('value'))
-                    except:
-                        pass
+                for date in relationship.findall('Date'):
+                    if date.find('Type').attrib.get('value') == 'Legal':
+                        try:
+                            relationships[idx].legal_start_date = \
+                                convert_string_to_date(date.find('Start').attrib.get('value'))
+                        except:
+                            pass
+                        try:
+                            relationships[idx].legal_end_date = \
+                                convert_string_to_date(date.find('End').attrib.get('value'))
+                        except:
+                            pass
 
-            # self.__code_system_dict[]
+                    elif date.find('Type').attrib.get('value') == 'Operational':
+                        try:
+                            relationships[idx].operational_start_date = \
+                                convert_string_to_date(date.find('Start').attrib.get('value'))
+                        except:
+                            pass
+                        try:
+                            relationships[idx].operational_end_date = \
+                                convert_string_to_date(date.find('End').attrib.get('value'))
+                        except:
+                            pass
 
-            self.session.add(relationships[idx])
+                # self.__code_system_dict[]
+
+                self.session.add(relationships[idx])
 
         relationships = None
 
