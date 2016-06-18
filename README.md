@@ -1,27 +1,19 @@
 # open-ods
 
-**This is an unofficial personal project making use of open data and is unrelated to the NHS and associated organisations**
+[![Join the chat at https://gitter.im/open-ods/open-ods](https://badges.gitter.im/open-ods/open-ods.svg)](https://gitter.im/open-ods/open-ods?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**The data is regularly changing and so there is absolutely no guarantee on stability or accuracy.**
+## Chat
+[![Join the chat at https://gitter.im/open-ods/open-ods](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/open-ods/open-ods?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-### Source Data Attribution
-Organisation Data Service, Health and Social Care Information Centre, licenced under the Open Government Licence v2.0  - Open Government Licence
-
-More information on the Organisation Data Service can be found [on the HSCIC website](http://systems.hscic.gov.uk/data/ods)
-
-
-## Issue Tracker
-[![Stories in Ready](https://badge.waffle.io/mattstibbs/open-ods.png?label=1%20-%20Ready&title=Ready)](http://waffle.io/mattstibbs/open-ods)
-
-You can view a board for issues using either: [Waffle.io](https://waffle.io/mattstibbs/open-ods) or [Huboard](https://huboard.com/mattstibbs/open-ods/#/)
+## Issue Trackers
+You can visualize the issues by using: [Huboard](https://huboard.com/open-ods/open-ods#/) or [Waffle.io](https://waffle.io/open-ods/open-ods)
 
 ## Continuous Integration
-Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](https://travis-ci.org/mattstibbs/open-ods)
+Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](https://travis-ci.org/open-ods/open-ods)
 
-[![Build Status](https://travis-ci.org/mattstibbs/open-ods.svg?branch=develop)](https://travis-ci.org/mattstibbs/open-ods) develop
+[![Build Status](https://travis-ci.org/open-ods/open-ods.svg?branch=develop)](https://travis-ci.org/mattstibbs/open-ods) develop
 
-[![Build Status](https://travis-ci.org/mattstibbs/open-ods.svg?branch=master)](https://travis-ci.org/mattstibbs/open-ods) master
-
+[![Build Status](https://travis-ci.org/open-ods/open-ods.svg?branch=master)](https://travis-ci.org/mattstibbs/open-ods) master
 
 ## Getting Started
 
@@ -80,9 +72,12 @@ Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](h
 
 7. Now go import the ODS data into your OpenODS database -> [Instructions for importing the ODS data into your PostgreSQL database](docs/data_import.md)
 
+## Source Data Attribution
+Organisation Data Service, Health and Social Care Information Centre, licenced under the Open Government Licence v2.0  - Open Government Licence
+
+More information on the Organisation Data Service can be found [on the HSCIC website](http://systems.hscic.gov.uk/data/ods)
 
 ## License
-
 This project is licensed under MIT License.
 
 Copyright (c) 2015 Matt Stibbs
