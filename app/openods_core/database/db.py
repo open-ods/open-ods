@@ -166,32 +166,40 @@ def get_organisation_by_odscode(odscode):
         organisation_odscode = row_org['odscode']
 
         # Retrieve the roles for the organisation
-        sql = "SELECT r.code, csr.displayname, r.unique_id, r.status, " \
-              "r.operational_start_date, r.operational_end_date, r.legal_start_date, " \
-              "r.legal_end_date, r.primary_role from roles r " \
-              "left join codesystems csr on r.code = csr.id " \
-              "WHERE r.org_odscode = %s; "
-        data = (organisation_odscode,)
+        try:
+            sql = "SELECT r.code, csr.displayname, r.unique_id, r.status, " \
+                  "r.operational_start_date, r.operational_end_date, r.legal_start_date, " \
+                  "r.legal_end_date, r.primary_role from roles r " \
+                  "left join codesystems csr on r.code = csr.id " \
+                  "WHERE r.org_odscode = %s; "
+            data = (organisation_odscode,)
 
-        cur.execute(sql, data)
-        rows_roles = cur.fetchall()
-        log.debug(rows_roles)
+            cur.execute(sql, data)
+            rows_roles = cur.fetchall()
+            log.debug(rows_roles)
+
+        except Exception as e:
+            raise
 
         # Retrieve the relationships for the organisation
-        sql = "SELECT rs.code, csr.displayname, rs.unique_id, rs.target_odscode, rs.status, " \
-              "rs.operational_start_date, rs.operational_end_date, rs.legal_start_date, " \
-              "rs.legal_end_date, o.name from relationships rs " \
-            "left join codesystems csr on rs.code = csr.id " \
-            "left join organisations o on rs.target_odscode = o.odscode " \
-            "WHERE rs.org_odscode = %s; "
-        data = (organisation_odscode,)
-
-        cur.execute(sql, data)
-        rows_relationships = cur.fetchall()
-        log.debug(rows_relationships)
-
         try:
-            # Retrieve the addresses for the organisation
+            sql = "SELECT rs.code, csr.displayname, rs.unique_id, rs.target_odscode, rs.status, " \
+                  "rs.operational_start_date, rs.operational_end_date, rs.legal_start_date, " \
+                  "rs.legal_end_date, o.name from relationships rs " \
+                "left join codesystems csr on rs.code = csr.id " \
+                "left join organisations o on rs.target_odscode = o.odscode " \
+                "WHERE rs.org_odscode = %s; "
+            data = (organisation_odscode,)
+
+            cur.execute(sql, data)
+            rows_relationships = cur.fetchall()
+            log.debug(rows_relationships)
+
+        except Exception as e:
+            raise
+
+        # Retrieve the addresses for the organisation
+        try:
             sql = "SELECT street_address_line1, " \
                   "street_address_line2, " \
                   "street_address_line3, " \
@@ -210,12 +218,14 @@ def get_organisation_by_odscode(odscode):
         except Exception as e:
             raise
 
+        # Retrieve the successors / predecessors for the organisation
         try:
-            # Retrieve the successors / predecessors for the organisation
             sql = "SELECT type, target_odscode as targetOdsCode, " \
+                  "o.name as targetName, " \
                   "target_primary_role_code as targetPrimaryRoleCode, " \
                   "unique_id as uniqueId " \
                   "FROM successors s " \
+                  "LEFT JOIN organisations o on s.target_odscode = o.odscode " \
                   "WHERE s.org_odscode = %s;"
             data = (organisation_odscode,)
 
@@ -270,7 +280,7 @@ def get_organisation_by_odscode(odscode):
                     'href': link_target_href
                 }]
 
-            relationships.append({'relationship': relationship})
+            relationships.append(relationship)
 
         result_data['relationships'] = relationships
 
@@ -323,7 +333,7 @@ def get_organisation_by_odscode(odscode):
                     'href': link_role_href
                 }]
 
-            roles.append({'role': role})
+            roles.append(role)
 
         result_data['roles'] = roles
 
@@ -333,20 +343,25 @@ def get_organisation_by_odscode(odscode):
         for address in rows_addresses:
             address = remove_none_values_from_dictionary(address)
 
+            address_lines = []
+
             try:
-                address['streetAddressLine1'] = address.pop('street_address_line1')
+                address_lines.append(address.pop('street_address_line1'))
             except:
                 pass
 
             try:
-                address['streetAddressLine2'] = address.pop('street_address_line2')
+                address_lines.append(address.pop('street_address_line2'))
             except:
                 pass
 
             try:
-                address['streetAddressLine3'] = address.pop('street_address_line3')
+                address_lines.append(address.pop('street_address_line3'))
             except:
                 pass
+
+            if len(address_lines) > 0:
+                address['addressLines'] = address_lines
 
             try:
                 address['postalCode'] = address.pop('postal_code')
@@ -367,6 +382,8 @@ def get_organisation_by_odscode(odscode):
             successor = remove_none_values_from_dictionary(successor)
 
             successor['targetOdsCode'] = successor.pop('targetodscode')
+            successor['targetPrimaryRoleCode'] = successor.pop('targetprimaryrolecode')
+            successor['targetName'] = successor.pop('targetname')
             successor['uniqueId'] = successor.pop('uniqueid')
 
             successor['links'] = [{
@@ -374,12 +391,13 @@ def get_organisation_by_odscode(odscode):
                     'href': link_successor_href
                 }]
 
-            successors.append({'successor': successor})
+            successors.append(successor)
 
         result_data['successors'] = successors
 
         # Tidy up the field names etc. in the organisation dictionary before it's returned
         result_data['odsCode'] = result_data.pop('odscode')
+        result_data['lastChanged'] = result_data.pop('last_changed')
         result_data['refOnly'] = bool(result_data.pop('ref_only'))
         result_data['recordClass'] = result_data.pop('record_class')
         result_data.pop('ref')

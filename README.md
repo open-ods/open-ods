@@ -3,10 +3,8 @@
 ## Chat
 [![Join the chat at https://gitter.im/open-ods/open-ods](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/open-ods/open-ods?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-## Issues
-[![Stories in Ready](https://badge.waffle.io/open-ods/open-ods.svg?label=ready&title=Ready)](http://waffle.io/open-ods/open-ods)
-
-You can visualize the issues by using: [Waffle.io](https://waffle.io/mattstibbs/open-ods) or [Huboard](https://huboard.com/mattstibbs/open-ods/#/)
+## Issue Trackers
+You can visualize the issues by using: [Huboard](https://huboard.com/open-ods/open-ods#/) or [Waffle.io](https://waffle.io/open-ods/open-ods)
 
 ## Continuous Integration
 Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](https://travis-ci.org/open-ods/open-ods)
