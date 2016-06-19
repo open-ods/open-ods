@@ -1,5 +1,5 @@
 import logging
-from flask.ext.autodoc import Autodoc
+from flask_autodoc import Autodoc
 
 import config
 import dicttoxml
