@@ -1,3 +1,7 @@
+0.6 - 15th October 2016
+-----------------------
+Release with latest tweaks ready for forking of project
+
 0.4c - 8th January 2016
 ---
 Remove the 'address' property from address objects in the 'addresses' array.
