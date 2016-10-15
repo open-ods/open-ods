@@ -1,6 +1,6 @@
 import logging
 import urllib.parse
-from flask.ext.cacheify import init_cacheify
+from flask_cacheify import init_cacheify
 
 from app.openods_core import app
 from flask import request
