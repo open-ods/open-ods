@@ -19,6 +19,7 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 log.addHandler(ch)
 
+# Allow Cross Origin Resource Sharing for routes under /api/ so that other services can use the data from the API
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
