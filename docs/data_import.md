@@ -1,7 +1,8 @@
-# Importing ODS Data Into OpenODS
+# OpenODS Import Tool
+## Importing the ODS XML data into an OpenODS database
 
 ### Pre-requisites
-* SQLite or PostgreSQL (only PostgreSQL is supported by the API app currently)
+* SQLite or PostgreSQL (the API service requires PostgreSQL so SQLite just for database testing)
 * A way of running SQL queries against PostgreSQL (I use psql or [pgAdmin](http://www.pgadmin.org/download/macosx.php))
 * All setup steps in the main README should be completed
 

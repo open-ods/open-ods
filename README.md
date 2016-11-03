@@ -1,10 +1,4 @@
-# open-ods
-
-## Chat
-[![Join the chat at https://gitter.im/open-ods/open-ods](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/open-ods/open-ods?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-## Issue Trackers
-You can visualize the issues by using: [Huboard](https://huboard.com/open-ods/open-ods#/) or [Waffle.io](https://waffle.io/open-ods/open-ods)
+# OpenODS
 
 ## Continuous Integration
 Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](https://travis-ci.org/open-ods/open-ods)
@@ -16,10 +10,10 @@ Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](h
 ## Getting Started
 
 ### Pre-requisites
-* Python 3.4+
+* Python 3.5
 * Virtualenv `pip install -g virtualenv`
 * PostgreSQL ([Postgres.app](http://postgresapp.com) is good for OSX development)
-* [Heroku Toolbelt](https://toolbelt.heroku.com) (Not mandatory but helpful if you're going to interact with Heroku)
+* [Heroku Toolbelt](https://toolbelt.heroku.com) (Not mandatory but helpful if you're going to use Heroku to host)
 
 ### Steps
 
@@ -78,6 +72,6 @@ More information on the Organisation Data Service can be found [on the HSCIC web
 ## License
 This project is licensed under MIT License.
 
-Copyright (c) 2015 Matt Stibbs
+Copyright (c) 2016 Matt Stibbs
 
 See [LICENSE.md](LICENSE.md).
