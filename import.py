@@ -28,6 +28,8 @@ parser.add_argument("-s", "--schema", type=str,
                     help="specify the path to the local XSD schema file")
 parser.add_argument("-u", "--url", type=str,
                     help="specify the url to the official XML data file")
+parser.add_argument("-w", "--schema_url", type=str,
+                    help="specify the url to the official XML schema file")
 parser.add_argument("-c", "--connection", type=str,
                     help="specify the connection string for the database engine")
 
