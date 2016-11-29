@@ -28,6 +28,8 @@ parser.add_argument("-s", "--schema", type=str,
                     help="specify the path to the local XSD schema file")
 parser.add_argument("-u", "--url", type=str,
                     help="specify the url to the official XML data file")
+parser.add_argument("-w", "--schema_url", type=str,
+                    help="specify the url to the official XML schema file")
 parser.add_argument("-c", "--connection", type=str,
                     help="specify the connection string for the database engine")
 
@@ -54,14 +56,21 @@ if args.schema:
     schema_file_path = args.schema
     log.debug("Schema parameter provided: %s" % schema_file_path)
 else:
-    schema_file_path = 'data/HSCOrgRefData.xsd'
+    schema_file_path = 'data/ancillary.zip'
 
-# Set the schema file path if specified, otherwise use default
+# Set the data file url if specified, otherwise use default
 if args.url:
-    url_path = args.url
-    log.debug("URL parameter provided: %s" % url_path)
+    xml_url_path = args.url
+    log.debug("URL parameter provided: %s" % xml_url_path)
 else:
-    url_path = 'http://systems.hscic.gov.uk/data/ods/interfacechanges/fullfile.zip'
+    xml_url_path = 'http://systems.hscic.gov.uk/data/ods/interfacechanges/fullfile.zip'
+
+# Set the schema file url if specified, otherwise use default
+if args.url:
+    schema_url_path = args.schema_url
+    log.debug("URL parameter provided: %s" % schema_url_path)
+else:
+    schema_url_path = 'http://systems.digital.nhs.uk/data/ods/interfacechanges/ancillary.zip'
 
 # Set the connection string using command line parameter
 if args.connection:
@@ -83,7 +92,8 @@ else:
     # Instantiate an instance of the ODSFileManager to get us the validated XML data to work with
     File_manager = ODSFileManager(xml_file_path=xml_file_path,
                                   schema_file_path=schema_file_path,
-                                  xml_url=url_path)
+                                  xml_url=xml_url_path,
+                                  schema_url=schema_url_path)
     
 
 def get_engine():
