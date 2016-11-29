@@ -14,18 +14,6 @@ def remove_none_values_from_dictionary(dirty_dict):
     return clean_dict
 
 
-# TODO: Is this method even needed any more?
-# def get_latest_org():
-#     conn = connect.get_connection()
-#     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-#     cur.execute("SELECT * from organisations order by lastchanged desc limit 1;")
-#     rows = cur.fetchall()
-#
-#     for row in rows:
-#         print(row)
-#         return row
-
-
 def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None, role_code=None, query=None):
     """Retrieves a list of organisations
 

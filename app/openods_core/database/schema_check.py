@@ -12,6 +12,7 @@ log = logging.getLogger('openods')
 url = urlparse(config.DATABASE_URL)
 
 
+# Connects to the database and checks that the database schema matches that which is expected by the code
 def check_schema_version():
     try:
         conn = psycopg2.connect(

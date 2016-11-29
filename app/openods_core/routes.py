@@ -45,7 +45,6 @@ def get_info():
     return jsonify(dataset_info)
 
 
-
 @auto.doc()
 @app.route("/api/organisations", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
