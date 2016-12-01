@@ -525,10 +525,10 @@ def get_role_type_by_id(role_id):
             'rel':'self',
             'href': link_self_href
             }, {
-            'rel':'searchOrganisationsWithThisPrimaryRoleType',
+            'rel':'searchOrganisationsWithThisPrimaryRole',
             'href': link_search_primary_role_code_href
             }, {
-            'rel':'searchOrganisationsWithThisRoleType',
+            'rel':'searchOrganisationsWithThisRole',
             'href': link_search_role_code_href
             }]
     }
