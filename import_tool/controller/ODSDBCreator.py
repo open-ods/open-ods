@@ -306,17 +306,17 @@ class ODSDBCreator(object):
                 pass
 
             try:
-                address.street_address_line1 = location.find('StreetAddressLine1').text
+                address.address_line1 = location.find('AddrLn1').text
             except AttributeError:
                 pass
 
             try:
-                address.street_address_line2 = location.find('StreetAddressLine2').text
+                address.address_line2 = location.find('AddrLn2').text
             except AttributeError:
                 pass
 
             try:
-                address.street_address_line3 = location.find('StreetAddressLine3').text
+                address.address_line3 = location.find('AddrLn3').text
             except AttributeError:
                 pass
 
@@ -331,7 +331,7 @@ class ODSDBCreator(object):
                 pass
 
             try:
-                address.postal_code = location.find('PostalCode').text
+                address.post_code = location.find('PostCode').text
             except AttributeError:
                 pass
 

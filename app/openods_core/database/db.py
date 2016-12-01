@@ -188,11 +188,11 @@ def get_organisation_by_odscode(odscode):
 
         # Retrieve the addresses for the organisation
         try:
-            sql = "SELECT street_address_line1, " \
-                  "street_address_line2, " \
-                  "street_address_line3, " \
+            sql = "SELECT address_line1, " \
+                  "address_line2, " \
+                  "address_line3, " \
                   "town, county, " \
-                  "postal_code, " \
+                  "post_code, " \
                   "country, uprn, " \
                   "location_id " \
                   "FROM addresses a " \
@@ -334,17 +334,17 @@ def get_organisation_by_odscode(odscode):
             address_lines = []
 
             try:
-                address_lines.append(address.pop('street_address_line1'))
+                address_lines.append(address.pop('address_line1'))
             except:
                 pass
 
             try:
-                address_lines.append(address.pop('street_address_line2'))
+                address_lines.append(address.pop('address_line2'))
             except:
                 pass
 
             try:
-                address_lines.append(address.pop('street_address_line3'))
+                address_lines.append(address.pop('address_line3'))
             except:
                 pass
 
@@ -352,7 +352,7 @@ def get_organisation_by_odscode(odscode):
                 address['addressLines'] = address_lines
 
             try:
-                address['postalCode'] = address.pop('postal_code')
+                address['postCode'] = address.pop('post_code')
             except:
                 pass
 

@@ -20,12 +20,12 @@ class Address(Base):
     addresses_ref = Column(Integer, primary_key=True)
     organisation_ref = Column(Integer)
     org_odscode = Column(String(10))
-    street_address_line1 = Column(String(75))
-    street_address_line2 = Column(String(75))
-    street_address_line3 = Column(String(75))
+    address_line1 = Column(String(75))
+    address_line2 = Column(String(75))
+    address_line3 = Column(String(75))
     town = Column(String(75))
     county = Column(String(75))
-    postal_code = Column(String(15))
+    post_code = Column(String(15))
     country = Column(String(50))
     uprn = Column(Integer)
     location_id = Column(String(12))
@@ -37,11 +37,11 @@ class Address(Base):
                 self.addresses_ref,
                 self.organisation_ref,
                 self.org_odscode,
-                self.street_address_line1,
-                self.street_address_line2,
-                self.street_address_line3,
+                self.address_line1,
+                self.address_line2,
+                self.address_line3,
                 self.town,
                 self.county,
-                self.postal_code,
+                self.post_code,
                 self.uprn,
                 self.location_id)
