@@ -70,8 +70,8 @@ Organisation Data Service, Health and Social Care Information Centre, licenced u
 More information on the Organisation Data Service can be found [on the HSCIC website](http://systems.hscic.gov.uk/data/ods)
 
 ## License
-This project is licensed under MIT License.
+This project is licensed under GNU GPL v3.
 
-Copyright (c) 2016 Matt Stibbs
+Copyright (c) 2016 Matt Stibbs and Tony Yates
 
 See [LICENSE.md](LICENSE.md).
