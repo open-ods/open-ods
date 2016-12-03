@@ -64,6 +64,10 @@ Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](h
 
 7. Now go import the ODS data into your OpenODS database -> [Instructions for importing the ODS data into your PostgreSQL database](docs/data_import.md)
 
+
+## Docker
+To get an instance of OpenODS running in Docker, [follow this README](Docker/README.md)
+
 ## Source Data Attribution
 Organisation Data Service, Health and Social Care Information Centre, licenced under the Open Government Licence v2.0  - Open Government Licence
 
