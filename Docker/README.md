@@ -4,7 +4,7 @@ To deploy OpenODS in Docker, follow the below instructions:
 
 ## Running on a local machine
 
-To build and deploy on a local machine running Docker, from this directory - first, set up a directory to hold the postgres data (you can put it wherever you like!):
+To build and deploy on a local machine running Docker, from this directory (`Docker/`) - first, set up a directory to hold the postgres data (you can put it wherever you like!):
 
 ```bash
 mkdir -p /docker-data/openods-postgres-data
@@ -30,7 +30,8 @@ cd ~
 wget https://s3.amazonaws.com/openods-assets/database_backups/openods009_3.dump
 ```
 
-Now, you can start a a postgres container, and load the data into it:
+Now, you can start a a postgres container, and load the data into it.
+Navigate back to the `Docker/' directory, then:
 
 ```bash
 USER=myuser PASSWORD=12345 ./deploy-postgres.sh
