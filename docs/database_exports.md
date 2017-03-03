@@ -78,7 +78,7 @@ If you are using Heroku to host your application, you will need to upload the ba
 1. As we exported the database using the Postgres custom compressed format, we use the pg_restore command to restore the database from the file:
 
     ```bash
-    $ pg_restore -d openods openods009.dump
+    $ pg_restore -d openods openods_010.dump
     ```
     
 2. You could then run the following in the terminal to confirm that the correct version of the database has been restored:
@@ -88,7 +88,7 @@ If you are using Heroku to host your application, you will need to upload the ba
     
           key       | value
     ----------------+-------
-     schema_version | 009
+     schema_version | 010
     (1 row)
     
     $
