@@ -1,3 +1,8 @@
+0.x - xx xxxxxx xxxx
+--------------------
+* Updated import tool so that it downloads the schema file as well as the data file when running in download mode
+* Updated XML element names and database field names in line with December 2016 XML schema
+
 0.6 - 15th October 2016
 -----------------------
 Release with latest tweaks ready for forking of project

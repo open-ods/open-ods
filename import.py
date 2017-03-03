@@ -26,7 +26,7 @@ parser.add_argument("-x", "--xml", type=str,
                     help="specify the path to the local XML data file")
 parser.add_argument("-s", "--schema", type=str,
                     help="specify the path to the local XSD schema file")
-parser.add_argument("-u", "--url", type=str,
+parser.add_argument("-u", "--data_url", type=str,
                     help="specify the url to the official XML data file")
 parser.add_argument("-w", "--schema_url", type=str,
                     help="specify the url to the official XML schema file")
@@ -56,21 +56,21 @@ if args.schema:
     schema_file_path = args.schema
     log.debug("Schema parameter provided: %s" % schema_file_path)
 else:
-    schema_file_path = 'data/ancillary.zip'
+    schema_file_path = 'data/ancilliary.zip'
 
 # Set the data file url if specified, otherwise use default
-if args.url:
-    xml_url_path = args.url
+if args.data_url:
+    xml_url_path = args.data_url
     log.debug("URL parameter provided: %s" % xml_url_path)
 else:
     xml_url_path = 'http://systems.hscic.gov.uk/data/ods/interfacechanges/fullfile.zip'
 
 # Set the schema file url if specified, otherwise use default
-if args.url:
+if args.schema_url:
     schema_url_path = args.schema_url
     log.debug("URL parameter provided: %s" % schema_url_path)
 else:
-    schema_url_path = 'http://systems.digital.nhs.uk/data/ods/interfacechanges/ancillary.zip'
+    schema_url_path = 'https://digital.nhs.uk/media/971/ancilliary/zip/ancilliary'
 
 # Set the connection string using command line parameter
 if args.connection:
