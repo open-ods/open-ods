@@ -14,18 +14,6 @@ def remove_none_values_from_dictionary(dirty_dict):
     return clean_dict
 
 
-# TODO: Is this method even needed any more?
-# def get_latest_org():
-#     conn = connect.get_connection()
-#     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-#     cur.execute("SELECT * from organisations order by lastchanged desc limit 1;")
-#     rows = cur.fetchall()
-#
-#     for row in rows:
-#         print(row)
-#         return row
-
-
 def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None, role_code=None, query=None):
     """Retrieves a list of organisations
 
@@ -200,11 +188,11 @@ def get_organisation_by_odscode(odscode):
 
         # Retrieve the addresses for the organisation
         try:
-            sql = "SELECT street_address_line1, " \
-                  "street_address_line2, " \
-                  "street_address_line3, " \
+            sql = "SELECT address_line1, " \
+                  "address_line2, " \
+                  "address_line3, " \
                   "town, county, " \
-                  "postal_code, " \
+                  "post_code, " \
                   "country, uprn, " \
                   "location_id " \
                   "FROM addresses a " \
@@ -346,17 +334,17 @@ def get_organisation_by_odscode(odscode):
             address_lines = []
 
             try:
-                address_lines.append(address.pop('street_address_line1'))
+                address_lines.append(address.pop('address_line1'))
             except:
                 pass
 
             try:
-                address_lines.append(address.pop('street_address_line2'))
+                address_lines.append(address.pop('address_line2'))
             except:
                 pass
 
             try:
-                address_lines.append(address.pop('street_address_line3'))
+                address_lines.append(address.pop('address_line3'))
             except:
                 pass
 
@@ -364,7 +352,7 @@ def get_organisation_by_odscode(odscode):
                 address['addressLines'] = address_lines
 
             try:
-                address['postalCode'] = address.pop('postal_code')
+                address['postCode'] = address.pop('post_code')
             except:
                 pass
 
@@ -537,10 +525,10 @@ def get_role_type_by_id(role_id):
             'rel':'self',
             'href': link_self_href
             }, {
-            'rel':'searchOrganisationsWithThisPrimaryRoleType',
+            'rel':'searchOrganisationsWithThisPrimaryRole',
             'href': link_search_primary_role_code_href
             }, {
-            'rel':'searchOrganisationsWithThisRoleType',
+            'rel':'searchOrganisationsWithThisRole',
             'href': link_search_role_code_href
             }]
     }

@@ -1,10 +1,4 @@
-# open-ods
-
-## Chat
-[![Join the chat at https://gitter.im/open-ods/open-ods](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/open-ods/open-ods?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-## Issue Trackers
-You can visualize the issues by using: [Huboard](https://huboard.com/open-ods/open-ods#/) or [Waffle.io](https://waffle.io/open-ods/open-ods)
+# OpenODS
 
 ## Continuous Integration
 Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](https://travis-ci.org/open-ods/open-ods)
@@ -16,10 +10,10 @@ Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](h
 ## Getting Started
 
 ### Pre-requisites
-* Python 3.4+
+* Python 3.5
 * Virtualenv `pip install -g virtualenv`
 * PostgreSQL ([Postgres.app](http://postgresapp.com) is good for OSX development)
-* [Heroku Toolbelt](https://toolbelt.heroku.com) (Not mandatory but helpful if you're going to interact with Heroku)
+* [Heroku Toolbelt](https://toolbelt.heroku.com) (Not mandatory but helpful if you're going to use Heroku to host)
 
 ### Steps
 
@@ -70,14 +64,18 @@ Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](h
 
 7. Now go import the ODS data into your OpenODS database -> [Instructions for importing the ODS data into your PostgreSQL database](docs/data_import.md)
 
+
+## Docker
+To get an instance of OpenODS running in Docker, [follow this README](Docker/README.md)
+
 ## Source Data Attribution
 Organisation Data Service, Health and Social Care Information Centre, licenced under the Open Government Licence v2.0  - Open Government Licence
 
 More information on the Organisation Data Service can be found [on the HSCIC website](http://systems.hscic.gov.uk/data/ods)
 
 ## License
-This project is licensed under MIT License.
+This project is licensed under GNU GPL v3.
 
-Copyright (c) 2015 Matt Stibbs
+Copyright (c) 2017 Matt Stibbs and Tony Yates
 
 See [LICENSE.md](LICENSE.md).

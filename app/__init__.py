@@ -1,6 +1,8 @@
 __version__ = '0.6'
 
 import logging
+import re
+import config as config
 
 # Import flask and template operators
 from flask import Flask, render_template
@@ -19,7 +21,9 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 log.addHandler(ch)
 
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+# Allow Cross Origin Resource Sharing for routes under /api/ so that other services can use the data from the API
+regEx=re.compile(config.API_URL+"/*")
+CORS(app, resources={regEx: {"origins": "*"}})
 
 
 # HTTP error handling

@@ -1,8 +1,8 @@
 ## Importing and exporting the database
 
-If you are deploying OpenODS on a vanilla server, you may be able to run the import routine on the server itself (RAM permitting).
+If you are deploying OpenODS on a vanilla server, you may be able to run the import routine on the server itself (note the routine is RAM heavy).
 
-If you are deploying somewhere where running the import on the server itself is not an option (e.g. Heroku or a low-powered VPS) then you will probably want to run the import on another machine and simply restore the database to your deployed instance.
+If you are deploying somewhere where it is not an option to run the import on the server itself (e.g. Heroku or a low-powered VPS) then you will need to run the import on a local machine and then restore the database to your deployed instance.
  
 **Remember to always make sure that the schema version of the database you are using matches the expected schema version of the deployed application (see config.py)**
 
@@ -26,9 +26,14 @@ For SQLite this is really simple:
 
 
 ### Postgres
-You will need to ensure you have an instance of Postgres installed on the machine that you want to run the import on. (Postgres.app is easy and self-contained if you are using OSX)
+You will need to ensure you have an instance of Postgres installed on the machine that you want to run the import on (Postgres.app is easy and self-contained if you are using OSX).
 
 1. First create an 'openods' role / user on your Postgres server
+
+    ```sql
+    TODO: This command needs updating
+    psql -c "CREATE ROLE openods"'
+    ```
  
 2. Now create an empty database (I usually call it 'openods') and set the owner to role you created in the previous step
 

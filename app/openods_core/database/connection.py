@@ -26,7 +26,7 @@ def get_connection():
         log.info("Connected to database")
 
     except psycopg2.Error as e:
-        log.warning("I am unable to connect to the database")
+        log.warning("Unable to connect to the database")
         sys.exit(1)
 
     return conn
