@@ -76,6 +76,6 @@ More information on the Organisation Data Service can be found [on the HSCIC web
 ## License
 This project is licensed under GNU GPL v3.
 
-Copyright (c) 2016 Matt Stibbs and Tony Yates
+Copyright (c) 2017 Matt Stibbs and Tony Yates
 
 See [LICENSE.md](LICENSE.md).

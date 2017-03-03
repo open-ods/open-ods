@@ -1,7 +1,10 @@
-0.x - xx xxxxxx xxxx
+0.7 - 3rd March 2017
 --------------------
 * Updated import tool so that it downloads the schema file as well as the data file when running in download mode
+    * NOTE: The auto-download part of the import tool is currently broken in this release due to the data files being moved behind a portal login.
 * Updated XML element names and database field names in line with December 2016 XML schema
+* Updated OpenODS database schema version to 010
+* Added configuration setting for API_URL which allows you to set the path that the API listens on
 
 0.6 - 15th October 2016
 -----------------------
