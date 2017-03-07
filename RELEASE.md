@@ -1,3 +1,9 @@
+0.8 - 6th March 2017
+--------------------
+* Import tool has been moved to its own repository
+* Documentation updated with new versions
+* 'Try Me' pre-populated JSON has been updated with new schema
+
 0.7 - 3rd March 2017
 --------------------
 * Updated import tool so that it downloads the schema file as well as the data file when running in download mode
