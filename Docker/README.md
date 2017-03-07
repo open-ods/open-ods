@@ -27,7 +27,7 @@ Currently, the data importer has not been set up for use in Docker, so you will 
 
 ```bash
 cd ~
-wget https://s3.amazonaws.com/openods-assets/database_backups/openods009_3.dump
+wget https://s3.amazonaws.com/openods-assets/database_backups/openods_010.dump
 ```
 
 Now, you can start a a postgres container, and load the data into it.
