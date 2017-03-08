@@ -6,10 +6,12 @@ import config as config
 
 # Import flask and template operators
 from flask import Flask, render_template
+from flask_featureflags import FeatureFlag
 from flask_cors import CORS
 
 # Define the WSGI application object
 app = Flask(__name__)
+feature_flags = FeatureFlag(app)
 
 # Configurations
 app.config.from_object('config')
