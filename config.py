@@ -39,3 +39,10 @@ CSRF_SESSION_KEY = "secret"
 
 # Secret key for signing cookies
 SECRET_KEY = "secret"
+
+# Feature Flags
+RAISE_ERROR_ON_MISSING_FEATURES = True
+
+FEATURE_FLAGS = {
+    'SuppressPrimaryRoleSearchLink': bool(os.environ.get('FT_SUPPRESSPRIMARYROLESEARCHLINK', False)),
+}
