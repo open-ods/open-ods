@@ -4,6 +4,8 @@ import config as config
 import psycopg2
 import psycopg2.extras
 import psycopg2.pool
+import flask_featureflags as feature
+
 from app.openods_core.database import connection as connect
 
 log = logging.getLogger('openods')
@@ -470,6 +472,7 @@ def search_organisation(search_text, offset=0, limit=1000,):
 
 
 def get_role_types():
+
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute("SELECT displayname, id from codesystems "
@@ -484,21 +487,27 @@ def get_role_types():
         link_self_href = str.format('http://{0}/role-types/{1}', config.APP_HOSTNAME, role_code)
         link_search_primary_role_code_href = str.format('http://{0}/organisations?primaryRoleCode={1}', config.APP_HOSTNAME, role_code)
         link_search_role_code_href = str.format('http://{0}/organisations?roleCode={1}', config.APP_HOSTNAME, role_code)
-        result.append({
+        result_data = {
             'name': role_display_name,
             'code': role_code,
             'links': [{
                 'rel':'self',
                 'href': link_self_href
                 }, {
-                'rel':'organisations.searchByPrimaryRoleCode',
-                'href': link_search_primary_role_code_href
-                }, {
                 'rel':'organisations.searchByRoleCode',
                 'href': link_search_role_code_href
                 }]
-        })
+        }
 
+        if not feature.is_active('SuppressPrimaryRoleSearchLink'):
+
+            result_data['links'].append({
+                'rel':'organisations.searchByPrimaryRoleCode',
+                'href': link_search_primary_role_code_href
+                })
+
+        result.append(result_data)
+    print(result)
     return result
 
 
@@ -525,13 +534,17 @@ def get_role_type_by_id(role_id):
             'rel':'self',
             'href': link_self_href
             }, {
-            'rel':'searchOrganisationsWithThisPrimaryRole',
-            'href': link_search_primary_role_code_href
-            }, {
             'rel':'searchOrganisationsWithThisRole',
             'href': link_search_role_code_href
             }]
     }
+
+    if not feature.is_active('SuppressPrimaryRoleSearchLink'):
+
+        result['links'].append({
+            'rel': 'organisations.searchByPrimaryRoleCode',
+            'href': link_search_primary_role_code_href
+        })
 
     return result
 
