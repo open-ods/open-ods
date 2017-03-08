@@ -1,3 +1,8 @@
+0.9 - 8th March 2017
+--------------------
+* Added a feature toggle to hide the PrimaryRole Search hypermedia link
+* Updated package dependencies
+
 0.8 - 6th March 2017
 --------------------
 * Import tool has been moved to its own repository
