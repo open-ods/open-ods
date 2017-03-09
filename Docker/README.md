@@ -35,7 +35,7 @@ Navigate back to the `Docker/' directory, then:
 
 ```bash
 DB_PASSWORD=12345 ./deploy-postgres.sh
-DB_PASSWORD=12345 ./import-data.sh ~/openods009_3.dump
+DB_PASSWORD=12345 ./import-data.sh ~/openods_010.dump
 ```
 
 And then start the API container:
