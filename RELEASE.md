@@ -1,3 +1,7 @@
+0.10 - 10th March 2017
+----------------------
+* Added support for feature toggle to Docker setup
+
 0.9 - 8th March 2017
 --------------------
 * Added a feature toggle to hide the PrimaryRole Search hypermedia link
