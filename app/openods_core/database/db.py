@@ -4,6 +4,8 @@ import config as config
 import psycopg2
 import psycopg2.extras
 import psycopg2.pool
+import flask_featureflags as feature
+
 from app.openods_core.database import connection as connect
 
 log = logging.getLogger('openods')
@@ -188,11 +190,11 @@ def get_organisation_by_odscode(odscode):
 
         # Retrieve the addresses for the organisation
         try:
-            sql = "SELECT street_address_line1, " \
-                  "street_address_line2, " \
-                  "street_address_line3, " \
+            sql = "SELECT address_line1, " \
+                  "address_line2, " \
+                  "address_line3, " \
                   "town, county, " \
-                  "postal_code, " \
+                  "post_code, " \
                   "country, uprn, " \
                   "location_id " \
                   "FROM addresses a " \
@@ -334,17 +336,17 @@ def get_organisation_by_odscode(odscode):
             address_lines = []
 
             try:
-                address_lines.append(address.pop('street_address_line1'))
+                address_lines.append(address.pop('address_line1'))
             except:
                 pass
 
             try:
-                address_lines.append(address.pop('street_address_line2'))
+                address_lines.append(address.pop('address_line2'))
             except:
                 pass
 
             try:
-                address_lines.append(address.pop('street_address_line3'))
+                address_lines.append(address.pop('address_line3'))
             except:
                 pass
 
@@ -352,7 +354,7 @@ def get_organisation_by_odscode(odscode):
                 address['addressLines'] = address_lines
 
             try:
-                address['postalCode'] = address.pop('postal_code')
+                address['postCode'] = address.pop('post_code')
             except:
                 pass
 
@@ -470,6 +472,7 @@ def search_organisation(search_text, offset=0, limit=1000,):
 
 
 def get_role_types():
+
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute("SELECT displayname, id from codesystems "
@@ -484,21 +487,27 @@ def get_role_types():
         link_self_href = str.format('http://{0}/role-types/{1}', config.APP_HOSTNAME, role_code)
         link_search_primary_role_code_href = str.format('http://{0}/organisations?primaryRoleCode={1}', config.APP_HOSTNAME, role_code)
         link_search_role_code_href = str.format('http://{0}/organisations?roleCode={1}', config.APP_HOSTNAME, role_code)
-        result.append({
+        result_data = {
             'name': role_display_name,
             'code': role_code,
             'links': [{
                 'rel':'self',
                 'href': link_self_href
                 }, {
-                'rel':'organisations.searchByPrimaryRoleCode',
-                'href': link_search_primary_role_code_href
-                }, {
                 'rel':'organisations.searchByRoleCode',
                 'href': link_search_role_code_href
                 }]
-        })
+        }
 
+        if not feature.is_active('SuppressPrimaryRoleSearchLink'):
+
+            result_data['links'].append({
+                'rel':'organisations.searchByPrimaryRoleCode',
+                'href': link_search_primary_role_code_href
+                })
+
+        result.append(result_data)
+    print(result)
     return result
 
 
@@ -525,13 +534,17 @@ def get_role_type_by_id(role_id):
             'rel':'self',
             'href': link_self_href
             }, {
-            'rel':'searchOrganisationsWithThisPrimaryRoleType',
-            'href': link_search_primary_role_code_href
-            }, {
-            'rel':'searchOrganisationsWithThisRoleType',
+            'rel':'searchOrganisationsWithThisRole',
             'href': link_search_role_code_href
             }]
     }
+
+    if not feature.is_active('SuppressPrimaryRoleSearchLink'):
+
+        result['links'].append({
+            'rel': 'organisations.searchByPrimaryRoleCode',
+            'href': link_search_primary_role_code_href
+        })
 
     return result
 

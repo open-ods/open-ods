@@ -5,8 +5,10 @@ ENV CACHE_TIMEOUT 30
 ENV APP_HOSTNAME localhost:8080/api
 ENV API_USER user
 ENV API_PASS pass
+ENV API_URL /api
 ENV LIVE_DEPLOYMENT FALSE
 ENV INSTANCE_NAME Development
+ENV FT_SUPPRESSPRIMARYROLESEARCHLINK ""
 
 RUN apt-get update && apt-get install -y python3 python3-pip  python3-all-dev postgresql-server-dev-all memcached python-pylibmc libmemcached-dev libxml2 libxml2-dev libxslt-dev
 

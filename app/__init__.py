@@ -1,13 +1,17 @@
 __version__ = '0.6'
 
 import logging
+import re
+import config as config
 
 # Import flask and template operators
 from flask import Flask, render_template
+from flask_featureflags import FeatureFlag
 from flask_cors import CORS
 
 # Define the WSGI application object
 app = Flask(__name__)
+feature_flags = FeatureFlag(app)
 
 # Configurations
 app.config.from_object('config')
@@ -20,7 +24,8 @@ ch.setLevel(logging.DEBUG)
 log.addHandler(ch)
 
 # Allow Cross Origin Resource Sharing for routes under /api/ so that other services can use the data from the API
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+regEx=re.compile(config.API_URL+"/*")
+CORS(app, resources={regEx: {"origins": "*"}})
 
 
 # HTTP error handling

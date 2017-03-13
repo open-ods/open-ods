@@ -27,22 +27,22 @@ Currently, the data importer has not been set up for use in Docker, so you will 
 
 ```bash
 cd ~
-wget https://s3.amazonaws.com/openods-assets/database_backups/openods009_3.dump
+wget https://s3.amazonaws.com/openods-assets/database_backups/openods_010.dump
 ```
 
 Now, you can start a a postgres container, and load the data into it.
 Navigate back to the `Docker/' directory, then:
 
 ```bash
-USER=myuser PASSWORD=12345 ./deploy-postgres.sh
-USER=myuser PASSWORD=12345 ./import-data.sh ~/openods009_3.dump
+DB_PASSWORD=12345 ./deploy-postgres.sh
+DB_PASSWORD=12345 ./import-data.sh ~/openods_010.dump
 ```
 
 And then start the API container:
 
 ```bash
 ./build-openods.sh
-USER=myuser PASSWORD=12345 ./deploy-openods.sh
+DB_PASSWORD=12345 ./deploy-openods.sh
 ```
 	
 Now test it by visiting http://localhost:8083/
