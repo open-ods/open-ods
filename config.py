@@ -10,18 +10,10 @@ API_URL = os.environ.get('API_URL', '/api')
 LIVE_DEPLOYMENT = os.environ.get('LIVE_DEPLOYMENT', 'FALSE')
 INSTANCE_NAME = os.environ.get('INSTANCE_NAME', 'Development')
 
-print(str.format("Database URL: {0}", DATABASE_URL))
-print(str.format("Cache Timeout: {0}", CACHE_TIMEOUT))
-print(str.format("App Hostname: {0}", APP_HOSTNAME))
-print(str.format("App User: {0}", API_USER))
-print(str.format("App Password: {0}", API_PASS))
-print(str.format("API URL: {0}", API_URL))
-
 # Statement for enabling the development environment
 DEBUG = True
 
 # Define the application directory
-import os
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Application threads. A common general assumption is
