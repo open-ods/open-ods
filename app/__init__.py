@@ -18,9 +18,15 @@ app.config.from_object('config')
 
 # Set up logging
 log = logging.getLogger('openods')
-log.setLevel(logging.DEBUG)
+# log.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
+
+# Create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+
+# Add the handlers to the logger
 log.addHandler(ch)
 
 # Allow Cross Origin Resource Sharing for routes under /api/ so that other services can use the data from the API
