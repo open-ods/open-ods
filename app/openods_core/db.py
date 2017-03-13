@@ -1,12 +1,12 @@
 import logging
 
-import config as config
+import flask_featureflags as feature
 import psycopg2
 import psycopg2.extras
 import psycopg2.pool
-import flask_featureflags as feature
 
-from app.openods_core.database import connection as connect
+import config as config
+from app.openods_core import connection as connect
 
 log = logging.getLogger('openods')
 
@@ -44,14 +44,14 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
 
     # If a record_class parameter was specified, add that to the statement
     if recordclass:
-        log.debug('add record_class parameter')
+        log.debug('record_class parameter was provided')
         sql = str.format("{0} {1}", sql, "AND record_class LIKE %s ")
         sql_count = str.format("{0} {1}", sql_count, "AND record_class LIKE %s ")
         data = (recordclass,)
 
     # If a query parameter was specified, add that to the statement
     if query:
-        print('add search query')
+        log.debug("q parameter was provided")
         sql = str.format("{0} {1}", sql, "AND name like UPPER(%s) ")
         sql_count = str.format("{0} {1}", sql_count, "AND name like UPPER(%s) ")
         search_query = str.format("%{0}%", query)
@@ -59,7 +59,7 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
 
     # If a role_code parameter was specified, add that to the statement
     if role_code:
-        print('add role_code')
+        log.debug('role_code parameter was provided')
         sql = str.format("{0} {1}",
                          sql,
                          "AND odscode in "
@@ -76,7 +76,7 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
 
     # Or if a primary_role_code parameter was specified, add that to the statement
     elif primary_role_code:
-        print('add primary_role_code')
+        log.debug('primary_role_code parameter was provided')
         sql = str.format("{0} {1}",
                          sql,
                          "AND odscode in "
@@ -444,7 +444,7 @@ def search_organisation(search_text, offset=0, limit=1000,):
 
         cur.execute(sql, data)
         rows = cur.fetchall()
-        print(rows)
+        log.debug("Number of rows retrieved: {row_count}".format(row_count=rows))
 
         # Raise an exception if the organisation record is not found
         if rows == []:
@@ -507,7 +507,7 @@ def get_role_types():
                 })
 
         result.append(result_data)
-    print(result)
+    log.debug("Returning: {result}".format(result=result))
     return result
 
 
