@@ -1,3 +1,6 @@
+# Database Files
+*.dump
+openods.db
 *.sqlite
 
 # Byte-compiled / optimized / DLL files
@@ -62,7 +65,4 @@ target/
 # PyCharm Settings
 .idea
 
-# Database Dumps
-*.dump
 
-openods.db

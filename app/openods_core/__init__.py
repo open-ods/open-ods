@@ -1,4 +1,6 @@
 import logging
+import re
+import config as config
 from app import app
 from flask_cors import CORS
 
@@ -8,5 +10,6 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 log.addHandler(ch)
 
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+regEx=re.compile(config.API_URL+"/*")
+CORS(app, resources={regEx: {"origins": "*"}})
 

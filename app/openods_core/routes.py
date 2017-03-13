@@ -1,9 +1,9 @@
 import logging
 from flask_autodoc import Autodoc
 
-import config
 import dicttoxml
 import status
+import config as config
 from app import app
 from app.openods_core import cache as ocache
 from app.openods_core import sample_data
@@ -27,7 +27,7 @@ def apidoc():
 
 
 @auto.doc()
-@app.route("/api", methods=['GET'])
+@app.route(config.API_URL, methods=['GET'])
 @ocache.cache.cached(timeout=3600, key_prefix=ocache.generate_cache_key)
 def get_root():
     root_resource = {
@@ -38,16 +38,15 @@ def get_root():
 
 
 @auto.doc()
-@app.route("/api/info", methods=['GET'])
+@app.route(config.API_URL+"/info", methods=['GET'])
 @ocache.cache.cached(timeout=3600, key_prefix=ocache.generate_cache_key)
 def get_info():
     dataset_info = db.get_dataset_info()
     return jsonify(dataset_info)
 
 
-
 @auto.doc()
-@app.route("/api/organisations", methods=['GET'])
+@app.route(config.API_URL+"/organisations", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisations():
     """
@@ -105,7 +104,7 @@ def get_organisations():
 
 
 @auto.doc()
-@app.route("/api/organisations/<ods_code>", methods=['GET'])
+@app.route(config.API_URL+"/organisations/<ods_code>", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation(ods_code):
     """
@@ -153,7 +152,7 @@ def get_organisation(ods_code):
 
 
 @auto.doc()
-@app.route("/api/role-types", methods=['GET'])
+@app.route(config.API_URL+"/role-types", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def route_role_types():
     """
@@ -171,7 +170,7 @@ def route_role_types():
 
 
 @auto.doc()
-@app.route("/api/role-types/<role_code>", methods=['GET'])
+@app.route(config.API_URL+"/role-types/<role_code>", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def route_role_type_by_code(role_code):
     """
@@ -184,7 +183,7 @@ def route_role_type_by_code(role_code):
     return jsonify(result)
 
 
-@app.route("/api/organisations/<ods_code>/endpoints", methods=['GET'])
+@app.route(config.API_URL+"/organisations/<ods_code>/endpoints", methods=['GET'])
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def organisation_endpoints(ods_code):
     """
