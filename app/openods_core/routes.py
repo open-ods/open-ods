@@ -30,6 +30,7 @@ def apidoc():
 @app.route(config.API_URL, methods=['GET'])
 @ocache.cache.cached(timeout=3600, key_prefix=ocache.generate_cache_key)
 def get_root():
+    log.debug("API Request: /")
     root_resource = {
         'organisations': str.format('http://{0}/organisations', config.APP_HOSTNAME),
         'role-types': str.format('http://{0}/role-types', config.APP_HOSTNAME)
@@ -41,6 +42,7 @@ def get_root():
 @app.route(config.API_URL+"/info", methods=['GET'])
 @ocache.cache.cached(timeout=3600, key_prefix=ocache.generate_cache_key)
 def get_info():
+    log.debug("API Request: /info")
     dataset_info = db.get_dataset_info()
     return jsonify(dataset_info)
 
