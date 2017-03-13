@@ -1,14 +1,14 @@
 import logging
+
+import status
+from flask import jsonify, Response, request, json
 from flask_autodoc import Autodoc
 
-import dicttoxml
-import status
 import config as config
 from app import app
-from app.openods_core import cache as ocache
+from app.openods_core import cache as ocache, db
 from app.openods_core import sample_data
-from app.openods_core.database import db, schema_check
-from flask import jsonify, Response, request, render_template, json
+from app.openods_core import db, schema_check
 
 log = logging.getLogger('openods')
 
@@ -88,7 +88,7 @@ def get_organisations():
     # Call the get_org_list method from the database controller, passing in parameters.
     # Method will return a tuple containing the data and the total record count for the specified filter.
     data, total_record_count = db.get_org_list(offset, limit, record_class,
-                                  primary_role_code, role_code, query)
+                                               primary_role_code, role_code, query)
 
     if data:
         result = {'organisations': data}
@@ -110,15 +110,8 @@ def get_organisations():
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation(ods_code):
     """
-
     Returns a specific organisation resource
-
-    Query Parameters:
-    - format=xml/json (Return the data in specified format - defaults to json)
     """
-
-    format_type = request.args.get('format')
-    log.debug(format_type)
 
     data = db.get_organisation_by_odscode(ods_code)
 
@@ -130,24 +123,8 @@ def get_organisation(ods_code):
         except Exception as e:
             pass
 
-        if format_type == 'xml':
-            log.debug("Returning xml")
-            result = dicttoxml.dicttoxml(
-                data, attr_type=False, custom_root='organisation')
-            # log.debug(result)
-            return Response(result, mimetype='text/xml')
-
-        elif format_type == 'json':
-            log.debug("Returning json")
-            result = jsonify(data)
-            # log.debug(result)
-            return result
-
-        else:
-            log.debug("Returning json")
-            result = jsonify(data)
-            # log.debug(result)
-            return result
+        result = jsonify(data)
+        return result
 
     else:
         return "Not found", status.HTTP_404_NOT_FOUND
