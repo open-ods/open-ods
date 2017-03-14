@@ -38,7 +38,7 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
     record_class_param = '%' if recordclass == 'both' else recordclass
 
     # Start the select statement with the field list and from clause
-    sql = "SELECT odscode, name, record_class from organisations WHERE TRUE "
+    sql = "SELECT odscode, name, record_class, status from organisations WHERE TRUE "
     sql_count = "SELECT COUNT(*) from organisations WHERE TRUE "
     data = ()
 
@@ -116,6 +116,7 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
             'odsCode': row['odscode'],
             'name': row['name'],
             'recordClass': row['record_class'],
+            'status': row['status'],
             'links': [{
                 'rel':'self',
                 'href': link_self_href
