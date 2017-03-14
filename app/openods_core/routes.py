@@ -92,14 +92,14 @@ def get_organisations():
 
     if data:
         result = {'organisations': data}
-        resp = Response(json.dumps(result), status=200, mimetype='application/json')
+        resp = jsonify(result)
         resp.headers['X-Total-Count'] = total_record_count
         resp.headers['Access-Control-Expose-Headers'] = 'X-Total-Count'
 
         return resp
     else:
         result = {'organisations': [] }
-        resp = Response(json.dumps(result), status=200, mimetype='application/json')
+        resp = jsonify(result)
         resp.headers['X-Total-Count'] = total_record_count
         resp.headers['Access-Control-Expose-Headers'] = 'X-Total-Count'
         return resp
