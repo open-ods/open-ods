@@ -516,7 +516,7 @@ def get_role_types():
 def get_role_type_by_id(role_id):
 
     sql = "SELECT displayname, id from codesystems " \
-          "WHERE name = 'OrganisationRole' AND id = %s;"
+          "WHERE name = 'OrganisationRole' AND UPPER(id) = UPPER(%s);"
     data = (role_id,)
 
     cur = connect.get_cursor()
