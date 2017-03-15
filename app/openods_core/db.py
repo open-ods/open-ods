@@ -244,8 +244,8 @@ def get_organisation_by_odscode(odscode):
                   "rs.operational_start_date, rs.operational_end_date, rs.legal_start_date, " \
                   "rs.legal_end_date, o.name " \
                   "FROM relationships rs " \
-                  "LEFT JOIM codesystems csr on rs.code = csr.id " \
-                  "LEFT JOIM organisations o on rs.target_odscode = o.odscode " \
+                  "LEFT JOIN codesystems csr on rs.code = csr.id " \
+                  "LEFT JOIN organisations o on rs.target_odscode = o.odscode " \
                   "WHERE UPPER(rs.org_odscode) = UPPER(%s);"
 
             data = (organisation_odscode,)
