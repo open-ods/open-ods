@@ -16,7 +16,8 @@ def remove_none_values_from_dictionary(dirty_dict):
     return clean_dict
 
 
-def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None, role_code=None, query=None):
+def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None, role_code=None, query=None,
+                 postcode=None):
     """Retrieves a list of organisations
 
     Parameters

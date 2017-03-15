@@ -62,6 +62,7 @@ def get_organisations():
     - recordClass=HSCOrg/HSCSite (filter results by a specific recordclass)
     - primaryRoleCode=xxxx (filter results to only those with a specific primaryRole)
     - roleCode=xxxx (filter result to only those with a specific role)
+    - postCode=AB1 2CD (filter organisations with match on the postcode provided)
     """
 
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
@@ -82,13 +83,17 @@ def get_organisations():
     role_code = request.args.get(
         'roleCode' if request.args.get('roleCode') else None)
 
+    postcode = request.args.get(
+        'postCode') if request.args.get('postCode') else None
+
     log.debug("Offset: %s Limit: %s RecordClass: %s PrimaryRoleCode: %s RoleCode: %s Query: %s",
               offset, limit, record_class,primary_role_code,role_code,query)
 
     # Call the get_org_list method from the database controller, passing in parameters.
     # Method will return a tuple containing the data and the total record count for the specified filter.
     data, total_record_count = db.get_org_list(offset, limit, record_class,
-                                               primary_role_code, role_code, query)
+                                               primary_role_code, role_code, query,
+                                               postcode)
 
     if data:
         result = {'organisations': data}
