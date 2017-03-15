@@ -82,16 +82,16 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
         sql = str.format("{0} {1}",
                          sql,
                          "AND UPPER(odscode) in "
-                         "(SELECT UPPER(org_odscode) "
-                         "FROM UPPER(roles) "
+                         "(SELECT org_odscode "
+                         "FROM roles "
                          "WHERE status = 'Active' "
                          "AND UPPER(code) = UPPER(%s)) ")
 
         sql_count = str.format("{0} {1}",
                                sql_count,
                                "AND odscode in "
-                               "(SELECT UPPER(org_odscode) "
-                               "FROM UPPER(roles) "
+                               "(SELECT org_odscode "
+                               "FROM roles "
                                "WHERE status = 'Active' "
                                "AND UPPER(code) = UPPER(%s)) ")
 
@@ -104,8 +104,8 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
         sql = str.format("{0} {1}",
                          sql,
                          "AND odscode IN "
-                         "(SELECT UPPER(org_odscode) "
-                         "FROM UPPER(roles) "
+                         "(org_odscode "
+                         "FROM roles "
                          "WHERE primary_role = TRUE "
                          "AND status = 'Active' "
                          "AND UPPER(code) = UPPER(%s)) ")
@@ -113,8 +113,8 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
         sql_count = str.format("{0} {1}",
                                sql_count,
                                "AND odscode IN "
-                               "(SELECT UPPER(org_odscode) "
-                               "FROM UPPER(roles) "
+                               "(org_odscode "
+                               "FROM roles "
                                "WHERE primary_role = TRUE "
                                "AND status = 'Active' "
                                "AND UPPER(code) = UPPER(%s)) ")
@@ -176,7 +176,8 @@ def get_organisation_by_odscode(odscode):
 
     # Try and retrieve the organisation record for the provided ODS code
     try:
-        sql = "SELECT * from organisations " \
+        sql = "SELECT * " \
+              "FROM organisations " \
               "WHERE UPPER(odscode) = UPPER(%s) "\
               "LIMIT 1;"
 
@@ -487,7 +488,8 @@ def search_organisation(search_text, offset=0, limit=1000,):
         search_term = str.format("%{0}%",
                                  search_text)
 
-        sql = "SELECT * from organisations " \
+        sql = "SELECT * " \
+              "FROM organisations " \
               "WHERE UPPER(name) LIKE UPPER(%s) " \
               "AND status = 'Active' " \
               "ORDER BY name OFFSET %s LIMIT %s;"
