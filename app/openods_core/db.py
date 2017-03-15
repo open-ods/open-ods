@@ -16,8 +16,9 @@ def remove_none_values_from_dictionary(dirty_dict):
     return clean_dict
 
 
-def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None, role_code=None, query=None,
-                 postcode=None):
+def get_org_list(offset=0, limit=20, recordclass='both',
+                 primary_role_code=None, role_code=None,
+                 query=None, postcode=None):
     """Retrieves a list of organisations
 
     Parameters
@@ -28,6 +29,7 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
     recordclass = the type of record to return (HSCSite, HSCOrg, Both)
     primary_role_code = filter organisations to only those where this is their primary role code
     role_code = filter organisations to only those a role with this code
+    postcode = filter organisations to those with a match on the postcode
 
     Returns
     -------
