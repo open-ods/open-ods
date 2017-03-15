@@ -78,6 +78,26 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
         data = data + (search_query,)
 
+    # If a postcode parameter was specified, add that to the statement
+    if postcode:
+        log.debug("postcode parameter was provided")
+
+        new_clause = "AND UPPER(post_code) LIKE UPPER(%s) "
+
+        sql = "{sql} {new_sql}".format(
+            sql=sql, new_sql=new_clause)
+
+        sql_count = "{sql} {new_sql}".format(
+            sql=sql_count, new_sql=new_clause)
+
+        postcode_query = str.format("%{0}%",
+                                    postcode)
+
+        data = data + (postcode_query, )
+
+    log.debug(sql_count)
+    log.debug(data)
+
     # If a role_code parameter was specified, add that to the statement
     if role_code:
         log.debug('role_code parameter was provided')
