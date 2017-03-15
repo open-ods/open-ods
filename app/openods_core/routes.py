@@ -78,10 +78,10 @@ def get_organisations():
         'recordClass') if request.args.get('recordClass') else None
 
     primary_role_code = request.args.get(
-        'primaryRoleCode' if request.args.get('primaryRoleCode') else None)
+        'primaryRoleCode') if request.args.get('primaryRoleCode') else None
 
     role_code = request.args.get(
-        'roleCode' if request.args.get('roleCode') else None)
+        'roleCode') if request.args.get('roleCode') else None
 
     postcode = request.args.get(
         'postCode') if request.args.get('postCode') else None
