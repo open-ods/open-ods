@@ -62,16 +62,16 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
         log.debug('role_code parameter was provided')
         sql = str.format("{0} {1}",
                          sql,
-                         "AND odscode in "
-                         "(SELECT org_odscode from roles "
+                         "AND UPPER(odscode) in "
+                         "(SELECT UPPER(org_odscode) from UPPER(roles) "
                          "WHERE status = 'Active' "
-                         "AND code = %s) ")
+                         "AND UPPER(code) = UPPER(%s)) ")
         sql_count = str.format("{0} {1}",
                          sql_count,
                          "AND odscode in "
-                         "(SELECT org_odscode from roles "
+                         "(SELECT UPPER(org_odscode) from UPPER(roles) "
                          "WHERE status = 'Active' "
-                         "AND code = %s) ")
+                         "AND UPPER(code) = UPPER(%s)) ")
         data = data + (role_code,)
 
     # Or if a primary_role_code parameter was specified, add that to the statement
@@ -80,15 +80,15 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
         sql = str.format("{0} {1}",
                          sql,
                          "AND odscode in "
-                         "(SELECT org_odscode from roles WHERE primary_role = TRUE "
+                         "(SELECT UPPER(org_odscode) from UPPER(roles) WHERE primary_role = TRUE "
                          "AND status = 'Active' "
-                         "AND code = %s) " )
+                         "AND UPPER(code) = UPPER(%s)) " )
         sql_count = str.format("{0} {1}",
                          sql_count,
                          "AND odscode in "
-                         "(SELECT org_odscode from roles WHERE primary_role = TRUE "
+                         "(SELECT UPPER(org_odscode) from UPPER(roles) WHERE primary_role = TRUE "
                          "AND status = 'Active' "
-                         "AND code = %s) " )
+                         "AND UPPER(code) = UPPER(%s)) " )
         data = data + (primary_role_code,)
 
     # Quickly get total number of query results before applying offset and limit
@@ -139,7 +139,7 @@ def get_organisation_by_odscode(odscode):
     # Try and retrieve the organisation record for the provided ODS code
     try:
         sql = "SELECT * from organisations " \
-              "WHERE odscode = %s "\
+              "WHERE UPPER(odscode) = UPPER(%s) "\
               "limit 1;"
         data = (odscode,)
 
@@ -162,7 +162,7 @@ def get_organisation_by_odscode(odscode):
                   "r.operational_start_date, r.operational_end_date, r.legal_start_date, " \
                   "r.legal_end_date, r.primary_role from roles r " \
                   "left join codesystems csr on r.code = csr.id " \
-                  "WHERE r.org_odscode = %s; "
+                  "WHERE UPPER(r.org_odscode) = UPPER(%s); "
             data = (organisation_odscode,)
 
             cur.execute(sql, data)
@@ -179,7 +179,7 @@ def get_organisation_by_odscode(odscode):
                   "rs.legal_end_date, o.name from relationships rs " \
                 "left join codesystems csr on rs.code = csr.id " \
                 "left join organisations o on rs.target_odscode = o.odscode " \
-                "WHERE rs.org_odscode = %s; "
+                "WHERE UPPER(rs.org_odscode) = UPPER(%s); "
             data = (organisation_odscode,)
 
             cur.execute(sql, data)
@@ -199,7 +199,7 @@ def get_organisation_by_odscode(odscode):
                   "country, uprn, " \
                   "location_id " \
                   "FROM addresses a " \
-                  "WHERE a.org_odscode = %s;"
+                  "WHERE UPPER(a.org_odscode) = UPPER(%s);"
             data = (organisation_odscode,)
 
             cur.execute(sql, data)
@@ -217,7 +217,7 @@ def get_organisation_by_odscode(odscode):
                   "unique_id as uniqueId " \
                   "FROM successors s " \
                   "LEFT JOIN organisations o on s.target_odscode = o.odscode " \
-                  "WHERE s.org_odscode = %s;"
+                  "WHERE UPPER(s.org_odscode) = UPPER(%s);"
             data = (organisation_odscode,)
 
             cur.execute(sql, data)
@@ -439,10 +439,11 @@ def search_organisation(search_text, offset=0, limit=1000,):
     try:
         search_term = str.format("%{0}%", search_text)
         sql = "SELECT * from organisations " \
-              "WHERE name like UPPER(%s) and status = 'Active' " \
+              "WHERE UPPER(name) like UPPER(%s) and status = 'Active' " \
               "ORDER BY name OFFSET %s LIMIT %s;;"
         data = (search_term, offset, limit)
 
+        log.debug("Query: {sql}".format(sql=sql))
         cur.execute(sql, data)
         rows = cur.fetchall()
         log.debug("Number of rows retrieved: {row_count}".format(row_count=rows))
@@ -477,7 +478,7 @@ def get_role_types():
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute("SELECT displayname, id from codesystems "
-                "where name = 'OrganisationRole' "\
+                "WHERE name = 'OrganisationRole' "\
                 "order by displayname;")
     rows = cur.fetchall()
     result = []
@@ -515,7 +516,7 @@ def get_role_types():
 def get_role_type_by_id(role_id):
 
     sql = "SELECT displayname, id from codesystems " \
-          "where name = 'OrganisationRole' AND id = %s;"
+          "WHERE name = 'OrganisationRole' AND id = %s;"
     data = (role_id,)
 
     cur = connect.get_cursor()
