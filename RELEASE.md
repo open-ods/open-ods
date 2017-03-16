@@ -1,3 +1,12 @@
+0.11 - 16th March 2017
+----------------------
+* Add postCode query parameter to /organisations [#72](https://github.com/open-ods/open-ods/issues/72)
+* Made query parameters case-insensitive [#66](https://github.com/open-ods/open-ods/issues/66)
+* Include 'status' field on organisation list [#73](https://github.com/open-ods/open-ods/issues/73)
+* Updated DB schema version to 011 to include indexed postcode field on organisations table
+* Removed a load of redundant files and code
+* Slight improvements to the logging output (more work to do)
+
 0.10 - 10th March 2017
 ----------------------
 * Added support for feature toggle to Docker setup
