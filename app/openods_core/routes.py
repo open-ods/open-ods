@@ -94,8 +94,8 @@ def get_organisations():
     # Call the get_org_list method from the database controller, passing in parameters.
     # Method will return a tuple containing the data and the total record count for the specified filter.
     data, total_record_count = db.get_org_list(offset, limit, record_class,
-                                               primary_role_code, role_code, query,
-                                               postcode)
+                                               primary_role_code, role_code,
+                                               query, postcode)
 
     if data:
         result = {'organisations': data}
