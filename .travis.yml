@@ -13,7 +13,7 @@ before_script:
   - psql -f sql/create_user_and_database.sql -U postgres
   - pg_restore -d openods assets/openods.sampledb
 env:
-- API_USER=env_test_user API_PASS=env_test_pass CACHE_TIMEOUT=10 APP_HOSTNAME=localhost:5000 API_USE_AUTH=TRUE
+- API_USER=env_test_user API_PASS=env_test_pass CACHE_TIMEOUT=10 APP_HOSTNAME=localhost:5000
 script: nosetests
 notifications:
   webhooks:

@@ -1,14 +1,14 @@
 import logging
+
+import status
+from flask import jsonify, Response, request, json
 from flask_autodoc import Autodoc
 
-import dicttoxml
-import status
 import config as config
 from app import app
-from app.openods_core import cache as ocache
+from app.openods_core import cache as ocache, db
 from app.openods_core import sample_data
-from app.openods_core.database import db, schema_check
-from flask import jsonify, Response, request, render_template, json
+from app.openods_core import db, schema_check
 
 log = logging.getLogger('openods')
 
@@ -30,6 +30,7 @@ def apidoc():
 @app.route(config.API_URL, methods=['GET'])
 @ocache.cache.cached(timeout=3600, key_prefix=ocache.generate_cache_key)
 def get_root():
+    log.debug("API Request: /")
     root_resource = {
         'organisations': str.format('http://{0}/organisations', config.APP_HOSTNAME),
         'role-types': str.format('http://{0}/role-types', config.APP_HOSTNAME)
@@ -41,6 +42,7 @@ def get_root():
 @app.route(config.API_URL+"/info", methods=['GET'])
 @ocache.cache.cached(timeout=3600, key_prefix=ocache.generate_cache_key)
 def get_info():
+    log.debug("API Request: /info")
     dataset_info = db.get_dataset_info()
     return jsonify(dataset_info)
 
@@ -60,6 +62,7 @@ def get_organisations():
     - recordClass=HSCOrg/HSCSite (filter results by a specific recordclass)
     - primaryRoleCode=xxxx (filter results to only those with a specific primaryRole)
     - roleCode=xxxx (filter result to only those with a specific role)
+    - postCode=AB1 2CD (filter organisations with match on the postcode provided)
     """
 
     log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
@@ -75,29 +78,35 @@ def get_organisations():
         'recordClass') if request.args.get('recordClass') else None
 
     primary_role_code = request.args.get(
-        'primaryRoleCode' if request.args.get('primaryRoleCode') else None)
+        'primaryRoleCode') if request.args.get('primaryRoleCode') else None
 
     role_code = request.args.get(
-        'roleCode' if request.args.get('roleCode') else None)
+        'roleCode') if request.args.get('roleCode') else None
 
-    log.debug("Offset: %s Limit: %s RecordClass: %s PrimaryRoleCode: %s RoleCode: %s Query: %s",
-              offset, limit, record_class,primary_role_code,role_code,query)
+    postcode = request.args.get(
+        'postCode') if request.args.get('postCode') else None
+
+    log.debug("Offset: %s Limit: %s RecordClass: %s PrimaryRoleCode: %s RoleCode: %s Query: %s Postcode: %s",
+              offset, limit, record_class,
+              primary_role_code, role_code,
+              query, postcode)
 
     # Call the get_org_list method from the database controller, passing in parameters.
     # Method will return a tuple containing the data and the total record count for the specified filter.
     data, total_record_count = db.get_org_list(offset, limit, record_class,
-                                  primary_role_code, role_code, query)
+                                               primary_role_code, role_code,
+                                               query, postcode)
 
     if data:
         result = {'organisations': data}
-        resp = Response(json.dumps(result), status=200, mimetype='application/json')
+        resp = jsonify(result)
         resp.headers['X-Total-Count'] = total_record_count
         resp.headers['Access-Control-Expose-Headers'] = 'X-Total-Count'
 
         return resp
     else:
         result = {'organisations': [] }
-        resp = Response(json.dumps(result), status=200, mimetype='application/json')
+        resp = jsonify(result)
         resp.headers['X-Total-Count'] = total_record_count
         resp.headers['Access-Control-Expose-Headers'] = 'X-Total-Count'
         return resp
@@ -108,15 +117,8 @@ def get_organisations():
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisation(ods_code):
     """
-
     Returns a specific organisation resource
-
-    Query Parameters:
-    - format=xml/json (Return the data in specified format - defaults to json)
     """
-
-    format_type = request.args.get('format')
-    log.debug(format_type)
 
     data = db.get_organisation_by_odscode(ods_code)
 
@@ -128,24 +130,8 @@ def get_organisation(ods_code):
         except Exception as e:
             pass
 
-        if format_type == 'xml':
-            log.debug("Returning xml")
-            result = dicttoxml.dicttoxml(
-                data, attr_type=False, custom_root='organisation')
-            # log.debug(result)
-            return Response(result, mimetype='text/xml')
-
-        elif format_type == 'json':
-            log.debug("Returning json")
-            result = jsonify(data)
-            # log.debug(result)
-            return result
-
-        else:
-            log.debug("Returning json")
-            result = jsonify(data)
-            # log.debug(result)
-            return result
+        result = jsonify(data)
+        return result
 
     else:
         return "Not found", status.HTTP_404_NOT_FOUND
