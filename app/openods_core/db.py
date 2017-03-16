@@ -16,7 +16,9 @@ def remove_none_values_from_dictionary(dirty_dict):
     return clean_dict
 
 
-def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None, role_code=None, query=None):
+def get_org_list(offset=0, limit=20, recordclass='both',
+                 primary_role_code=None, role_code=None,
+                 query=None, postcode=None):
     """Retrieves a list of organisations
 
     Parameters
@@ -27,6 +29,7 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
     recordclass = the type of record to return (HSCSite, HSCOrg, Both)
     primary_role_code = filter organisations to only those where this is their primary role code
     role_code = filter organisations to only those a role with this code
+    postcode = filter organisations to those with a match on the postcode
 
     Returns
     -------
@@ -74,6 +77,26 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
                                   query)
 
         data = data + (search_query,)
+
+    # If a postcode parameter was specified, add that to the statement
+    if postcode:
+        log.debug("postcode parameter was provided")
+
+        new_clause = "AND UPPER(post_code) LIKE UPPER(%s) "
+
+        sql = "{sql} {new_sql}".format(
+            sql=sql, new_sql=new_clause)
+
+        sql_count = "{sql} {new_sql}".format(
+            sql=sql_count, new_sql=new_clause)
+
+        postcode_query = str.format("%{0}%",
+                                    postcode)
+
+        data = data + (postcode_query, )
+
+    log.debug(sql_count)
+    log.debug(data)
 
     # If a role_code parameter was specified, add that to the statement
     if role_code:
@@ -221,8 +244,8 @@ def get_organisation_by_odscode(odscode):
                   "rs.operational_start_date, rs.operational_end_date, rs.legal_start_date, " \
                   "rs.legal_end_date, o.name " \
                   "FROM relationships rs " \
-                  "LEFT JOIM codesystems csr on rs.code = csr.id " \
-                  "LEFT JOIM organisations o on rs.target_odscode = o.odscode " \
+                  "LEFT JOIN codesystems csr on rs.code = csr.id " \
+                  "LEFT JOIN organisations o on rs.target_odscode = o.odscode " \
                   "WHERE UPPER(rs.org_odscode) = UPPER(%s);"
 
             data = (organisation_odscode,)
