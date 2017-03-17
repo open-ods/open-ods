@@ -10,11 +10,19 @@ from app.openods_core import cache as ocache, db
 from app.openods_core import sample_data
 from app.openods_core import db, schema_check
 
-log = logging.getLogger('openods')
-
 auto = Autodoc(app)
 
 schema_check.check_schema_version()
+
+
+# Utility method to get source_ip from a request - first checks headers for forwarded IP, then uses remote_addr if not
+def get_source_ip(myrequest):
+    try:
+        source_ip = myrequest.headers['X-Client-IP']
+    except KeyError as e:
+        source_ip = myrequest.remote_addr
+
+    return source_ip
 
 
 @app.route('/apidoc')
@@ -86,10 +94,13 @@ def get_organisations():
     postcode = request.args.get(
         'postCode') if request.args.get('postCode') else None
 
-    log.debug("Offset: %s Limit: %s RecordClass: %s PrimaryRoleCode: %s RoleCode: %s Query: %s Postcode: %s",
-              offset, limit, record_class,
-              primary_role_code, role_code,
-              query, postcode)
+    logger.info("Method={method} Resource={resource} Query={query} Postcode={postcode} Offset={offset} Limit={limit} "
+             "RecordClass={record_class} PrimaryRoleCode={primary_role_code} RoleCode={role_code} "
+             "SourceAddress={source_ip} TargetURL={url}".format(
+                source_ip=get_source_ip(request), resource='organisations', offset=offset, limit=limit, record_class=record_class,
+                primary_role_code=primary_role_code, role_code=role_code, query=query,
+                postcode=postcode, url=request.url, method=request.method)
+             )
 
     # Call the get_org_list method from the database controller, passing in parameters.
     # Method will return a tuple containing the data and the total record count for the specified filter.
@@ -120,6 +131,13 @@ def get_organisation(ods_code):
     Returns a specific organisation resource
     """
 
+    logger = logging.getLogger(__name__)
+    logger.info("Method={method} Resource={resource} ResourceID={resource_id} SourceAddress={source_ip} "
+             "TargetURL={url}".format(
+                source_ip=get_source_ip(request), resource='organisations', resource_id=ods_code,
+                url=request.url, method=request.method)
+             )
+
     data = db.get_organisation_by_odscode(ods_code)
 
     if data:
@@ -146,6 +164,10 @@ def route_role_types():
     Returns the list of available OrganisationRole types
     """
 
+    logger = logging.getLogger(__name__)
+    logger.info("Method={method} Resource={resource} SourceAddress={source_ip} TargetURL={url}".format(
+        source_ip=get_source_ip(request), resource='role-types', url=request.url, method=request.method))
+
     roles_list = db.get_role_types()
 
     result = {
@@ -163,6 +185,13 @@ def route_role_type_by_code(role_code):
 
     Returns the list of available OrganisationRole types
     """
+
+    logger = logging.getLogger(__name__)
+    logger.info("Method={method} Resource={resource} ResourceID={resource_id} SourceAddress={source_ip} "
+             "TargetURL={url}".format(
+              source_ip=get_source_ip(request), resource='role-types', resource_id=role_code,
+              url=request.url, method=request.method)
+             )
 
     result = db.get_role_type_by_id(role_code)
 
