@@ -8,8 +8,6 @@ import psycopg2.pool
 import config as config
 from app.openods_core import connection as connect
 
-log = logging.getLogger('openods')
-
 
 def remove_none_values_from_dictionary(dirty_dict):
     clean_dict = dict((k, v) for k, v in dirty_dict.items() if v is not None)
@@ -35,9 +33,13 @@ def get_org_list(offset=0, limit=20, recordclass='both',
     -------
     List of organisations filtered by provided parameters
     """
-    log.debug(str.format("Offset: {0} Limit: {1}, RecordClass: {2}, Query: {3}", offset, limit, recordclass, query))
+
+    logger = logging.getLogger(__name__)
+
     conn = connect.get_connection()
+
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
     record_class_param = '%' if recordclass == 'both' else recordclass
 
     # Start the select statement with the field list and from clause
@@ -50,7 +52,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
     # If a record_class parameter was specified, add that to the statement
     if recordclass:
-        log.debug('record_class parameter was provided')
+        logger.debug('record_class parameter was provided')
         sql = str.format("{0} {1}",
                          sql,
                          "AND record_class LIKE %s ")
@@ -63,7 +65,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
     # If a query parameter was specified, add that to the statement
     if query:
-        log.debug("q parameter was provided")
+        logger.debug("q parameter was provided")
 
         sql = str.format("{0} {1}",
                          sql,
@@ -80,7 +82,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
     # If a postcode parameter was specified, add that to the statement
     if postcode:
-        log.debug("postcode parameter was provided")
+        logger.debug("postcode parameter was provided")
 
         new_clause = "AND UPPER(post_code) LIKE UPPER(%s) "
 
@@ -95,12 +97,10 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
         data = data + (postcode_query, )
 
-    log.debug(sql_count)
-    log.debug(data)
 
     # If a role_code parameter was specified, add that to the statement
     if role_code:
-        log.debug('role_code parameter was provided')
+        logger.debug('role_code parameter was provided')
 
         sql = str.format("{0} {1}",
                          sql,
@@ -122,7 +122,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
     # Or if a primary_role_code parameter was specified, add that to the statement
     elif primary_role_code:
-        log.debug('primary_role_code parameter was provided')
+        logger.debug('primary_role_code parameter was provided')
 
         sql = str.format("{0} {1}",
                          sql,
@@ -145,8 +145,6 @@ def get_org_list(offset=0, limit=20, recordclass='both',
         data = data + (primary_role_code,)
 
     # Quickly get total number of query results before applying offset and limit
-    log.debug(sql_count)
-    log.debug(data)
     cur.execute(sql_count, data)
     count = cur.fetchone()['count']
 
@@ -159,13 +157,12 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
     data = data + (offset, limit)
 
-    log.debug(sql)
-    log.debug(data)
-
     # Execute the main query
     cur.execute(sql, data)
     rows = cur.fetchall()
-    log.debug(str.format("{0} rows in result", len(rows)))
+
+    logger.debug(str.format("{0} results", len(rows)))
+
     result = []
 
     for row in rows:
@@ -191,6 +188,8 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
 def get_organisation_by_odscode(odscode):
 
+    logger = logging.getLogger(__name__)
+
     # Get a database connection
     conn = connect.get_connection()
 
@@ -208,8 +207,8 @@ def get_organisation_by_odscode(odscode):
 
         cur.execute(sql, data)
         row_org = cur.fetchone()
-        log.debug(str.format("Organisation Record: {0}",
-                             row_org))
+        logger.debug(str.format("Organisation Record: {0}",
+                                row_org))
 
         # Raise an exception if the organisation record is not found
         if row_org is None:
@@ -233,7 +232,6 @@ def get_organisation_by_odscode(odscode):
 
             cur.execute(sql, data)
             rows_roles = cur.fetchall()
-            log.debug(rows_roles)
 
         except Exception as e:
             raise
@@ -252,7 +250,6 @@ def get_organisation_by_odscode(odscode):
 
             cur.execute(sql, data)
             rows_relationships = cur.fetchall()
-            log.debug(rows_relationships)
 
         except Exception as e:
             raise
@@ -273,7 +270,7 @@ def get_organisation_by_odscode(odscode):
 
             cur.execute(sql, data)
             rows_addresses = cur.fetchall()
-            log.debug("Addresses: %s" % rows_addresses)
+            logger.debug("Addresses: %s" % rows_addresses)
 
         except Exception as e:
             raise
@@ -292,7 +289,7 @@ def get_organisation_by_odscode(odscode):
 
             cur.execute(sql, data)
             rows_successors = cur.fetchall()
-            log.debug("Successors: %s" % rows_successors)
+            logger.debug("Successors: %s" % rows_successors)
 
         except Exception as e:
             raise
@@ -493,13 +490,15 @@ def get_organisation_by_odscode(odscode):
         return result_data
 
     except psycopg2.DatabaseError as e:
-        log.error(str.format("Error {0}", e))
+        logger.error(str.format("Error {0}", e))
 
     except Exception as e:
-        log.error(e)
+        logger.error(e)
 
 
 def search_organisation(search_text, offset=0, limit=1000,):
+
+    logger = logging.getLogger(__name__)
 
     # Get a database connection
     conn = connect.get_connection()
@@ -519,10 +518,10 @@ def search_organisation(search_text, offset=0, limit=1000,):
 
         data = (search_term, offset, limit)
 
-        log.debug("Query: {sql}".format(sql=sql))
+        logger.debug("Query: {sql}".format(sql=sql))
         cur.execute(sql, data)
         rows = cur.fetchall()
-        log.debug("Number of rows retrieved: {row_count}".format(row_count=rows))
+        logger.debug("Number of rows retrieved: {row_count}".format(row_count=rows))
 
         # Raise an exception if the organisation record is not found
         if not rows:
@@ -546,10 +545,12 @@ def search_organisation(search_text, offset=0, limit=1000,):
         return result
 
     except Exception as e:
-        log.error(e)
+        logger.error(e)
 
 
 def get_role_types():
+
+    logger = logging.getLogger(__name__)
 
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -557,6 +558,7 @@ def get_role_types():
                 "FROM codesystems "
                 "WHERE name = 'OrganisationRole' "\
                 "ORDER BY displayname;")
+
     rows = cur.fetchall()
     result = []
 
@@ -586,7 +588,9 @@ def get_role_types():
                 })
 
         result.append(result_data)
-    log.debug("Returning: {result}".format(result=result))
+
+    logger.debug("Returning: {result}".format(result=result))
+
     return result
 
 

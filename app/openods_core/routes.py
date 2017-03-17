@@ -38,11 +38,15 @@ def apidoc():
 @app.route(config.API_URL, methods=['GET'])
 @ocache.cache.cached(timeout=3600, key_prefix=ocache.generate_cache_key)
 def get_root():
-    log.debug("API Request: /")
+
+    logger = logging.getLogger(__name__)
+    logger.debug("API Request: /")
+
     root_resource = {
         'organisations': str.format('http://{0}/organisations', config.APP_HOSTNAME),
         'role-types': str.format('http://{0}/role-types', config.APP_HOSTNAME)
     }
+
     return jsonify(root_resource)
 
 
@@ -50,8 +54,12 @@ def get_root():
 @app.route(config.API_URL+"/info", methods=['GET'])
 @ocache.cache.cached(timeout=3600, key_prefix=ocache.generate_cache_key)
 def get_info():
-    log.debug("API Request: /info")
+
+    logger = logging.getLogger(__name__)
+    logger.debug("API Request: /info")
+
     dataset_info = db.get_dataset_info()
+
     return jsonify(dataset_info)
 
 
@@ -60,7 +68,6 @@ def get_info():
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_organisations():
     """
-
     Returns a list of ODS organisations
 
     Query Parameters:
@@ -73,7 +80,8 @@ def get_organisations():
     - postCode=AB1 2CD (filter organisations with match on the postcode provided)
     """
 
-    log.debug(str.format("Cache Key: {0}", ocache.generate_cache_key()))
+    logger = logging.getLogger(__name__)
+    logger.debug(str.format("CacheKey:{0}", ocache.generate_cache_key()))
 
     # Collect any query parameters that were supplied
     query = request.args.get('q') if request.args.get('q') else None
