@@ -11,7 +11,7 @@ LIVE_DEPLOYMENT = os.environ.get('LIVE_DEPLOYMENT', 'FALSE')
 INSTANCE_NAME = os.environ.get('INSTANCE_NAME', 'Development')
 
 # Statement for enabling the development environment
-DEBUG = True
+DEBUG = bool(os.environ.get('DEBUG', False))
 
 # Define the application directory
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
