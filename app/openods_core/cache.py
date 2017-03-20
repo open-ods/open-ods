@@ -17,6 +17,6 @@ def generate_cache_key():
         (k, v) for k in sorted(args) for v in sorted(args.getlist(k))
     ])
 
-    logger.debug(str.format("CacheKey:{0}", key))
+    logger.debug(str.format("Cache Key:{0}", key))
 
     return key
