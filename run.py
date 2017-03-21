@@ -14,6 +14,7 @@ if __name__ == "__main__":
     print(str.format("App User: {0}", app.config["API_USER"]))
     print(str.format("App Password: {0}", app.config["API_PASS"]))
     print(str.format("API URL: {0}", app.config["API_URL"]))
+    print(str.format("DEBUG: {0}", app.config["DEBUG"]))
 
     rules_list = []
     # Lists all routing rules registered on the Flask app

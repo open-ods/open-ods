@@ -1,4 +1,4 @@
-__version__ = '0.11'
+__version__ = '0.12'
 
 import logging
 import re
@@ -17,17 +17,12 @@ feature_flags = FeatureFlag(app)
 app.config.from_object('config')
 
 # Set up logging
-log = logging.getLogger('openods')
-# log.setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG) if app.config["DEBUG"]==True else logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-
-# Create formatter and add it to the handlers
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
-
-# Add the handlers to the logger
-log.addHandler(ch)
+logger.addHandler(ch)
 
 # Allow Cross Origin Resource Sharing for routes under /api/ so that other services can use the data from the API
 regEx=re.compile(config.API_URL+"/*")

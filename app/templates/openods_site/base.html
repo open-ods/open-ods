@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>openods.co.uk [ALPHA] {% if live_deployment == 'FALSE' %}[{{ instance_name }}]{% endif %}</title>
+        <title>openODS.co.uk [ALPHA] {% if live_deployment == 'FALSE' %}[{{ instance_name }}]{% endif %}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="../static/apple-touch-icon.png">
@@ -36,7 +36,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">OpenODS.co.uk [ALPHA] {% if live_deployment == 'FALSE' %}[{{ instance_name }}]{% endif %}</a>
+          <a class="navbar-brand" href="/">openODS.co.uk [ALPHA] {% if live_deployment == 'FALSE' %}[{{ instance_name }}]{% endif %}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
         </div><!--/.navbar-collapse -->
@@ -55,7 +55,7 @@
     </div> <!-- /container -->
 
         <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>-->
-        <script src="../static/js/vendor/jquery-1.11.2.min.js"><\/script>
+        <script src="../static/js/vendor/jquery-1.11.2.min.js"></script>
         <script>window.jQuery || document.write('<script src="../static/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
         <script src="../static/js/vendor/bootstrap.min.js"></script>
@@ -63,50 +63,6 @@
         <script src="../static/js/main.js"></script>
 
         {% block scripts %}{% endblock %}
-
-        <script>
-// Include the UserVoice JavaScript SDK (only needed once on a page)
-UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/COxyTGJixwrpGZ0kcpCaMA.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();
-
-//
-// UserVoice Javascript SDK developer documentation:
-// https://www.uservoice.com/o/javascript-sdk
-//
-
-// Set colors
-UserVoice.push(['set', {
-  accent_color: '#448dd6',
-  trigger_color: 'white',
-  trigger_background_color: '#e2753a'
-}]);
-
-// Identify the user and pass traits
-// To enable, replace sample data with actual user traits and uncomment the line
-UserVoice.push(['identify', {
-  //email:      'john.doe@example.com', // User’s email address
-  //name:       'John Doe', // User’s real name
-  //created_at: 1364406966, // Unix timestamp for the date the user signed up
-  //id:         123, // Optional: Unique id of the user (if set, this should not change)
-  //type:       'Owner', // Optional: segment your users by type
-  //account: {
-  //  id:           123, // Optional: associate multiple users with a single account
-  //  name:         'Acme, Co.', // Account name
-  //  created_at:   1364406966, // Unix timestamp for the date the account was created
-  //  monthly_rate: 9.99, // Decimal; monthly rate of the account
-  //  ltv:          1495.00, // Decimal; lifetime value of the account
-  //  plan:         'Enhanced' // Plan name for the account
-  //}
-}]);
-
-// Add default trigger to the bottom-right corner of the window:
-UserVoice.push(['addTrigger', {trigger_position: 'top-right' }]);
-
-// Or, use your own custom trigger:
-//UserVoice.push(['addTrigger', '#id']);
-
-// Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
-UserVoice.push(['autoprompt', {}]);
-        </script>
 
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=

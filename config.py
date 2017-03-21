@@ -1,6 +1,6 @@
 import os
 
-TARGET_SCHEMA_VERSION = '011'
+TARGET_SCHEMA_VERSION = '012'
 DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://openods:openods@localhost:5432/openods')
 CACHE_TIMEOUT = int(os.environ.get('CACHE_TIMEOUT', '30'))
 APP_HOSTNAME = os.environ.get('APP_HOSTNAME', 'localhost:5000/api')
@@ -11,7 +11,7 @@ LIVE_DEPLOYMENT = os.environ.get('LIVE_DEPLOYMENT', 'FALSE')
 INSTANCE_NAME = os.environ.get('INSTANCE_NAME', 'Development')
 
 # Statement for enabling the development environment
-DEBUG = True
+DEBUG = bool(os.environ.get('DEBUG', False))
 
 # Define the application directory
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
