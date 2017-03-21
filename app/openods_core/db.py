@@ -665,7 +665,7 @@ def get_role_type_by_id(role_id):
 
 def get_primary_role_scope():
 
-    sql = "SELECT * FROM codesystems where name = 'PrimaryRoleScope';"
+    sql = "SELECT id, name, displayname FROM codesystems where name = 'PrimaryRoleScope';"
     cur = connect.get_cursor()
     cur.execute(sql)
 
