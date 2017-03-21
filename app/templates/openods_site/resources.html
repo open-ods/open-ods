@@ -94,20 +94,30 @@ Content-Type: application/json
     <a class="anchor" id="organisations"></a>
     <h3>Organisations</h3>
     <p>An Organisation resource is a single organisation within ODS.</p>
-    <b>Endpoints:</b>
+    <b>Endpoint:</b>
         <ul>
             <li><code>/organisations</code><em>string</em> - get all the Organisation resources (will return a list of 'summary' resource records).</li>
             <li><code>/organisations/:odsCode</code><em>string</em> - get a specific Organisation resource by its ODS code (will return the full resource).</li>
         </ul>
     <b>Query Parameters:</b>
         <ul>
-            <li><code>q</code><em>string</em> - Filter results to those containing specified string in their name attribute</li>
-            <li><code>offset</code><em>integer</em> - Return results offset by specified number</li>
-            <li><code>limit</code><em>integer</em> - Limit number of results returned to specified number</li>
-            <li><code>recordClass</code><em>string</em> - Filter results by their record class (HSCOrg or HSCSite)</li>
-            <li><code>roleCode</code><em>string</em> - Filter results to only those which have the specified role</li>
-            <li><code>primaryRoleCode</code><em>string</em> - Filter results to only those which have the specified primary role (ignored if roleCode is also specified)</li>
+            <li><code>q</code><em>string</em> - Filter results to those containing specified string in their name attribute.</li>
+            <li><code>offset</code><em>integer</em> - Return results offset by specified number.</li>
+            <li><code>limit</code><em>integer</em> - Limit number of results returned to specified number (maximum 1000).</li>
+            <li><code>recordClass</code><em>string</em> - Filter results by their record class (HSCOrg or HSCSite).</li>
+            <li><code>roleCode</code><em>string</em> - Filter results to only those which have the specified role.</li>
+            <li><code>primaryRoleCode</code><em>string</em> - Filter results to only those which have the specified primary role (ignored if roleCode is also specified).</li>
+            <li><code>active</code><em>boolean</em> - Filter results to only those with a matching active status e.g. <code>True</code> for Active, <code>False</code> for Inactive.</li>
+
         </ul>
+
+    <b>Endpoint:</b>
+        <ul>
+            <li><code>/organisations/:odsCode</code><em>string</em> - get a specific Organisation resource by its ODS code (will return the full resource).</li>
+        </ul>
+
+    <b>Query Parameters:</b>
+        None
 
     <br>
     <b>Example HTTP Request:</b>
@@ -127,7 +137,8 @@ Content-Type: application/json
       ],
       "name": "BARNSLEY HOSPITAL NHS FOUNDATION TRUST",
       "odsCode": "RFF",
-      "recordClass": "HSCOrg"
+      "recordClass": "HSCOrg",
+      "status": "Active"
     }
   ]
 }
