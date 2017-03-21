@@ -1,9 +1,6 @@
 language: python
 python:
-  - "3.4"
-  - "3.5"
   - "3.6"
-
 addons:
   postgresql: "9.4"
 services:
@@ -15,10 +12,3 @@ before_script:
 env:
 - API_USER=env_test_user API_PASS=env_test_pass CACHE_TIMEOUT=10 APP_HOSTNAME=localhost:5000
 script: nosetests
-notifications:
-  webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/17a13f110367e79b54b9
-    on_success: always  # options: [always|never|change] default: always
-    on_failure: always  # options: [always|never|change] default: always
-    on_start: never     # options: [always|never|change] default: always
