@@ -42,7 +42,7 @@ def get_root():
     logger = logging.getLogger(__name__)
 
     logger.info("Method={method} Resource={resource} SourceAddress={source_ip} TargetURL={url}".format(
-                source_ip=get_source_ip(request), resource='root', url=request.url, method=request.method)
+                source_ip=get_source_ip(request), resource=request.path, url=request.url, method=request.method)
                 )
 
     root_resource = request_hander.get_root_response()

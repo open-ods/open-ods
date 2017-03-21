@@ -67,14 +67,6 @@ def get_organisations_response(request):
     postcode = request.args.get(
         'postCode') if request.args.get('postCode') else None
 
-    logger.info("Method={method} Resource={resource} Query={query} Postcode={postcode} Offset={offset} Limit={limit} "
-                "RecordClass={record_class} PrimaryRoleCode={primary_role_code} RoleCode={role_code} "
-                "SourceAddress={source_ip} TargetURL={url}".format(
-                    source_ip=get_source_ip(request), resource=request.path, offset=offset, limit=limit,
-                    record_class=record_class, primary_role_code=primary_role_code, role_code=role_code, query=query,
-                    postcode=postcode, url=request.url, method=request.method)
-                )
-
     # Call the get_org_list method from the database controller, passing in parameters.
     # Method will return a tuple containing the data and the total record count for the specified filter.
     data, total_record_count = db.get_org_list(offset, limit, record_class,
