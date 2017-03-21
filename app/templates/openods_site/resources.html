@@ -52,20 +52,41 @@ Content-Type: application/json
 HTTP/1.0 200 OK
 Content-Type: application/json
 {
-  "fileVersion": "1.0.0",
-  "importTimestamp": "2015-12-11 09:05:30.916881",
-  "publicationDate": "2015-11-30",
+  "FileCreationDate": "2017-02-15T17:10:00",
+  "contentDescription": "HSCOrgRefData_Full_20170215",
+  "fileVersion": "2-0-0",
+  "importDate": "2017-03-21 15:27:55.298493",
+  "publicationDate": "2017-02-15",
   "publicationSeqNo": "1",
-  "publicationType": "Full"
+  "publicationSource": "HSCIC",
+  "publicationType": "Full",
+  "recordCount": "179917",
+  "primaryRoleScope": [
+    {
+      "displayname": "PRIMARY CARE TRUST SITE",
+      "id": "RO180",
+      "name": "PrimaryRoleScope"
+    },
+    {
+      "displayname": "NON-NHS ORGANISATION",
+      "id": "RO157",
+      "name": "PrimaryRoleScope"
+    }
+  ]
 }
     </pre>
     <b>Attributes:</b>
     <ul>
         <li><code>fileVersion</code><em>string</em> - The version of the file containing the source data used to populate to <OpenODS class=""></OpenODS></li>
-        <li><code>importTimestamp</code><em>string</em> - The timestamp representing when the current data was imported into the OpenODS database.</li>
+        <li><code>importDate</code><em>string</em> - The timestamp representing when the current data was imported into the OpenODS database.</li>
         <li><code>publicationDate</code><em>string</em> - The publication date of the current data.</li>
         <li><code>publicationSeqNo</code><em>string</em> - The publication sequence number of the current data.</li>
         <li><code>publicationType</code><em>string</em> - The publication type of the current data (this will almost always be <code>Full</code>.</li>
+        <li><code>publicationSource</code><em>string</em> - The source of the data publication, usually the publishing organisation.</li>
+        <li><code>fileCreationDate</code><em>string</em> - The timestamp of when the source XML data file was created.</li>
+        <li><code>recordCount</code><em>string</em> - The number of organisation records in the dataset.</li>
+        <li><code>contentDescription</code><em>string</em> - A text description of the dataset.</li>
+        <li><code>primaryRoleScope</code><em>string</em> - A list of PrimaryRole records which represents the scope of the dataset.</li>
     </ul>
     </div>
 

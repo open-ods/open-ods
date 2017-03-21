@@ -14,34 +14,6 @@ def remove_none_values_from_dictionary(dirty_dict):
     return clean_dict
 
 
-def record_counts():
-
-    logger = logging.getLogger(__name__)
-    logger.debug("Getting count of organinisation records")
-
-    conn = connect.get_connection()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
-    record_count = {}
-
-    sql_count = "SELECT COUNT(*) FROM organisations;"
-    cur.execute(sql_count)
-    count = int(cur.fetchone()['count'])
-    record_count['organisations'] = count
-
-    sql_count = "SELECT COUNT(*) FROM codesystems WHERE name = 'OrganisationRole';"
-    cur.execute(sql_count)
-    count = int(cur.fetchone()['count'])
-    record_count['role-types'] = count
-
-    sql_count = "SELECT COUNT(*) FROM codesystems WHERE name = 'OrganisationRole';"
-    cur.execute(sql_count)
-    count = int(cur.fetchone()['count'])
-    record_count['role-types'] = count
-
-    return record_count
-
-
 def get_org_list(offset=0, limit=20, recordclass='both',
                  primary_role_code=None, role_code=None,
                  query=None, postcode=None, active=True):
@@ -691,6 +663,15 @@ def get_role_type_by_id(role_id):
     return result
 
 
+def get_primary_role_scope():
+
+    sql = "SELECT id, name, displayname FROM codesystems where name = 'PrimaryRoleScope';"
+    cur = connect.get_cursor()
+    cur.execute(sql)
+
+    primary_role_scope_rows = cur.fetchall()
+    return primary_role_scope_rows
+
 def get_dataset_info():
 
     sql = "SELECT * FROM versions;"
@@ -701,12 +682,18 @@ def get_dataset_info():
     row_settings = cur.fetchone()
 
     result = {
-        'importTimestamp': row_settings['import_timestamp'],
+        'importDate': row_settings['import_timestamp'],
         'fileVersion': row_settings['file_version'],
-        'publicationSeqNo': row_settings['publication_seqno'],
         'publicationDate': row_settings['publication_date'],
+        'publicationSource': row_settings['publication_source'],
         'publicationType': row_settings['publication_type'],
-        'recordCounts': record_counts()
+        'publicationSeqNo': row_settings['publication_seqno'],
+        'FileCreationDate': row_settings['file_creation_date'],
+        'recordCount': row_settings['record_count'],
+        'contentDescription': row_settings['content_description'],
+        'primaryRoleScope': get_primary_role_scope()
     }
+
+    print(result)
 
     return result
