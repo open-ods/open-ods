@@ -78,6 +78,7 @@ def get_organisations():
     - primaryRoleCode=xxxx (filter results to only those with a specific primaryRole)
     - roleCode=xxxx (filter result to only those with a specific role)
     - postCode=AB1 2CD (filter organisations with match on the postcode provided)
+    - active=True/False (filter organisations with the specified active status)
     """
 
     logger = logging.getLogger(__name__)
