@@ -67,11 +67,14 @@ def get_organisations_response(request):
     postcode = request.args.get(
         'postCode') if request.args.get('postCode') else None
 
+    active = request.args.get(
+        'active') if request.args.get('active') else None
+
     # Call the get_org_list method from the database controller, passing in parameters.
     # Method will return a tuple containing the data and the total record count for the specified filter.
     data, total_record_count = db.get_org_list(offset, limit, record_class,
                                                primary_role_code, role_code,
-                                               query, postcode)
+                                               query, postcode, active)
 
     if data:
         results = {'organisations': data}
