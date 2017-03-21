@@ -14,9 +14,37 @@ def remove_none_values_from_dictionary(dirty_dict):
     return clean_dict
 
 
+def record_counts():
+
+    logger = logging.getLogger(__name__)
+    logger.debug("Getting count of organinisation records")
+
+    conn = connect.get_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    record_count = {}
+
+    sql_count = "SELECT COUNT(*) FROM organisations;"
+    cur.execute(sql_count)
+    count = int(cur.fetchone()['count'])
+    record_count['organisations'] = count
+
+    sql_count = "SELECT COUNT(*) FROM codesystems WHERE name = 'OrganisationRole';"
+    cur.execute(sql_count)
+    count = int(cur.fetchone()['count'])
+    record_count['role-types'] = count
+
+    sql_count = "SELECT COUNT(*) FROM codesystems WHERE name = 'OrganisationRole';"
+    cur.execute(sql_count)
+    count = int(cur.fetchone()['count'])
+    record_count['role-types'] = count
+
+    return record_count
+
+
 def get_org_list(offset=0, limit=20, recordclass='both',
                  primary_role_code=None, role_code=None,
-                 query=None, postcode=None):
+                 query=None, postcode=None, active=True):
     """Retrieves a list of organisations
 
     Parameters
@@ -28,6 +56,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
     primary_role_code = filter organisations to only those where this is their primary role code
     role_code = filter organisations to only those a role with this code
     postcode = filter organisations to those with a match on the postcode
+    active = filter organisations by their status (active / inactive)
 
     Returns
     -------
@@ -100,6 +129,25 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
         data = data + (postcode_query, )
 
+    # If the active parameter was specified, add that to the statement
+    if active:
+        logger.debug("active parameter was provided")
+
+        if active in (True, 1, '1', 'True', 'true', 'TRUE', 'yes', 'Yes', 'YES'):
+            active_value = 'Active'
+            new_clause = "AND status = %s "
+        else:
+            active_value = 'Inactive'
+            new_clause = "AND status = %s "
+
+        sql = "{sql} {new_sql}".format(
+            sql=sql, new_sql=new_clause)
+
+        sql_count = "{sql} {new_sql}".format(
+            sql=sql_count, new_sql=new_clause)
+
+        data = data + (active_value, )
+
 
     # If a role_code parameter was specified, add that to the statement
     if role_code:
@@ -159,6 +207,8 @@ def get_org_list(offset=0, limit=20, recordclass='both',
                      "LIMIT %s;")
 
     data = data + (offset, limit)
+
+    logger.debug(sql)
 
     # Execute the main query
     cur.execute(sql, data)
@@ -655,7 +705,8 @@ def get_dataset_info():
         'fileVersion': row_settings['file_version'],
         'publicationSeqNo': row_settings['publication_seqno'],
         'publicationDate': row_settings['publication_date'],
-        'publicationType': row_settings['publication_type']
+        'publicationType': row_settings['publication_type'],
+        'recordCounts': record_counts()
     }
 
     return result
