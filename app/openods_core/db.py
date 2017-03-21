@@ -701,12 +701,18 @@ def get_dataset_info():
     row_settings = cur.fetchone()
 
     result = {
-        'importTimestamp': row_settings['import_timestamp'],
+        'importDate': row_settings['import_timestamp'],
         'fileVersion': row_settings['file_version'],
-        'publicationSeqNo': row_settings['publication_seqno'],
         'publicationDate': row_settings['publication_date'],
+        'publicationSource': row_settings['publication_source'],
         'publicationType': row_settings['publication_type'],
-        'recordCounts': record_counts()
+        'publicationSeqNo': row_settings['publication_seqno'],
+        'FileCreationDate': row_settings['file_creation_date'],
+        'recordCount': row_settings['record_count'],
+        'contentDescription': row_settings['content_description'],
+        'primaryRoleScope': get_primary_role_scope()
     }
+
+    print(result)
 
     return result
