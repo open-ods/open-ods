@@ -1,3 +1,13 @@
+0.12 - 21st March 2017
+----------------------
+* Add 'active=True/False' query parameter to /organisations allowing filter by status (Active / Inactive)
+* Manifest information on /info now returns all manifest fields, PrimaryRoleScope list, and Record Count
+* A few more logging improvements (ongoing job)
+* Updated DB schema version to 012 to include new manifest fields and PrimaryRoleScope entries
+* App now detects local DEBUG env variable to easily run deployed instances in DEBUG mode
+* There is now a hard upper limit of 1000 records - any limit=? request for more than 1000 will be automatically limited to 1000
+* Updates to openODS.co.uk documentation pages
+
 0.11 - 16th March 2017
 ----------------------
 * Add postCode query parameter to /organisations [#72](https://github.com/open-ods/open-ods/issues/72)

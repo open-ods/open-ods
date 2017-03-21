@@ -10,7 +10,7 @@ Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](h
 ## Getting Started
 
 ### Pre-requisites
-* Python 3.5
+* Python 3.6
 * Virtualenv `pip install -g virtualenv`
 * PostgreSQL ([Postgres.app](http://postgresapp.com) is good for OSX development)
 * [Heroku Toolbelt](https://toolbelt.heroku.com) (Not mandatory but helpful if you're going to use Heroku to host)
