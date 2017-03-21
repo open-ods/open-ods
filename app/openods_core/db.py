@@ -36,6 +36,9 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
     logger = logging.getLogger(__name__)
 
+    if int(limit) > 1000:
+        limit = 1000
+
     conn = connect.get_connection()
 
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -499,6 +502,9 @@ def get_organisation_by_odscode(odscode):
 def search_organisation(search_text, offset=0, limit=1000,):
 
     logger = logging.getLogger(__name__)
+
+    if limit > 1000:
+        limit = 1000
 
     # Get a database connection
     conn = connect.get_connection()
