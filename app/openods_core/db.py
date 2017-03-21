@@ -14,34 +14,6 @@ def remove_none_values_from_dictionary(dirty_dict):
     return clean_dict
 
 
-def record_counts():
-
-    logger = logging.getLogger(__name__)
-    logger.debug("Getting count of organinisation records")
-
-    conn = connect.get_connection()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
-    record_count = {}
-
-    sql_count = "SELECT COUNT(*) FROM organisations;"
-    cur.execute(sql_count)
-    count = int(cur.fetchone()['count'])
-    record_count['organisations'] = count
-
-    sql_count = "SELECT COUNT(*) FROM codesystems WHERE name = 'OrganisationRole';"
-    cur.execute(sql_count)
-    count = int(cur.fetchone()['count'])
-    record_count['role-types'] = count
-
-    sql_count = "SELECT COUNT(*) FROM codesystems WHERE name = 'OrganisationRole';"
-    cur.execute(sql_count)
-    count = int(cur.fetchone()['count'])
-    record_count['role-types'] = count
-
-    return record_count
-
-
 def get_org_list(offset=0, limit=20, recordclass='both',
                  primary_role_code=None, role_code=None,
                  query=None, postcode=None, active=True):
