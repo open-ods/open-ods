@@ -663,6 +663,15 @@ def get_role_type_by_id(role_id):
     return result
 
 
+def get_primary_role_scope():
+
+    sql = "SELECT * FROM codesystems where name = 'PrimaryRoleScope';"
+    cur = connect.get_cursor()
+    cur.execute(sql)
+
+    primary_role_scope_rows = cur.fetchall()
+    return primary_role_scope_rows
+
 def get_dataset_info():
 
     sql = "SELECT * FROM versions;"
