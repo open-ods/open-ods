@@ -108,6 +108,8 @@ Content-Type: application/json
             <li><code>roleCode</code><em>string</em> - Filter results to only those which have the specified role.</li>
             <li><code>primaryRoleCode</code><em>string</em> - Filter results to only those which have the specified primary role (ignored if roleCode is also specified).</li>
             <li><code>active</code><em>boolean</em> - Filter results to only those with a matching active status e.g. <code>True</code> for Active, <code>False</code> for Inactive.</li>
+            <li><code>lastChangedSince</code><em>ISO8601 date</em> - Filter results to only those records that have been updated since the date specified. Date must be in format <code>lastChangedSince=yyyy-mm-dd</code>.
+                Will accept <code>lastUpdatedSince=yyyy-mm</code> or <code>lastUpdatedSince=yyyy</code>.</li>
 
         </ul>
 
