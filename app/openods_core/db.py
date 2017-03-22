@@ -16,7 +16,7 @@ def remove_none_values_from_dictionary(dirty_dict):
 
 def get_org_list(offset=0, limit=20, recordclass='both',
                  primary_role_code=None, role_code=None,
-                 query=None, postcode=None, active=True):
+                 query=None, postcode=None, active=True, last_updated_since=None):
     """Retrieves a list of organisations
 
     Parameters
@@ -29,6 +29,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
     role_code = filter organisations to only those a role with this code
     postcode = filter organisations to those with a match on the postcode
     active = filter organisations by their status (active / inactive)
+    last_changed_since = filter organisations by their lastUpdated date
 
     Returns
     -------
@@ -119,6 +120,21 @@ def get_org_list(offset=0, limit=20, recordclass='both',
             sql=sql_count, new_sql=new_clause)
 
         data = data + (active_value, )
+
+
+    # If the last_changed_since parameter was specified, add that to the statement
+    if last_updated_since:
+        logger.debug("last_changed_since parameter was provided")
+
+        new_clause = "AND last_changed > %s "
+
+        sql = "{sql} {new_sql}".format(
+            sql=sql, new_sql=new_clause)
+
+        sql_count = "{sql} {new_sql}".format(
+            sql=sql_count, new_sql=new_clause)
+
+        data = data + (last_updated_since,)
 
 
     # If a role_code parameter was specified, add that to the statement

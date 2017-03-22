@@ -1,3 +1,7 @@
+0.13 - 22nd March 2017
+----------------------
+* Added lastUpdatedSince query parameter - returns only records that have changed since the specified date
+
 0.12 - 21st March 2017
 ----------------------
 * Add 'active=True/False' query parameter to /organisations allowing filter by status (Active / Inactive)
