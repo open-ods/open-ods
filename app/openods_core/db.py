@@ -121,7 +121,6 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
         data = data + (active_value, )
 
-
     # If the last_changed_since parameter was specified, add that to the statement
     if last_updated_since:
         logger.debug("last_changed_since parameter was provided")
@@ -135,7 +134,6 @@ def get_org_list(offset=0, limit=20, recordclass='both',
             sql=sql_count, new_sql=new_clause)
 
         data = data + (last_updated_since,)
-
 
     # If a role_code parameter was specified, add that to the statement
     if role_code:
@@ -166,7 +164,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
         sql = str.format("{0} {1}",
                          sql,
                          "AND odscode IN "
-                         "(org_odscode "
+                         "(SELECT org_odscode "
                          "FROM roles "
                          "WHERE primary_role = TRUE "
                          "AND status = 'Active' "
@@ -175,7 +173,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
         sql_count = str.format("{0} {1}",
                                sql_count,
                                "AND odscode IN "
-                               "(org_odscode "
+                               "(SELECT org_odscode "
                                "FROM roles "
                                "WHERE primary_role = TRUE "
                                "AND status = 'Active' "
