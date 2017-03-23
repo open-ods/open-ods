@@ -55,20 +55,33 @@ def get_organisations_response(request):
 
     limit = request.args.get('limit') if request.args.get('limit') else 20
 
-    record_class = request.args.get(
-        'recordClass') if request.args.get('recordClass') else None
+    record_class = request.args.get('recordClass') if request.args.get('recordClass') else None
 
-    primary_role_code = request.args.get(
-        'primaryRoleCode') if request.args.get('primaryRoleCode') else None
+    if request.args.get('primaryRoleCode'):
+        primary_role_codes = request.args.get('primaryRoleCode')
 
-    role_code = request.args.get(
-        'roleCode') if request.args.get('roleCode') else None
+        # Convert the list of comma separated role codes into a list
+        temp_primary_role_code_list = primary_role_codes.split(',')
 
-    postcode = request.args.get(
-        'postCode') if request.args.get('postCode') else None
+        # Convert all role codes in the list to upper case
+        primary_role_code_list = [role_code.upper() for role_code in temp_primary_role_code_list]
+    else:
+        primary_role_code_list = None
 
-    active = request.args.get(
-        'active') if request.args.get('active') else None
+    if request.args.get('roleCode'):
+        role_codes = request.args.get('roleCode')
+
+        # Convert the list of comma separated role codes into a list
+        temp_role_code_list = role_codes.split(',')
+
+        # Convert all role codes to upper case
+        role_code_list = [role_code.upper() for role_code in temp_role_code_list]
+    else:
+        role_code_list = None
+
+    postcode = request.args.get('postCode') if request.args.get('postCode') else None
+
+    active = request.args.get('active') if request.args.get('active') else None
 
     last_updated_since = request.args.get(
         'lastUpdatedSince') if request.args.get('lastUpdatedSince') else None
