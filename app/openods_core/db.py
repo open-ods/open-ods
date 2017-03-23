@@ -15,7 +15,7 @@ def remove_none_values_from_dictionary(dirty_dict):
 
 
 def get_org_list(offset=0, limit=20, recordclass='both',
-                 primary_role_code=None, role_code=None,
+                 primary_role_code_list=None, role_code_list=None,
                  query=None, postcode=None, active=True, last_updated_since=None):
     """Retrieves a list of organisations
 
@@ -136,7 +136,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
         data = data + (last_updated_since,)
 
     # If a role_code parameter was specified, add that to the statement
-    if role_code:
+    if role_code_list:
         logger.debug('role_code parameter was provided')
 
         sql = str.format("{0} {1}",
@@ -158,7 +158,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
         data = data + (role_code,)
 
     # Or if a primary_role_code parameter was specified, add that to the statement
-    elif primary_role_code:
+    elif primary_role_code_list:
         logger.debug('primary_role_code parameter was provided')
 
         sql = str.format("{0} {1}",
