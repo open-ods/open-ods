@@ -1,3 +1,7 @@
+0.14 - 23rd March 2017
+----------------------
+* roleCode and primaryRoleCode parameters now take lists of codes (e.g. roleCode=RO177,RO64)
+
 0.13 - 22nd March 2017
 ----------------------
 * Added lastUpdatedSince query parameter - returns only records that have changed since the specified date
