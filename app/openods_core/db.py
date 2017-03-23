@@ -145,7 +145,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
                          "(SELECT org_odscode "
                          "FROM roles "
                          "WHERE status = 'Active' "
-                         "AND UPPER(code) = UPPER(%s)) ")
+                         "AND UPPER(code) = ANY(%s)) ")
 
         sql_count = str.format("{0} {1}",
                                sql_count,
@@ -153,9 +153,8 @@ def get_org_list(offset=0, limit=20, recordclass='both',
                                "(SELECT org_odscode "
                                "FROM roles "
                                "WHERE status = 'Active' "
-                               "AND UPPER(code) = UPPER(%s)) ")
-
-        data = data + (role_code,)
+                               "AND UPPER(code) = ANY(%s)) ")
+        data = data + (role_code_list,)
 
     # Or if a primary_role_code parameter was specified, add that to the statement
     elif primary_role_code_list:
@@ -168,7 +167,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
                          "FROM roles "
                          "WHERE primary_role = TRUE "
                          "AND status = 'Active' "
-                         "AND UPPER(code) = UPPER(%s)) ")
+                         "AND UPPER(code) = ANY(%s)) ")
 
         sql_count = str.format("{0} {1}",
                                sql_count,
@@ -177,9 +176,9 @@ def get_org_list(offset=0, limit=20, recordclass='both',
                                "FROM roles "
                                "WHERE primary_role = TRUE "
                                "AND status = 'Active' "
-                               "AND UPPER(code) = UPPER(%s)) ")
+                               "AND UPPER(code) = ANY(%s)) ")
 
-        data = data + (primary_role_code,)
+        data = data + (primary_role_code_list,)
 
     # Quickly get total number of query results before applying offset and limit
     cur.execute(sql_count, data)
