@@ -494,9 +494,10 @@ def get_organisation_by_odscode(odscode):
 
         # Tidy up the field names etc. in the organisation dictionary before it's returned
         result_data['odsCode'] = result_data.pop('odscode')
-        result_data['lastChanged'] = result_data.pop('last_changed')
+        result_data['lastChangeDate'] = result_data.pop('last_changed')
         result_data['refOnly'] = bool(result_data.pop('ref_only'))
         result_data['recordClass'] = result_data.pop('record_class')
+        result_data.pop('post_code')
         result_data.pop('ref')
 
         link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, result_data['odsCode'])
