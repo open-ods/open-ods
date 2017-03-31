@@ -2,7 +2,6 @@ import logging
 
 import status
 from flask import jsonify, request
-from flask_autodoc import Autodoc
 
 import config as config
 from app import app
@@ -11,7 +10,6 @@ from app.openods_core import sample_data
 from app.openods_core import db, schema_check
 from app.openods_core import request_hander
 
-auto = Autodoc(app)
 
 schema_check.check_schema_version()
 
@@ -26,16 +24,6 @@ def get_source_ip(myrequest):
     return source_ip
 
 
-@app.route('/apidoc')
-def apidoc():
-    """
-
-    Returns API documentation as HTML
-    """
-    return auto.html()
-
-
-@auto.doc()
 @app.route(config.API_URL, methods=['GET'])
 def get_root():
 
@@ -50,7 +38,6 @@ def get_root():
     return jsonify(root_resource)
 
 
-@auto.doc()
 @app.route(config.API_URL+"/info", methods=['GET'])
 def get_info():
 
@@ -64,7 +51,6 @@ def get_info():
     return jsonify(dataset_info)
 
 
-@auto.doc()
 @app.route(config.API_URL+"/organisations", methods=['GET'])
 def get_organisations():
     """
@@ -93,7 +79,6 @@ def get_organisations():
     return resp
 
 
-@auto.doc()
 @app.route(config.API_URL+"/organisations/<ods_code>", methods=['GET'])
 def get_organisation(ods_code):
     """
@@ -124,7 +109,6 @@ def get_organisation(ods_code):
         return "Not found", status.HTTP_404_NOT_FOUND
 
 
-@auto.doc()
 @app.route(config.API_URL+"/role-types", methods=['GET'])
 def route_role_types():
     """
@@ -141,7 +125,6 @@ def route_role_types():
     return result
 
 
-@auto.doc()
 @app.route(config.API_URL+"/role-types/<role_code>", methods=['GET'])
 def route_role_type_by_code(role_code):
     """
