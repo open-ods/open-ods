@@ -1,0 +1,10 @@
+Endpoint returning a list of ODS organisations
+---
+parameters:
+  - name: q
+    description: Filters results by names which contain the provided string
+    in: query
+    type: string
+responses:
+  200:
+    description: A filtered list of organisation resources
