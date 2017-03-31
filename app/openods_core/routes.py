@@ -2,14 +2,16 @@ import logging
 
 import status
 from flask import jsonify, request, g, json, render_template
+from flasgger import Swagger, swag_from
 
 import config as config
 from app import app
-from app.openods_core import cache as ocache
-from app.openods_core import sample_data
+# from app.openods_core import cache as ocache
+# from app.openods_core import sample_data
 from app.openods_core import db, schema_check
 from app.openods_core import request_handler, request_utils
 
+Swagger(app)
 
 schema_check.check_schema_version()
 
