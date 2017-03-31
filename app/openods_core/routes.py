@@ -41,6 +41,12 @@ def not_found(error):
 
 @app.route(config.API_URL, methods=['GET'])
 def get_root():
+    """Endpoint returning information about available resources
+    ---
+    responses:
+      200:
+        description: A list of resources available through the API
+    """
 
     logger = logging.getLogger(__name__)
 
