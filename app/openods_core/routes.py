@@ -101,6 +101,7 @@ def get_info():
 
 
 @app.route(config.API_URL+"/organisations", methods=['GET'])
+@swag_from('organisations.yml')
 def get_organisations():
     """
     Returns a list of ODS organisations
