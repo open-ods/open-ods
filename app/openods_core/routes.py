@@ -8,7 +8,7 @@ from app import app
 from app.openods_core import cache as ocache
 from app.openods_core import sample_data
 from app.openods_core import db, schema_check
-from app.openods_core import request_hander
+from app.openods_core import request_handler
 
 
 schema_check.check_schema_version()
@@ -33,7 +33,7 @@ def get_root():
                 source_ip=get_source_ip(request), resource=request.path, url=request.url, method=request.method)
                 )
 
-    root_resource = request_hander.get_root_response()
+    root_resource = request_handler.get_root_response()
 
     return jsonify(root_resource)
 
@@ -46,7 +46,7 @@ def get_info():
                 source_ip=get_source_ip(request), resource=request.path, url=request.url, method=request.method)
                 )
 
-    dataset_info = request_hander.get_info_response()
+    dataset_info = request_handler.get_info_response()
 
     return jsonify(dataset_info)
 
@@ -74,7 +74,7 @@ def get_organisations():
                     source_ip=get_source_ip(request), resource=request.path, url=request.url, method=request.method)
                 )
 
-    resp = request_hander.get_organisations_response(request)
+    resp = request_handler.get_organisations_response(request)
 
     return resp
 
@@ -120,7 +120,7 @@ def route_role_types():
     logger.info("Method={method} Resource={resource} SourceAddress={source_ip} TargetURL={url}".format(
         source_ip=get_source_ip(request), resource=request.path, url=request.url, method=request.method))
 
-    result = request_hander.get_role_types_response(request)
+    result = request_handler.get_role_types_response(request)
 
     return result
 
@@ -138,7 +138,7 @@ def route_role_type_by_code(role_code):
               url=request.url, method=request.method)
              )
 
-    result = request_hander.get_role_type_by_code_response(request, role_code)
+    result = request_handler.get_role_type_by_code_response(request, role_code)
 
     return result
 
