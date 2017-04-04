@@ -65,7 +65,11 @@ def get_root():
     }
 
     logger.info("API_REQUEST_JSON {log_event}".format(log_event=json.dumps(log_event)))
-    logger.info(json.dumps({'headers': dict(request.headers)}))
+
+    logger.debug("requestId={request_id} headers={headers}".format(
+        headers=json.dumps(dict(request.headers)),
+        request_id = g.request_id)
+    )
 
     root_resource = request_handler.get_root_response()
 

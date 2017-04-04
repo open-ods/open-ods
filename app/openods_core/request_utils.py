@@ -8,8 +8,12 @@ def get_source_ip(my_request):
         # First check for an X-Forwarded-For header provided by a proxy / router e.g. on Heroku
         source_ip = my_request.headers['X-Forwarded-For']
     except KeyError as e:
-        # If that header is not present, attempt to get the Source IP address from the request itself
-        source_ip = my_request.remote_addr
+        try:
+            # First check for an X-Forwarded-For header provided by a proxy / router e.g. on Heroku
+            source_ip = my_request.headers['X-Client-IP']
+        except KeyError as e:
+            # If that header is not present, attempt to get the Source IP address from the request itself
+            source_ip = my_request.remote_addr
 
     g.source_ip = source_ip
 
