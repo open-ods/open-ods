@@ -1,27 +1,17 @@
 import logging
 import status
 
-from flask import jsonify
+from flask import jsonify, g
 from app.openods_core import cache as ocache
 from app.openods_core import db
 import config as config
-
-
-# Utility method to get source_ip from a request - first checks headers for forwarded IP, then uses remote_addr if not
-def get_source_ip(myrequest):
-    try:
-        source_ip = myrequest.headers['X-Client-IP']
-    except KeyError as e:
-        source_ip = myrequest.remote_addr
-
-    return source_ip
 
 
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_root_response():
 
     logger = logging.getLogger(__name__)
-    logger.debug("Retrieving fresh data")
+    logger.debug("Retrieving data from database")
 
     root_resource = {
         'organisations': str.format('http://{0}/organisations', config.APP_HOSTNAME),
@@ -35,7 +25,7 @@ def get_root_response():
 def get_info_response():
 
     logger = logging.getLogger(__name__)
-    logger.debug("Retrieving fresh data")
+    logger.debug("Retrieving data from database")
 
     dataset_info = db.get_dataset_info()
 
@@ -46,7 +36,7 @@ def get_info_response():
 def get_organisations_response(request):
 
     logger = logging.getLogger(__name__)
-    logger.debug("Retrieving fresh data")
+    logger.debug("Retrieving data from database")
 
     # Collect any query parameters that were supplied
     query = request.args.get('q') if request.args.get('q') else None
@@ -55,28 +45,40 @@ def get_organisations_response(request):
 
     limit = request.args.get('limit') if request.args.get('limit') else 20
 
-    record_class = request.args.get(
-        'recordClass') if request.args.get('recordClass') else None
+    record_class = request.args.get('recordClass') if request.args.get('recordClass') else None
 
-    primary_role_code = request.args.get(
-        'primaryRoleCode') if request.args.get('primaryRoleCode') else None
+    if request.args.get('primaryRoleCode'):
+        primary_role_codes = request.args.get('primaryRoleCode')
 
-    role_code = request.args.get(
-        'roleCode') if request.args.get('roleCode') else None
+        # Convert the list of comma separated role codes into a list
+        temp_primary_role_code_list = primary_role_codes.split(',')
 
-    postcode = request.args.get(
-        'postCode') if request.args.get('postCode') else None
+        # Convert all role codes in the list to upper case
+        primary_role_code_list = [role_code.upper() for role_code in temp_primary_role_code_list]
+    else:
+        primary_role_code_list = None
 
-    active = request.args.get(
-        'active') if request.args.get('active') else None
+    if request.args.get('roleCode'):
+        role_codes = request.args.get('roleCode')
 
-    last_updated_since = request.args.get(
-        'lastUpdatedSince') if request.args.get('lastUpdatedSince') else None
+        # Convert the list of comma separated role codes into a list
+        temp_role_code_list = role_codes.split(',')
+
+        # Convert all role codes to upper case
+        role_code_list = [role_code.upper() for role_code in temp_role_code_list]
+    else:
+        role_code_list = None
+
+    postcode = request.args.get('postCode') if request.args.get('postCode') else None
+
+    active = request.args.get('active') if request.args.get('active') else None
+
+    last_updated_since = request.args.get('lastUpdatedSince') if request.args.get('lastUpdatedSince') else None
 
     # Call the get_org_list method from the database controller, passing in parameters.
     # Method will return a tuple containing the data and the total record count for the specified filter.
     data, total_record_count = db.get_org_list(offset, limit, record_class,
-                                               primary_role_code, role_code,
+                                               primary_role_code_list, role_code_list,
                                                query, postcode, active, last_updated_since)
 
     if data:
@@ -87,7 +89,7 @@ def get_organisations_response(request):
         return resp
 
     else:
-        result = {'organisations': [] }
+        result = {'organisations': []}
         resp = jsonify(result)
         resp.headers['X-Total-Count'] = 0
         resp.headers['Access-Control-Expose-Headers'] = 'X-Total-Count'
@@ -101,7 +103,7 @@ def get_organisations_response(request):
 def get_single_organisation_response(ods_code):
 
     logger = logging.getLogger(__name__)
-    logger.debug("Retrieving fresh data")
+    logger.debug("Retrieving data from database")
 
     data = db.get_organisation_by_odscode(ods_code)
 
@@ -126,7 +128,7 @@ def get_single_organisation_response(ods_code):
 def get_role_types_response(request):
 
     logger = logging.getLogger(__name__)
-    logger.debug("Getting fresh data")
+    logger.debug("Retrieving data from database")
 
     roles_list = db.get_role_types()
 
@@ -148,7 +150,7 @@ def get_role_type_by_code_response(request, role_code):
     """
 
     logger = logging.getLogger(__name__)
-    logger.debug("Getting fresh data")
+    logger.debug("Retrieving data from database")
 
     result = db.get_role_type_by_id(role_code)
 

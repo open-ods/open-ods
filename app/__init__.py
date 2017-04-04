@@ -1,11 +1,11 @@
-__version__ = '0.13b'
+__version__ = '0.14'
 
 import logging
 import re
 import config as config
 
 # Import flask and template operators
-from flask import Flask, render_template
+from flask import Flask
 from flask_featureflags import FeatureFlag
 from flask_cors import CORS
 
@@ -17,22 +17,17 @@ feature_flags = FeatureFlag(app)
 app.config.from_object('config')
 
 # Set up logging
+log_format = "%(asctime)s %(levelname)s %(message)s"
+formatter = logging.Formatter(log_format)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG) if app.config["DEBUG"]==True else logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG) if app.config["DEBUG"] is True else logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 # Allow Cross Origin Resource Sharing for routes under /api/ so that other services can use the data from the API
 regEx=re.compile(config.API_URL+"/*")
 CORS(app, resources={regEx: {"origins": "*"}})
-
-
-# HTTP error handling
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('404.html'), 404
 
 # Import a module / component using its blueprint handler variable (mod_auth)
 from app.openods_site.controllers import mod_site as site_module

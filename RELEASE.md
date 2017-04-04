@@ -1,3 +1,9 @@
+0.14 - 4th April 2017
+---------------------
+* roleCode and primaryRoleCode parameters now take lists of codes (e.g. roleCode=RO177,RO64)
+* Added initial Swagger support
+* Improved logging to be more useful for monitoring stacks such as Splunk, ELK
+
 0.13 - 22nd March 2017
 ----------------------
 * Added lastUpdatedSince query parameter - returns only records that have changed since the specified date

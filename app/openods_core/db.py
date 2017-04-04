@@ -15,7 +15,7 @@ def remove_none_values_from_dictionary(dirty_dict):
 
 
 def get_org_list(offset=0, limit=20, recordclass='both',
-                 primary_role_code=None, role_code=None,
+                 primary_role_code_list=None, role_code_list=None,
                  query=None, postcode=None, active=True, last_updated_since=None):
     """Retrieves a list of organisations
 
@@ -121,7 +121,6 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
         data = data + (active_value, )
 
-
     # If the last_changed_since parameter was specified, add that to the statement
     if last_updated_since:
         logger.debug("last_changed_since parameter was provided")
@@ -136,9 +135,8 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
         data = data + (last_updated_since,)
 
-
     # If a role_code parameter was specified, add that to the statement
-    if role_code:
+    if role_code_list:
         logger.debug('role_code parameter was provided')
 
         sql = str.format("{0} {1}",
@@ -147,7 +145,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
                          "(SELECT org_odscode "
                          "FROM roles "
                          "WHERE status = 'Active' "
-                         "AND UPPER(code) = UPPER(%s)) ")
+                         "AND UPPER(code) = ANY(%s)) ")
 
         sql_count = str.format("{0} {1}",
                                sql_count,
@@ -155,33 +153,32 @@ def get_org_list(offset=0, limit=20, recordclass='both',
                                "(SELECT org_odscode "
                                "FROM roles "
                                "WHERE status = 'Active' "
-                               "AND UPPER(code) = UPPER(%s)) ")
-
-        data = data + (role_code,)
+                               "AND UPPER(code) = ANY(%s)) ")
+        data = data + (role_code_list,)
 
     # Or if a primary_role_code parameter was specified, add that to the statement
-    elif primary_role_code:
+    elif primary_role_code_list:
         logger.debug('primary_role_code parameter was provided')
 
         sql = str.format("{0} {1}",
                          sql,
                          "AND odscode IN "
-                         "(org_odscode "
+                         "(SELECT org_odscode "
                          "FROM roles "
                          "WHERE primary_role = TRUE "
                          "AND status = 'Active' "
-                         "AND UPPER(code) = UPPER(%s)) ")
+                         "AND UPPER(code) = ANY(%s)) ")
 
         sql_count = str.format("{0} {1}",
                                sql_count,
                                "AND odscode IN "
-                               "(org_odscode "
+                               "(SELECT org_odscode "
                                "FROM roles "
                                "WHERE primary_role = TRUE "
                                "AND status = 'Active' "
-                               "AND UPPER(code) = UPPER(%s)) ")
+                               "AND UPPER(code) = ANY(%s)) ")
 
-        data = data + (primary_role_code,)
+        data = data + (primary_role_code_list,)
 
     # Quickly get total number of query results before applying offset and limit
     cur.execute(sql_count, data)
@@ -497,9 +494,10 @@ def get_organisation_by_odscode(odscode):
 
         # Tidy up the field names etc. in the organisation dictionary before it's returned
         result_data['odsCode'] = result_data.pop('odscode')
-        result_data['lastChanged'] = result_data.pop('last_changed')
+        result_data['lastChangeDate'] = result_data.pop('last_changed')
         result_data['refOnly'] = bool(result_data.pop('ref_only'))
         result_data['recordClass'] = result_data.pop('record_class')
+        result_data.pop('post_code')
         result_data.pop('ref')
 
         link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, result_data['odsCode'])
@@ -688,6 +686,7 @@ def get_primary_role_scope():
     primary_role_scope_rows = cur.fetchall()
     return primary_role_scope_rows
 
+
 def get_dataset_info():
 
     sql = "SELECT * FROM versions;"
@@ -709,7 +708,5 @@ def get_dataset_info():
         'contentDescription': row_settings['content_description'],
         'primaryRoleScope': get_primary_role_scope()
     }
-
-    print(result)
 
     return result
