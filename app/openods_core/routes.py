@@ -27,7 +27,7 @@ def not_found(error):
         'method': request.method,
         'requestId': g.request_id,
         'sourceIp': g.source_ip,
-        'targetUrl': request.url,
+        'url': request.url,
         'statusCode': error.code,
         'errorDescription': error.description
     }
@@ -65,6 +65,11 @@ def get_root():
     }
 
     logger.info("API_REQUEST_JSON {log_event}".format(log_event=json.dumps(log_event)))
+
+    logger.debug("requestId={request_id} headers={headers}".format(
+        headers=json.dumps(dict(request.headers)),
+        request_id = g.request_id)
+    )
 
     root_resource = request_handler.get_root_response()
 
