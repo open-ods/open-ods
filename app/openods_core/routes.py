@@ -42,9 +42,29 @@ def get_root():
 
     logger = logging.getLogger(__name__)
 
-    logger.info("Method={method} Resource={resource} SourceAddress={source_ip} TargetURL={url}".format(
-                source_ip=get_source_ip(request), resource=request.path, url=request.url, method=request.method)
+    request_utils.get_request_id(request)
+    request_utils.get_source_ip(request)
+
+    logger.info("API_REQUEST method={method} requestId={request_id} path={path} "
+                "sourceIp={source_ip} url={url}".format(
+                    request_id=g.request_id,
+                    source_ip=g.source_ip,
+                    path=request.path,
+                    url=request.url,
+                    method=request.method)
                 )
+
+    log_event = {
+        'method': request.method,
+        'requestId': g.request_id,
+        'sourceIp': g.source_ip,
+        'path': request.path,
+        'url': request.url,
+        'parameters': request.args,
+        'statusCode': 200
+    }
+
+    logger.info("API_REQUEST_JSON {log_event}".format(log_event=json.dumps(log_event)))
 
     root_resource = request_handler.get_root_response()
 
@@ -54,9 +74,18 @@ def get_root():
 @app.route(config.API_URL+"/info", methods=['GET'])
 def get_info():
 
+    request_utils.get_request_id(request)
+    request_utils.get_source_ip(request)
+
     logger = logging.getLogger(__name__)
-    logger.info("Method={method} Resource={resource} SourceAddress={source_ip} TargetURL={url}".format(
-                source_ip=get_source_ip(request), resource=request.path, url=request.url, method=request.method)
+    logger.info("API_REQUEST method={method} requestId={request_id} "
+                "path={resource} sourceIp={source_ip} url={url}".format(
+                    request_id=g.request_id,
+                    source_ip=g.source_ip,
+                    resource=request.path,
+                    url=request.url,
+                    method=request.method
+                    )
                 )
 
     dataset_info = request_handler.get_info_response()
@@ -80,11 +109,20 @@ def get_organisations():
     - active=True/False (filter organisations with the specified active status)
     """
 
+    request_utils.get_request_id(request)
+    request_utils.get_source_ip(request)
+
     logger = logging.getLogger(__name__)
 
-    logger.info("Method={method} Resource={resource} "
-                "SourceAddress={source_ip} TargetURL={url}".format(
-                    source_ip=get_source_ip(request), resource=request.path, url=request.url, method=request.method)
+    logger.info("API_REQUEST method={method} requestId={request_id} "
+                "path={path} parameters={parameter_json} sourceIp={source_ip} url={url}".format(
+                    method=request.method,
+                    source_ip=g.source_ip,
+                    request_id=g.request_id,
+                    path=request.path,
+                    url=request.url,
+                    parameter_json=json.dumps(request.args)
+                    )
                 )
 
     resp = request_handler.get_organisations_response(request)
@@ -98,12 +136,19 @@ def get_organisation(ods_code):
     Returns a specific organisation resource
     """
 
+    request_utils.get_request_id(request)
+    request_utils.get_source_ip(request)
     logger = logging.getLogger(__name__)
 
-    logger.info("Method={method} Resource={resource} ResourceID={resource_id} SourceAddress={source_ip} "
-                "TargetURL={url}".format(
-                    source_ip=get_source_ip(request), resource=request.path, resource_id=ods_code,
-                    url=request.url, method=request.method)
+    logger.info("API_REQUEST method={method} requestId={request_id} path={path} "
+                "resourceId={resource_id} sourceIp={source_ip} url={url}".format(
+                    method=request.method,
+                    request_request_id=g.request_id,
+                    source_ip=g.source_ip,
+                    path=request.path,
+                    resource_id=ods_code,
+                    url=request.url,
+                    )
                 )
 
     data = db.get_organisation_by_odscode(ods_code)
@@ -129,9 +174,20 @@ def route_role_types():
     Returns the list of available OrganisationRole types
     """
 
+    request_utils.get_request_id(request)
+    request_utils.get_source_ip(request)
+
     logger = logging.getLogger(__name__)
-    logger.info("Method={method} Resource={resource} SourceAddress={source_ip} TargetURL={url}".format(
-        source_ip=get_source_ip(request), resource=request.path, url=request.url, method=request.method))
+    logger.info("API_REQUEST method={method} requestId={request_id} "
+                "path={path} parameters={parameter_json} sourceIp={source_ip} url={url}".format(
+                    method=request.method,
+                    source_ip=g.source_ip,
+                    request_id=g.request_id,
+                    path=request.path,
+                    url=request.url,
+                    parameter_json=json.dumps(request.args),
+                    )
+                )
 
     result = request_handler.get_role_types_response(request)
 
@@ -143,26 +199,33 @@ def route_role_type_by_code(role_code):
     """
     Returns the list of available OrganisationRole types
     """
+    request_utils.get_request_id(request)
+    request_utils.get_source_ip(request)
 
     logger = logging.getLogger(__name__)
-    logger.info("Method={method} Resource={resource} ResourceID={resource_id} SourceAddress={source_ip} "
-             "TargetURL={url}".format(
-              source_ip=get_source_ip(request), resource=request.path, resource_id=role_code,
-              url=request.url, method=request.method)
-             )
+    logger.info("API_REQUEST method={method} requestId={request_id} path={path} "
+                "resourceId={resource_id} sourceIp={source_ip} url={url}".format(
+                    method=request.method,
+                    source_ip=g.source_ip,
+                    request_id=g.request_id,
+                    resource_id=role_code,
+                    path=request.path,
+                    url=request.url,
+                    )
+                )
 
     result = request_handler.get_role_type_by_code_response(request, role_code)
 
     return result
 
-
-@app.route(config.API_URL+"/organisations/<ods_code>/endpoints", methods=['GET'])
-@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
-def organisation_endpoints(ods_code):
-    """
-    FAKE ENDPOINT
-
-    Returns a list of endpoints for a specific Organisation.
-    """
-
-    return jsonify(sample_data.endpoint_data)
+#
+# @app.route(config.API_URL+"/organisations/<ods_code>/endpoints", methods=['GET'])
+# @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+# def organisation_endpoints(ods_code):
+#     """
+#     FAKE ENDPOINT
+#
+#     Returns a list of endpoints for a specific Organisation.
+#     """
+#
+#     return jsonify(sample_data.endpoint_data)

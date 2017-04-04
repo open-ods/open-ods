@@ -686,6 +686,7 @@ def get_primary_role_scope():
     primary_role_scope_rows = cur.fetchall()
     return primary_role_scope_rows
 
+
 def get_dataset_info():
 
     sql = "SELECT * FROM versions;"
@@ -707,7 +708,5 @@ def get_dataset_info():
         'contentDescription': row_settings['content_description'],
         'primaryRoleScope': get_primary_role_scope()
     }
-
-    print(result)
 
     return result

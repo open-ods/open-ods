@@ -1,7 +1,7 @@
 import logging
 import status
 
-from flask import jsonify
+from flask import jsonify, g
 from app.openods_core import cache as ocache
 from app.openods_core import db
 import config as config
@@ -11,7 +11,7 @@ import config as config
 def get_root_response():
 
     logger = logging.getLogger(__name__)
-    logger.debug("Retrieving fresh data")
+    logger.debug("Retrieving data from database")
 
     root_resource = {
         'organisations': str.format('http://{0}/organisations', config.APP_HOSTNAME),
@@ -25,7 +25,7 @@ def get_root_response():
 def get_info_response():
 
     logger = logging.getLogger(__name__)
-    logger.debug("Retrieving fresh data")
+    logger.debug("Retrieving data from database")
 
     dataset_info = db.get_dataset_info()
 
@@ -36,7 +36,7 @@ def get_info_response():
 def get_organisations_response(request):
 
     logger = logging.getLogger(__name__)
-    logger.debug("Retrieving fresh data")
+    logger.debug("Retrieving data from database")
 
     # Collect any query parameters that were supplied
     query = request.args.get('q') if request.args.get('q') else None
@@ -89,7 +89,7 @@ def get_organisations_response(request):
         return resp
 
     else:
-        result = {'organisations': [] }
+        result = {'organisations': []}
         resp = jsonify(result)
         resp.headers['X-Total-Count'] = 0
         resp.headers['Access-Control-Expose-Headers'] = 'X-Total-Count'
@@ -103,7 +103,7 @@ def get_organisations_response(request):
 def get_single_organisation_response(ods_code):
 
     logger = logging.getLogger(__name__)
-    logger.debug("Retrieving fresh data")
+    logger.debug("Retrieving data from database")
 
     data = db.get_organisation_by_odscode(ods_code)
 
@@ -128,7 +128,7 @@ def get_single_organisation_response(ods_code):
 def get_role_types_response(request):
 
     logger = logging.getLogger(__name__)
-    logger.debug("Getting fresh data")
+    logger.debug("Retrieving data from database")
 
     roles_list = db.get_role_types()
 
@@ -150,7 +150,7 @@ def get_role_type_by_code_response(request, role_code):
     """
 
     logger = logging.getLogger(__name__)
-    logger.debug("Getting fresh data")
+    logger.debug("Retrieving data from database")
 
     result = db.get_role_type_by_id(role_code)
 

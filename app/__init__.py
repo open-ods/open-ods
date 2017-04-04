@@ -5,7 +5,7 @@ import re
 import config as config
 
 # Import flask and template operators
-from flask import Flask, render_template
+from flask import Flask
 from flask_featureflags import FeatureFlag
 from flask_cors import CORS
 
@@ -17,10 +17,11 @@ feature_flags = FeatureFlag(app)
 app.config.from_object('config')
 
 # Set up logging
+log_format = "%(asctime)s %(levelname)s %(message)s"
+formatter = logging.Formatter(log_format)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG) if app.config["DEBUG"]==True else logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG) if app.config["DEBUG"] is True else logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
