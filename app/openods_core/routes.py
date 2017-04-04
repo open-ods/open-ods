@@ -27,7 +27,7 @@ def not_found(error):
         'method': request.method,
         'requestId': g.request_id,
         'sourceIp': g.source_ip,
-        'targetUrl': request.url,
+        'url': request.url,
         'statusCode': error.code,
         'errorDescription': error.description
     }
