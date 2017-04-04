@@ -7,16 +7,6 @@ from app.openods_core import db
 import config as config
 
 
-# Utility method to get source_ip from a request - first checks headers for forwarded IP, then uses remote_addr if not
-def get_source_ip(myrequest):
-    try:
-        source_ip = myrequest.headers['X-Client-IP']
-    except KeyError as e:
-        source_ip = myrequest.remote_addr
-
-    return source_ip
-
-
 @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
 def get_root_response():
 

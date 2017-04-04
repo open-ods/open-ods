@@ -1,27 +1,40 @@
 import logging
 
 import status
-from flask import jsonify, request
+from flask import jsonify, request, g, json, render_template
 
 import config as config
 from app import app
 from app.openods_core import cache as ocache
 from app.openods_core import sample_data
 from app.openods_core import db, schema_check
-from app.openods_core import request_handler
+from app.openods_core import request_handler, request_utils
 
 
 schema_check.check_schema_version()
 
 
-# Utility method to get source_ip from a request - first checks headers for forwarded IP, then uses remote_addr if not
-def get_source_ip(myrequest):
-    try:
-        source_ip = myrequest.headers['X-Client-IP']
-    except KeyError as e:
-        source_ip = myrequest.remote_addr
+# HTTP error handling
+@app.errorhandler(404)
+def not_found(error):
 
-    return source_ip
+    request_utils.get_request_id(request)
+    request_utils.get_source_ip(request)
+
+    logger = logging.getLogger(__name__)
+
+    log_event = {
+        'method': request.method,
+        'requestId': g.request_id,
+        'sourceIp': g.source_ip,
+        'targetUrl': request.url,
+        'statusCode': error.code,
+        'errorDescription': error.description
+    }
+
+    logger.info("API_REQUEST_JSON {log_event}".format(log_event=json.dumps(log_event)))
+
+    return render_template('404.html'), 404
 
 
 @app.route(config.API_URL, methods=['GET'])
