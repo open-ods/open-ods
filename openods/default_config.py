@@ -59,3 +59,5 @@ SWAGGER = {
         }
     ]
 }
+
+JSON_SORT_KEYS=False
