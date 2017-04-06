@@ -2,11 +2,13 @@ import logging
 import os
 from typing import Tuple
 
+import status
 from flasgger import Swagger
 from flask import jsonify, request, g, json, redirect, url_for, send_from_directory
 
 from openods import app
 from openods import request_handler, request_utils
+from openods import fhir_request_handler
 from openods.config_swagger import template
 
 Swagger(app, template=template)
@@ -304,3 +306,41 @@ def route_role_type_by_code(role_code):
     result = request_handler.get_role_type_by_code_response(request, role_code)
 
     return result
+
+
+@app.route(app.config['API_URL'] + "/fhir/organisations/<ods_code>", methods=['GET'])
+def get_fhir_organisation(ods_code):
+    """Endpoint returns a single ODS organisation as a FHIR resoure
+        ---
+        parameters:
+          - name: ods_code
+            in: path
+            type: string
+            required: true
+        responses:
+          200:
+            description: A single JSON object representing an ODS organisation as a FHIR resource
+        """
+
+    request_utils.get_request_id(request)
+    request_utils.get_source_ip(request)
+    logger = logging.getLogger(__name__)
+
+    logger.info("API_REQUEST method={method} requestId={request_id} path={path} "
+                "resourceId={resource_id} sourceIp={source_ip} url={url}".format(
+                    method=request.method,
+                    request_id=g.request_id,
+                    source_ip=g.source_ip,
+                    path=request.path,
+                    resource_id=ods_code,
+                    url=request.url,
+                    )
+                )
+
+    fhir_resource = fhir_request_handler.get_organisation(ods_code)
+
+    if fhir_resource:
+        return jsonify(fhir_resource)
+
+    else:
+        return "Not found", status.HTTP_404_NOT_FOUND
