@@ -1,4 +1,4 @@
-from app.openods_core import db
+from openods import db
 
 
 def get_organisation(ods_code):
