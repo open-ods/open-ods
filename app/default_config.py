@@ -10,8 +10,10 @@ API_URL = os.environ.get('API_URL', '/api')
 LIVE_DEPLOYMENT = os.environ.get('LIVE_DEPLOYMENT', 'FALSE')
 INSTANCE_NAME = os.environ.get('INSTANCE_NAME', 'Development')
 
-# Statement for enabling the development environment
+# Web server configuration items
 DEBUG = bool(os.environ.get('DEBUG', False))
+HOST = os.environ.get('HOST', '0.0.0.0')
+PORT = int(os.environ.get("PORT", 5000))
 
 # Define the application directory
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))

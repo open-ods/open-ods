@@ -19,10 +19,10 @@ endpoint_data = \
                 'orderNo': 2
             },
             {
-                'usage': 'For patient-identifiable test results',
+                'usage': 'For patient-identifiable tests results',
                 'type': 'dts',
                 'correspondenceType': 'clinical',
-                'value': 'test.results@dts.nhs.uk',
+                'value': 'tests.results@dts.nhs.uk',
                 'acceptsPid': True,
                 'orderNo': 3
             }

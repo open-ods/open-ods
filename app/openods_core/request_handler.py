@@ -1,27 +1,30 @@
 import logging
-import status
 
-from flask import jsonify, g
+import status
+from flask import jsonify
+
+from app import app
 from app.openods_core import cache as ocache
 from app.openods_core import db
-import config as config
 
 
-@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
+
+
 def get_root_response():
 
     logger = logging.getLogger(__name__)
     logger.debug("Retrieving data from database")
 
     root_resource = {
-        'organisations': str.format('http://{0}/organisations', config.APP_HOSTNAME),
-        'role-types': str.format('http://{0}/role-types', config.APP_HOSTNAME)
+        'organisations': str.format('http://{0}/organisations', app.config['APP_HOSTNAME']),
+        'role-types': str.format('http://{0}/role-types', app.config['APP_HOSTNAME'])
     }
 
     return root_resource
 
 
-@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
 def get_info_response():
 
     logger = logging.getLogger(__name__)
@@ -32,7 +35,7 @@ def get_info_response():
     return dataset_info
 
 
-@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
 def get_organisations_response(request):
 
     logger = logging.getLogger(__name__)
@@ -99,7 +102,7 @@ def get_organisations_response(request):
 # Handles the request for a single organisation resource. Takes an ODS code and returns the record from the database.
 # If record exists a JSON object is returned with a 200 response.
 # If record does not exist a 404 response is returned.
-@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
 def get_single_organisation_response(ods_code):
 
     logger = logging.getLogger(__name__)
@@ -124,7 +127,7 @@ def get_single_organisation_response(ods_code):
 # Handles a request for a list of role-types resources.
 # Returns a 200 response with a JSON object containing a list of role-type resources
 # TODO: Add logic to handle no records found (low priority as shouldn't happen
-@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
 def get_role_types_response(request):
 
     logger = logging.getLogger(__name__)
@@ -142,7 +145,7 @@ def get_role_types_response(request):
 # Handles request for a specific role-type resource taking a single Role Code as the ID
 # Returns a 200 response with a JSON object for the resource
 # TODO: Add logic to handle record not found scenario
-@ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
+@ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
 def get_role_type_by_code_response(request, role_code):
     """
 

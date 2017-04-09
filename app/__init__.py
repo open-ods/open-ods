@@ -2,7 +2,6 @@ __version__ = '0.14'
 
 import logging
 import re
-import config as config
 
 # Import flask and template operators
 from flask import Flask
@@ -13,8 +12,10 @@ from flask_cors import CORS
 app = Flask(__name__)
 feature_flags = FeatureFlag(app)
 
-# Configurations
-app.config.from_object('config')
+# Load the app configuration from the default_config.py file
+app.config.from_pyfile('default_config.py')
+
+from app.openods_core import routes
 
 # Set up logging
 log_format = "%(asctime)s %(levelname)s %(message)s"
@@ -25,15 +26,12 @@ ch = logging.StreamHandler()
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-# Allow Cross Origin Resource Sharing for routes under /api/ so that other services can use the data from the API
-regEx=re.compile(config.API_URL+"/*")
+# Allow Cross Origin Resource Sharing for routes under the API path so that other services can use the API
+regEx=re.compile(app.config['API_URL'] + "/*")
 CORS(app, resources={regEx: {"origins": "*"}})
 
-# Import a module / component using its blueprint handler variable (mod_auth)
+# Import and register blueprints
 from app.openods_site.controllers import mod_site as site_module
-from app.openods_core import routes
-
-# Register blueprints
 app.register_blueprint(site_module)
 
 
