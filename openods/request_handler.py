@@ -3,9 +3,8 @@ import logging
 import status
 from flask import jsonify
 
-from openods import app
-from openods.openods_core import cache as ocache
-from openods.openods_core import db
+from openods import app, db
+from openods import cache as ocache
 
 
 @ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)

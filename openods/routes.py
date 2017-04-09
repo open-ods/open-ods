@@ -3,11 +3,11 @@ import logging
 import status
 from flasgger import Swagger
 from flask import jsonify, request, g, json, render_template
+from openods.config_swagger import template
 
-from openods import app
-from openods.openods_core import db, schema_check
-from openods.openods_core import request_handler, request_utils
-from openods.openods_core.config_swagger import template
+from openods import app, request_handler
+from openods import db, schema_check
+from openods import request_utils
 
 swagger = Swagger(app, template=template)
 

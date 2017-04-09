@@ -2,7 +2,7 @@ import logging
 import urllib.parse
 from flask_cacheify import init_cacheify
 
-from openods.openods_core import app
+from openods import app
 from flask import request
 
 cache = init_cacheify(app)

@@ -1,6 +1,6 @@
 import unittest
 
-from openods.openods_core import db
+from openods import db
 
 
 class DBTests(unittest.TestCase):

@@ -5,8 +5,8 @@ import re
 
 # Import flask and template operators
 from flask import Flask
-from flask_featureflags import FeatureFlag
 from flask_cors import CORS
+from flask_featureflags import FeatureFlag
 
 # Define the WSGI application object
 app = Flask(__name__)
@@ -15,7 +15,7 @@ feature_flags = FeatureFlag(app)
 # Load the app configuration from the default_config.py file
 app.config.from_object('openods.default_config')
 
-from openods.openods_core import routes
+from openods import routes
 
 # Set up logging
 log_format = "%(asctime)s [%(levelname)s] %(message)s"
