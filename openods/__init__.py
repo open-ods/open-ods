@@ -14,8 +14,9 @@ feature_flags = FeatureFlag(app)
 
 # Load the app configuration from the default_config.py file
 app.config.from_pyfile('default_config.py')
+app.config.from_object('openods.default_config')
 
-from app.openods_core import routes
+from openods.openods_core import routes
 
 # Set up logging
 log_format = "%(asctime)s %(levelname)s %(message)s"
@@ -31,7 +32,7 @@ regEx=re.compile(app.config['API_URL'] + "/*")
 CORS(app, resources={regEx: {"origins": "*"}})
 
 # Import and register blueprints
-from app.openods_site.controllers import mod_site as site_module
+from openods.openods_site.controllers import mod_site as site_module
 app.register_blueprint(site_module)
 
 

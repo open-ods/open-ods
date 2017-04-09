@@ -1,7 +1,7 @@
 import os
 import pprint
 
-from app import app
+from openods import app
 
 pp = pprint.PrettyPrinter(indent=4)
 

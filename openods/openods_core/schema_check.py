@@ -5,7 +5,7 @@ from urllib.parse import urlparse as urlparse
 import psycopg2
 import psycopg2.extras
 
-from app import app
+from openods import app
 
 log = logging.getLogger('openods')
 

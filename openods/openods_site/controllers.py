@@ -1,5 +1,5 @@
 # Import flask dependencies
-from app import app
+from openods import app
 from flask import Blueprint, render_template
 
 # Define the blueprint: 'site', set its url prefix: app.url/

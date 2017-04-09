@@ -1,6 +1,6 @@
 import unittest
 
-from app import app
+from openods import app
 
 
 class ConfigTests(unittest.TestCase):
