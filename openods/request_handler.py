@@ -14,8 +14,8 @@ def get_root_response():
     logger.debug("Retrieving data from database")
 
     root_resource = {
-        'organisations': str.format('http://{0}/organisations', app.config['APP_HOSTNAME']),
-        'role-types': str.format('http://{0}/role-types', app.config['APP_HOSTNAME'])
+        'organisations': str.format('{0}/organisations', app.config['APP_HOSTNAME']),
+        'role-types': str.format('{0}/role-types', app.config['APP_HOSTNAME'])
     }
 
     return root_resource

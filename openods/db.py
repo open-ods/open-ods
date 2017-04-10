@@ -203,7 +203,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
     result = []
 
     for row in rows:
-        link_self_href = str.format('http://{0}/organisations/{1}',
+        link_self_href = str.format('{0}/organisations/{1}',
                                     app.config['APP_HOSTNAME'],
                                     row['odscode'])
 
@@ -342,7 +342,7 @@ def get_organisation_by_odscode(odscode):
 
             relationship = remove_none_values_from_dictionary(relationship)
 
-            link_target_href = str.format('http://{0}/organisations/{1}',
+            link_target_href = str.format('{0}/organisations/{1}',
                                           app.config['APP_HOSTNAME'],
                                           relationship['target_odscode'])
 
@@ -388,7 +388,7 @@ def get_organisation_by_odscode(odscode):
 
             role = remove_none_values_from_dictionary(role)
 
-            link_role_href = str.format('http://{0}/role-types/{1}',
+            link_role_href = str.format('{0}/role-types/{1}',
                                         app.config['APP_HOSTNAME'],
                                         role['code'])
 
@@ -474,7 +474,7 @@ def get_organisation_by_odscode(odscode):
         successors = []
 
         for successor in rows_successors:
-            link_successor_href = str.format('http://{0}/organisations/{1}',
+            link_successor_href = str.format('{0}/organisations/{1}',
                                              app.config['APP_HOSTNAME'],
                                              successor['targetodscode'])
 
@@ -502,7 +502,7 @@ def get_organisation_by_odscode(odscode):
         result_data.pop('post_code')
         result_data.pop('ref')
 
-        link_self_href = str.format('http://{0}/organisations/{1}',
+        link_self_href = str.format('{0}/organisations/{1}',
                                     app.config['APP_HOSTNAME'],
                                     result_data['odsCode'])
         result_data['links'] = [
@@ -576,7 +576,7 @@ def search_organisation(search_text, offset=0, limit=1000,):
         result = []
 
         for row in rows:
-            link_self_href = str.format('http://{0}/organisations/{1}',
+            link_self_href = str.format('{0}/organisations/{1}',
                                         app.config['APP_HOSTNAME'],
                                         row['odscode'])
             item = {
@@ -613,13 +613,13 @@ def get_role_types():
     for row in rows:
         role_code = row['id']
         role_display_name = row['displayname']
-        link_self_href = str.format('http://{0}/role-types/{1}',
+        link_self_href = str.format('{0}/role-types/{1}',
                                     app.config['APP_HOSTNAME'],
                                     role_code)
-        link_search_primary_role_code_href = str.format('http://{0}/organisations?primaryRoleCode={1}',
+        link_search_primary_role_code_href = str.format('{0}/organisations?primaryRoleCode={1}',
                                                         app.config['APP_HOSTNAME'],
                                                         role_code)
-        link_search_role_code_href = str.format('http://{0}/organisations?roleCode={1}',
+        link_search_role_code_href = str.format('{0}/organisations?roleCode={1}',
                                                 app.config['APP_HOSTNAME'],
                                                 role_code)
         result_data = {
@@ -664,13 +664,13 @@ def get_role_type_by_id(role_id):
 
     role_code = returned_row['id']
     role_display_name = returned_row['displayname']
-    link_self_href = str.format('http://{0}/role-types/{1}',
+    link_self_href = str.format('{0}/role-types/{1}',
                                 app.config['APP_HOSTNAME'],
                                 role_code)
-    link_search_primary_role_code_href = str.format('http://{0}/organisations?primaryRoleCode={1}',
+    link_search_primary_role_code_href = str.format('{0}/organisations?primaryRoleCode={1}',
                                                     app.config['APP_HOSTNAME'],
                                                     role_code)
-    link_search_role_code_href = str.format('http://{0}/organisations?roleCode={1}',
+    link_search_role_code_href = str.format('{0}/organisations?roleCode={1}',
                                             app.config['APP_HOSTNAME'],
                                             role_code)
     result = {

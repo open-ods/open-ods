@@ -1,18 +1,13 @@
 import logging
 
-import status
+from flask import jsonify, request, g, json
 from flasgger import Swagger
-from flask import jsonify, request, g, json, render_template
+
+from openods import app
+from openods import request_handler, request_utils
 from openods.config_swagger import template
 
-from openods import app, request_handler
-from openods import db, schema_check
-from openods import request_utils
-
 swagger = Swagger(app, template=template)
-
-schema_check.check_schema_version()
-
 
 # HTTP error handling
 @app.errorhandler(404)
@@ -34,10 +29,12 @@ def not_found(error):
 
     logger.info("API_REQUEST_JSON {log_event}".format(log_event=json.dumps(log_event)))
 
-    return render_template('404.html'), 404
+    return jsonify({'errorCode': 404,
+                    'errorText': 'Not found'}
+                   ), 404
 
 
-@app.route(app.config['API_URL'] , methods=['GET'])
+@app.route(app.config['API_PATH'] , methods=['GET'])
 def get_root():
     """Endpoint returning information about available resources
     ---
@@ -82,7 +79,7 @@ def get_root():
     return jsonify(root_resource)
 
 
-@app.route(app.config['API_URL'] + "/info", methods=['GET'])
+@app.route(app.config['API_PATH'] + "/info", methods=['GET'])
 def get_info():
     """Endpoint returning information about the current ODS dataset
     ---
@@ -109,7 +106,7 @@ def get_info():
     return jsonify(dataset_info)
 
 
-@app.route(app.config['API_URL'] + "/organisations", methods=['GET'])
+@app.route(app.config['API_PATH'] + "/organisations", methods=['GET'])
 def get_organisations():
     """
     Endpoint returning a list of ODS organisations
@@ -190,7 +187,7 @@ def get_organisations():
     return resp
 
 
-@app.route(app.config['API_URL'] + "/organisations/<ods_code>", methods=['GET'])
+@app.route(app.config['API_PATH'] + "/organisations/<ods_code>", methods=['GET'])
 def get_organisation(ods_code):
     """Endpoint returns a single ODS organisation
         ---
@@ -223,7 +220,7 @@ def get_organisation(ods_code):
     return response
 
 
-@app.route(app.config['API_URL'] + "/role-types", methods=['GET'])
+@app.route(app.config['API_PATH'] + "/role-types", methods=['GET'])
 def route_role_types():
     """
         Endpoint returning a list of ODS role types
@@ -253,7 +250,7 @@ def route_role_types():
     return result
 
 
-@app.route(app.config['API_URL'] + "/role-types/<role_code>", methods=['GET'])
+@app.route(app.config['API_PATH'] + "/role-types/<role_code>", methods=['GET'])
 def route_role_type_by_code(role_code):
     """Endpoint returns a single ODS role type
         ---
@@ -284,15 +281,3 @@ def route_role_type_by_code(role_code):
     result = request_handler.get_role_type_by_code_response(request, role_code)
 
     return result
-
-#
-# @app.route(config.API_URL+"/organisations/<ods_code>/endpoints", methods=['GET'])
-# @ocache.cache.cached(timeout=config.CACHE_TIMEOUT, key_prefix=ocache.generate_cache_key)
-# def organisation_endpoints(ods_code):
-#     """
-#     FAKE ENDPOINT
-#
-#     Returns a list of endpoints for a specific Organisation.
-#     """
-#
-#     return jsonify(sample_data.endpoint_data)

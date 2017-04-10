@@ -1,3 +1,7 @@
+0.15 - 10th April 2017
+----------------------
+* Rename variable API_URL to API_PATH, and remove API_USER and API_PASS variables as they're no longer used
+
 0.14 - 4th April 2017
 ---------------------
 * roleCode and primaryRoleCode parameters now take lists of codes (e.g. roleCode=RO177,RO64)

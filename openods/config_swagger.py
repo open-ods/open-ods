@@ -5,10 +5,9 @@ template = {
     "description": "Open API for NHS Organisational Data",
     "version": "0.0.1"
   },
-  "basePath": "/",  # base bash for blueprint registration
+  "basePath": "/",
   "schemes": [
     [
-      "http",
       "https"
     ]
   ]
