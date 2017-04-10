@@ -1,0 +1,28 @@
+FROM python:3.6
+
+ENV DATABASE_URL postgresql://openods:openods@database:5432/openods
+ENV CACHE_TIMEOUT 30
+ENV APP_HOSTNAME localhost:8080/api
+ENV API_USER user
+ENV API_PASS pass
+ENV API_URL /api
+ENV LIVE_DEPLOYMENT FALSE
+ENV INSTANCE_NAME Development
+ENV FT_SUPPRESSPRIMARYROLESEARCHLINK ""
+
+RUN apt-get update && apt-get install -y postgresql-server-dev-all memcached python-pylibmc libmemcached-dev libxml2 libxml2-dev libxslt-dev
+
+RUN mkdir -p /usr/src/app
+
+COPY requirements.txt /usr/src/app/
+COPY openods /usr/src/app/openods/
+
+WORKDIR /usr/src/app
+
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 8080/tcp
+
+ENTRYPOINT ["gunicorn", "-b", "0.0.0.0:8080", "-w", "4", "openods:app"]
+

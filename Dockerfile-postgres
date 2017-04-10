@@ -1,0 +1,13 @@
+FROM postgres:9.6
+
+VOLUME /temp_data
+
+ENV POSTGRES_USER openods
+ENV POSTGRES_PASSWORD openods
+ENV POSTGRES_DB openods
+ENV POSTGRES_DUMP_LOCATION /temp_data/
+
+COPY assets/openods_012.dump $POSTGRES_DUMP_LOCATION
+COPY Docker/scripts/init_import_dump.sh /docker-entrypoint-initdb.d
+
+EXPOSE 5432/tcp

@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  web:
+    container_name: openods-web
+    build:
+      context: .
+      dockerfile: Dockerfile-openods
+    ports:
+      - "8000:8080"
+    links:
+      - "db:database"
+      - "cache:redis"
+    depends_on:
+      - db
+      - cache
+  db:
+    container_name: openods-postgres
+    build:
+      context: .
+      dockerfile: Dockerfile-postgres
+    ports:
+      - "5433:5432"
+  cache:
+    container_name: openods-redis
+    build:
+      context: .
+      dockerfile: Dockerfile-redis
