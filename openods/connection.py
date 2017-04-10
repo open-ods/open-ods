@@ -8,9 +8,6 @@ import psycopg2.pool
 
 from openods import app
 
-log = logging.getLogger('openods')
-
-
 url = urlparse(app.config['DATABASE_URL'])
 
 
@@ -23,10 +20,13 @@ def get_connection():
             host=url.hostname,
             port=url.port
         )
-        log.debug("Connected to {db_url}".format(db_url=app.config['DATABASE_URL']))
+
+        logger = logging.getLogger(__name__)
+        logger.debug("Connected to {db_url}".format(db_url=app.config['DATABASE_URL']))
 
     except psycopg2.Error as e:
-        log.warning("Unable to connect to the database on {db_url}".format(db_url=app.config['DATABASE_URL']))
+        logger = logging.getLogger(__name__)
+        logger.warning("Unable to connect to the database on {db_url}".format(db_url=app.config['DATABASE_URL']))
         sys.exit(1)
 
     return conn

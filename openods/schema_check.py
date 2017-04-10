@@ -7,8 +7,6 @@ import psycopg2.extras
 
 from openods import app
 
-log = logging.getLogger('openods')
-
 url = urlparse(app.config['DATABASE_URL'])
 
 
@@ -22,10 +20,12 @@ def check_schema_version():
             host=url.hostname,
             port=url.port
         )
-        log.debug("Checking schema version of {db_url}".format(db_url=app.config['DATABASE_URL']))
+        logger = logging.getLogger(__name__)
+        logger.debug("Checking schema version of {db_url}".format(db_url=app.config['DATABASE_URL']))
 
     except psycopg2.Error as e:
-        log.error("Unable to connect to the database")
+        logger = logging.getLogger(__name__)
+        logger.error("Unable to connect to the database")
         sys.exit(1)
 
     try:
@@ -36,12 +36,14 @@ def check_schema_version():
         db_schema_version = result['value']
 
     except TypeError as e:
-        log.error("Unable to read schema version from the database")
-        log.error("Exception: %s" % e)
+        logger = logging.getLogger(__name__)
+        logger.error("Unable to read schema version from the database")
+        logger.error("Exception: %s" % e)
         sys.exit(1)
 
     except psycopg2.Error as e:
-        log.error("Error retrieving schema_version from database")
+        logger = logging.getLogger(__name__)
+        logger.error("Error retrieving schema_version from database")
         raise
 
     if not (app.config['TARGET_SCHEMA_VERSION'] == db_schema_version):
@@ -50,6 +52,7 @@ def check_schema_version():
                                       db_schema_version))
 
     else:
-        log.debug(str.format("Schema version is {0}", db_schema_version))
+        logger = logging.getLogger(__name__)
+        logger.debug(str.format("Schema version is {0}", db_schema_version))
 
     return True
