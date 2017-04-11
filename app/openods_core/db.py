@@ -1,14 +1,12 @@
 import logging
 
-import config as config
+import flask_featureflags as feature
 import psycopg2
 import psycopg2.extras
 import psycopg2.pool
-import flask_featureflags as feature
 
-from app.openods_core.database import connection as connect
-
-log = logging.getLogger('openods')
+import config as config
+from app.openods_core import connection as connect
 
 
 def remove_none_values_from_dictionary(dirty_dict):
@@ -16,7 +14,9 @@ def remove_none_values_from_dictionary(dirty_dict):
     return clean_dict
 
 
-def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None, role_code=None, query=None):
+def get_org_list(offset=0, limit=20, recordclass='both',
+                 primary_role_code_list=None, role_code_list=None,
+                 query=None, postcode=None, active=True, last_updated_since=None):
     """Retrieves a list of organisations
 
     Parameters
@@ -27,95 +27,192 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
     recordclass = the type of record to return (HSCSite, HSCOrg, Both)
     primary_role_code = filter organisations to only those where this is their primary role code
     role_code = filter organisations to only those a role with this code
+    postcode = filter organisations to those with a match on the postcode
+    active = filter organisations by their status (active / inactive)
+    last_changed_since = filter organisations by their lastUpdated date
 
     Returns
     -------
     List of organisations filtered by provided parameters
     """
-    log.debug(str.format("Offset: {0} Limit: {1}, RecordClass: {2}, Query: {3}", offset, limit, recordclass, query))
+
+    logger = logging.getLogger(__name__)
+
+    if int(limit) > 1000:
+        limit = 1000
+
     conn = connect.get_connection()
+
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
     record_class_param = '%' if recordclass == 'both' else recordclass
 
     # Start the select statement with the field list and from clause
-    sql = "SELECT odscode, name, record_class from organisations WHERE TRUE "
-    sql_count = "SELECT COUNT(*) from organisations WHERE TRUE "
+    sql = "SELECT odscode, name, record_class, status " \
+          "FROM organisations " \
+          "WHERE TRUE "
+
+    sql_count = "SELECT COUNT(*) FROM organisations WHERE TRUE "
     data = ()
 
     # If a record_class parameter was specified, add that to the statement
     if recordclass:
-        log.debug('add record_class parameter')
-        sql = str.format("{0} {1}", sql, "AND record_class LIKE %s ")
-        sql_count = str.format("{0} {1}", sql_count, "AND record_class LIKE %s ")
+        logger.debug('record_class parameter was provided')
+        sql = str.format("{0} {1}",
+                         sql,
+                         "AND record_class LIKE %s ")
+
+        sql_count = str.format("{0} {1}",
+                               sql_count,
+                               "AND record_class LIKE %s ")
+
         data = (recordclass,)
 
     # If a query parameter was specified, add that to the statement
     if query:
-        print('add search query')
-        sql = str.format("{0} {1}", sql, "AND name like UPPER(%s) ")
-        sql_count = str.format("{0} {1}", sql_count, "AND name like UPPER(%s) ")
-        search_query = str.format("%{0}%", query)
+        logger.debug("q parameter was provided")
+
+        sql = str.format("{0} {1}",
+                         sql,
+                         "AND UPPER(name) LIKE UPPER(%s) ")
+
+        sql_count = str.format("{0} {1}",
+                               sql_count,
+                               "AND UPPER(name) LIKE UPPER(%s) ")
+
+        search_query = str.format("%{0}%",
+                                  query)
+
         data = data + (search_query,)
 
+    # If a postcode parameter was specified, add that to the statement
+    if postcode:
+        logger.debug("postcode parameter was provided")
+
+        new_clause = "AND UPPER(post_code) LIKE UPPER(%s) "
+
+        sql = "{sql} {new_sql}".format(
+            sql=sql, new_sql=new_clause)
+
+        sql_count = "{sql} {new_sql}".format(
+            sql=sql_count, new_sql=new_clause)
+
+        postcode_query = str.format("%{0}%",
+                                    postcode)
+
+        data = data + (postcode_query, )
+
+    # If the active parameter was specified, add that to the statement
+    if active:
+        logger.debug("active parameter was provided")
+
+        if active in (True, 1, '1', 'True', 'true', 'TRUE', 'yes', 'Yes', 'YES'):
+            active_value = 'Active'
+            new_clause = "AND status = %s "
+        else:
+            active_value = 'Inactive'
+            new_clause = "AND status = %s "
+
+        sql = "{sql} {new_sql}".format(
+            sql=sql, new_sql=new_clause)
+
+        sql_count = "{sql} {new_sql}".format(
+            sql=sql_count, new_sql=new_clause)
+
+        data = data + (active_value, )
+
+    # If the last_changed_since parameter was specified, add that to the statement
+    if last_updated_since:
+        logger.debug("last_changed_since parameter was provided")
+
+        new_clause = "AND last_changed > %s "
+
+        sql = "{sql} {new_sql}".format(
+            sql=sql, new_sql=new_clause)
+
+        sql_count = "{sql} {new_sql}".format(
+            sql=sql_count, new_sql=new_clause)
+
+        data = data + (last_updated_since,)
+
     # If a role_code parameter was specified, add that to the statement
-    if role_code:
-        print('add role_code')
+    if role_code_list:
+        logger.debug('role_code parameter was provided')
+
         sql = str.format("{0} {1}",
                          sql,
-                         "AND odscode in "
-                         "(SELECT org_odscode from roles "
+                         "AND UPPER(odscode) in "
+                         "(SELECT org_odscode "
+                         "FROM roles "
                          "WHERE status = 'Active' "
-                         "AND code = %s) ")
+                         "AND UPPER(code) = ANY(%s)) ")
+
         sql_count = str.format("{0} {1}",
-                         sql_count,
-                         "AND odscode in "
-                         "(SELECT org_odscode from roles "
-                         "WHERE status = 'Active' "
-                         "AND code = %s) ")
-        data = data + (role_code,)
+                               sql_count,
+                               "AND odscode in "
+                               "(SELECT org_odscode "
+                               "FROM roles "
+                               "WHERE status = 'Active' "
+                               "AND UPPER(code) = ANY(%s)) ")
+        data = data + (role_code_list,)
 
     # Or if a primary_role_code parameter was specified, add that to the statement
-    elif primary_role_code:
-        print('add primary_role_code')
+    elif primary_role_code_list:
+        logger.debug('primary_role_code parameter was provided')
+
         sql = str.format("{0} {1}",
                          sql,
-                         "AND odscode in "
-                         "(SELECT org_odscode from roles WHERE primary_role = TRUE "
+                         "AND odscode IN "
+                         "(SELECT org_odscode "
+                         "FROM roles "
+                         "WHERE primary_role = TRUE "
                          "AND status = 'Active' "
-                         "AND code = %s) " )
+                         "AND UPPER(code) = ANY(%s)) ")
+
         sql_count = str.format("{0} {1}",
-                         sql_count,
-                         "AND odscode in "
-                         "(SELECT org_odscode from roles WHERE primary_role = TRUE "
-                         "AND status = 'Active' "
-                         "AND code = %s) " )
-        data = data + (primary_role_code,)
+                               sql_count,
+                               "AND odscode IN "
+                               "(SELECT org_odscode "
+                               "FROM roles "
+                               "WHERE primary_role = TRUE "
+                               "AND status = 'Active' "
+                               "AND UPPER(code) = ANY(%s)) ")
+
+        data = data + (primary_role_code_list,)
 
     # Quickly get total number of query results before applying offset and limit
-    log.debug(sql_count)
-    log.debug(data)
     cur.execute(sql_count, data)
     count = cur.fetchone()['count']
 
     # Lastly, add the offset and limit clauses to the main select statement
-    sql = str.format("{0} {1}", sql, "ORDER BY name OFFSET %s LIMIT %s;")
+    sql = str.format("{0} {1}",
+                     sql,
+                     "ORDER BY name "
+                     "OFFSET %s "
+                     "LIMIT %s;")
+
     data = data + (offset, limit)
 
-    log.debug(sql)
-    log.debug(data)
+    logger.debug(sql)
 
     # Execute the main query
     cur.execute(sql, data)
     rows = cur.fetchall()
-    log.debug(str.format("{0} rows in result", len(rows)))
+
+    logger.debug(str.format("{0} results", len(rows)))
+
     result = []
 
     for row in rows:
-        link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, row['odscode'])
+        link_self_href = str.format('http://{0}/organisations/{1}',
+                                    config.APP_HOSTNAME,
+                                    row['odscode'])
+
         item = {
             'odsCode': row['odscode'],
             'name': row['name'],
             'recordClass': row['record_class'],
+            'status': row['status'],
             'links': [{
                 'rel':'self',
                 'href': link_self_href
@@ -129,6 +226,8 @@ def get_org_list(offset=0, limit=20, recordclass='both', primary_role_code=None,
 
 def get_organisation_by_odscode(odscode):
 
+    logger = logging.getLogger(__name__)
+
     # Get a database connection
     conn = connect.get_connection()
 
@@ -137,14 +236,17 @@ def get_organisation_by_odscode(odscode):
 
     # Try and retrieve the organisation record for the provided ODS code
     try:
-        sql = "SELECT * from organisations " \
-              "WHERE odscode = %s "\
-              "limit 1;"
+        sql = "SELECT * " \
+              "FROM organisations " \
+              "WHERE UPPER(odscode) = UPPER(%s) "\
+              "LIMIT 1;"
+
         data = (odscode,)
 
         cur.execute(sql, data)
         row_org = cur.fetchone()
-        log.debug(str.format("Organisation Record: {0}", row_org))
+        logger.debug(str.format("Organisation Record: {0}",
+                                row_org))
 
         # Raise an exception if the organisation record is not found
         if row_org is None:
@@ -159,14 +261,15 @@ def get_organisation_by_odscode(odscode):
         try:
             sql = "SELECT r.code, csr.displayname, r.unique_id, r.status, " \
                   "r.operational_start_date, r.operational_end_date, r.legal_start_date, " \
-                  "r.legal_end_date, r.primary_role from roles r " \
-                  "left join codesystems csr on r.code = csr.id " \
-                  "WHERE r.org_odscode = %s; "
+                  "r.legal_end_date, r.primary_role " \
+                  "FROM roles r " \
+                  "LEFT JOIN codesystems csr on r.code = csr.id " \
+                  "WHERE UPPER(r.org_odscode) = UPPER(%s);"
+
             data = (organisation_odscode,)
 
             cur.execute(sql, data)
             rows_roles = cur.fetchall()
-            log.debug(rows_roles)
 
         except Exception as e:
             raise
@@ -175,15 +278,16 @@ def get_organisation_by_odscode(odscode):
         try:
             sql = "SELECT rs.code, csr.displayname, rs.unique_id, rs.target_odscode, rs.status, " \
                   "rs.operational_start_date, rs.operational_end_date, rs.legal_start_date, " \
-                  "rs.legal_end_date, o.name from relationships rs " \
-                "left join codesystems csr on rs.code = csr.id " \
-                "left join organisations o on rs.target_odscode = o.odscode " \
-                "WHERE rs.org_odscode = %s; "
+                  "rs.legal_end_date, o.name " \
+                  "FROM relationships rs " \
+                  "LEFT JOIN codesystems csr on rs.code = csr.id " \
+                  "LEFT JOIN organisations o on rs.target_odscode = o.odscode " \
+                  "WHERE UPPER(rs.org_odscode) = UPPER(%s);"
+
             data = (organisation_odscode,)
 
             cur.execute(sql, data)
             rows_relationships = cur.fetchall()
-            log.debug(rows_relationships)
 
         except Exception as e:
             raise
@@ -198,12 +302,13 @@ def get_organisation_by_odscode(odscode):
                   "country, uprn, " \
                   "location_id " \
                   "FROM addresses a " \
-                  "WHERE a.org_odscode = %s;"
+                  "WHERE UPPER(a.org_odscode) = UPPER(%s);"
+
             data = (organisation_odscode,)
 
             cur.execute(sql, data)
             rows_addresses = cur.fetchall()
-            log.debug("Addresses: %s" % rows_addresses)
+            logger.debug("Addresses: %s" % rows_addresses)
 
         except Exception as e:
             raise
@@ -216,12 +321,13 @@ def get_organisation_by_odscode(odscode):
                   "unique_id as uniqueId " \
                   "FROM successors s " \
                   "LEFT JOIN organisations o on s.target_odscode = o.odscode " \
-                  "WHERE s.org_odscode = %s;"
+                  "WHERE UPPER(s.org_odscode) = UPPER(%s);"
+
             data = (organisation_odscode,)
 
             cur.execute(sql, data)
             rows_successors = cur.fetchall()
-            log.debug("Successors: %s" % rows_successors)
+            logger.debug("Successors: %s" % rows_successors)
 
         except Exception as e:
             raise
@@ -237,7 +343,8 @@ def get_organisation_by_odscode(odscode):
             relationship = remove_none_values_from_dictionary(relationship)
 
             link_target_href = str.format('http://{0}/organisations/{1}',
-                                          config.APP_HOSTNAME, relationship['target_odscode'])
+                                          config.APP_HOSTNAME,
+                                          relationship['target_odscode'])
 
             relationship['uniqueId'] = int(relationship.pop('unique_id'))
             relationship['relatedOdsCode'] = relationship.pop('target_odscode')
@@ -387,15 +494,16 @@ def get_organisation_by_odscode(odscode):
 
         # Tidy up the field names etc. in the organisation dictionary before it's returned
         result_data['odsCode'] = result_data.pop('odscode')
-        result_data['lastChanged'] = result_data.pop('last_changed')
+        result_data['lastChangeDate'] = result_data.pop('last_changed')
         result_data['refOnly'] = bool(result_data.pop('ref_only'))
         result_data['recordClass'] = result_data.pop('record_class')
+        result_data.pop('post_code')
         result_data.pop('ref')
 
         link_self_href = str.format('http://{0}/organisations/{1}', config.APP_HOSTNAME, result_data['odsCode'])
         result_data['links'] = [
             {'rel': 'self',
-            'href': link_self_href
+             'href': link_self_href
             }]
 
         try:
@@ -421,13 +529,18 @@ def get_organisation_by_odscode(odscode):
         return result_data
 
     except psycopg2.DatabaseError as e:
-        log.error(str.format("Error {0}", e))
+        logger.error(str.format("Error {0}", e))
 
     except Exception as e:
-        log.error(e)
+        logger.error(e)
 
 
 def search_organisation(search_text, offset=0, limit=1000,):
+
+    logger = logging.getLogger(__name__)
+
+    if limit > 1000:
+        limit = 1000
 
     # Get a database connection
     conn = connect.get_connection()
@@ -436,18 +549,24 @@ def search_organisation(search_text, offset=0, limit=1000,):
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     try:
-        search_term = str.format("%{0}%", search_text)
-        sql = "SELECT * from organisations " \
-              "WHERE name like UPPER(%s) and status = 'Active' " \
-              "ORDER BY name OFFSET %s LIMIT %s;;"
+        search_term = str.format("%{0}%",
+                                 search_text)
+
+        sql = "SELECT * " \
+              "FROM organisations " \
+              "WHERE UPPER(name) LIKE UPPER(%s) " \
+              "AND status = 'Active' " \
+              "ORDER BY name OFFSET %s LIMIT %s;"
+
         data = (search_term, offset, limit)
 
+        logger.debug("Query: {sql}".format(sql=sql))
         cur.execute(sql, data)
         rows = cur.fetchall()
-        print(rows)
+        logger.debug("Number of rows retrieved: {row_count}".format(row_count=rows))
 
         # Raise an exception if the organisation record is not found
-        if rows == []:
+        if not rows:
             raise Exception("Record Not Found")
 
         result = []
@@ -468,16 +587,20 @@ def search_organisation(search_text, offset=0, limit=1000,):
         return result
 
     except Exception as e:
-        log.error(e)
+        logger.error(e)
 
 
 def get_role_types():
 
+    logger = logging.getLogger(__name__)
+
     conn = connect.get_connection()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("SELECT displayname, id from codesystems "
-                "where name = 'OrganisationRole' "\
-                "order by displayname;")
+    cur.execute("SELECT displayname, id "
+                "FROM codesystems "
+                "WHERE name = 'OrganisationRole' "\
+                "ORDER BY displayname;")
+
     rows = cur.fetchall()
     result = []
 
@@ -507,14 +630,19 @@ def get_role_types():
                 })
 
         result.append(result_data)
-    print(result)
+
+    logger.debug("Returning: {result}".format(result=result))
+
     return result
 
 
 def get_role_type_by_id(role_id):
 
-    sql = "SELECT displayname, id from codesystems " \
-          "where name = 'OrganisationRole' AND id = %s;"
+    sql = "SELECT displayname, id " \
+          "FROM codesystems " \
+          "WHERE name = 'OrganisationRole' " \
+          "AND UPPER(id) = UPPER(%s);"
+
     data = (role_id,)
 
     cur = connect.get_cursor()
@@ -549,9 +677,19 @@ def get_role_type_by_id(role_id):
     return result
 
 
+def get_primary_role_scope():
+
+    sql = "SELECT id, displayname FROM codesystems where name = 'PrimaryRoleScope';"
+    cur = connect.get_cursor()
+    cur.execute(sql)
+
+    primary_role_scope_rows = cur.fetchall()
+    return primary_role_scope_rows
+
+
 def get_dataset_info():
 
-    sql = "SELECT * from versions; "
+    sql = "SELECT * FROM versions;"
 
     cur = connect.get_cursor()
     cur.execute(sql)
@@ -559,11 +697,16 @@ def get_dataset_info():
     row_settings = cur.fetchone()
 
     result = {
-        'importTimestamp': row_settings['import_timestamp'],
+        'importDate': row_settings['import_timestamp'],
         'fileVersion': row_settings['file_version'],
-        'publicationSeqNo': row_settings['publication_seqno'],
         'publicationDate': row_settings['publication_date'],
-        'publicationType': row_settings['publication_type']
+        'publicationSource': row_settings['publication_source'],
+        'publicationType': row_settings['publication_type'],
+        'publicationSeqNo': row_settings['publication_seqno'],
+        'FileCreationDate': row_settings['file_creation_date'],
+        'recordCount': row_settings['record_count'],
+        'contentDescription': row_settings['content_description'],
+        'primaryRoleScope': get_primary_role_scope()
     }
 
     return result

@@ -23,10 +23,10 @@ def get_connection():
             host=url.hostname,
             port=url.port
         )
-        log.info("Connected to database")
+        log.debug("Connected to {db_url}".format(db_url=config.DATABASE_URL))
 
     except psycopg2.Error as e:
-        log.warning("Unable to connect to the database")
+        log.warning("Unable to connect to the database on {db_url}".format(db_url=config.DATABASE_URL))
         sys.exit(1)
 
     return conn

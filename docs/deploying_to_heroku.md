@@ -22,4 +22,4 @@ The following instructions will get you set up with a Heroku app running open-od
 
 ### Migrating your Postgres database to your Heroku app
 
-The easier way of getting your database into your Heroku app is to following the steps in the [Database Exports](database_exports.md) document.
+The easiest way of getting your database deployed to your Heroku app is to following the steps in the [Import Tool - Database Exports](https://github.com/open-ods/import_tool/blob/master/database_exports.md) document.

@@ -1,9 +1,7 @@
 beautifulsoup4==4.4.1
 click==6.6
 decorator==4.0.10
-dicttoxml==1.6.6
 Flask==0.11.1
-Flask-Autodoc==0.1.2
 Flask-Cache==0.13.1
 Flask-Cors==2.1.2
 Flask-FeatureFlags==0.6
@@ -12,7 +10,6 @@ Flask-SQLAlchemy==2.1
 gunicorn==19.6.0
 itsdangerous==0.24
 Jinja2==2.8
-lxml==3.6.0
 Mako==1.0.4
 MarkupSafe==0.23
 newrelic==2.66.0.49
@@ -29,3 +26,4 @@ waitress==0.9.0
 WebOb==1.6.1
 WebTest==2.0.21
 Werkzeug==0.11.10
+flasgger

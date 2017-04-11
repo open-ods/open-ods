@@ -22,7 +22,7 @@ def check_schema_version():
             host=url.hostname,
             port=url.port
         )
-        log.info("Connected to database")
+        log.debug("Checking schema version of {db_url}".format(db_url=config.DATABASE_URL))
 
     except psycopg2.Error as e:
         log.error("Unable to connect to the database")
@@ -49,6 +49,6 @@ def check_schema_version():
                                       config.TARGET_SCHEMA_VERSION, db_schema_version))
 
     else:
-        log.info(str.format("Database schema version is {0}", db_schema_version))
+        log.debug(str.format("Schema version is {0}", db_schema_version))
 
     return True
