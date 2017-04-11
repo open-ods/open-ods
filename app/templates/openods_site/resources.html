@@ -52,20 +52,41 @@ Content-Type: application/json
 HTTP/1.0 200 OK
 Content-Type: application/json
 {
-  "fileVersion": "1.0.0",
-  "importTimestamp": "2015-12-11 09:05:30.916881",
-  "publicationDate": "2015-11-30",
+  "FileCreationDate": "2017-02-15T17:10:00",
+  "contentDescription": "HSCOrgRefData_Full_20170215",
+  "fileVersion": "2-0-0",
+  "importDate": "2017-03-21 15:27:55.298493",
+  "publicationDate": "2017-02-15",
   "publicationSeqNo": "1",
-  "publicationType": "Full"
+  "publicationSource": "HSCIC",
+  "publicationType": "Full",
+  "recordCount": "179917",
+  "primaryRoleScope": [
+    {
+      "displayname": "PRIMARY CARE TRUST SITE",
+      "id": "RO180",
+      "name": "PrimaryRoleScope"
+    },
+    {
+      "displayname": "NON-NHS ORGANISATION",
+      "id": "RO157",
+      "name": "PrimaryRoleScope"
+    }
+  ]
 }
     </pre>
     <b>Attributes:</b>
     <ul>
         <li><code>fileVersion</code><em>string</em> - The version of the file containing the source data used to populate to <OpenODS class=""></OpenODS></li>
-        <li><code>importTimestamp</code><em>string</em> - The timestamp representing when the current data was imported into the OpenODS database.</li>
+        <li><code>importDate</code><em>string</em> - The timestamp representing when the current data was imported into the OpenODS database.</li>
         <li><code>publicationDate</code><em>string</em> - The publication date of the current data.</li>
         <li><code>publicationSeqNo</code><em>string</em> - The publication sequence number of the current data.</li>
         <li><code>publicationType</code><em>string</em> - The publication type of the current data (this will almost always be <code>Full</code>.</li>
+        <li><code>publicationSource</code><em>string</em> - The source of the data publication, usually the publishing organisation.</li>
+        <li><code>fileCreationDate</code><em>string</em> - The timestamp of when the source XML data file was created.</li>
+        <li><code>recordCount</code><em>string</em> - The number of organisation records in the dataset.</li>
+        <li><code>contentDescription</code><em>string</em> - A text description of the dataset.</li>
+        <li><code>primaryRoleScope</code><em>string</em> - A list of PrimaryRole records which represents the scope of the dataset.</li>
     </ul>
     </div>
 
@@ -73,20 +94,32 @@ Content-Type: application/json
     <a class="anchor" id="organisations"></a>
     <h3>Organisations</h3>
     <p>An Organisation resource is a single organisation within ODS.</p>
-    <b>Endpoints:</b>
+    <b>Endpoint:</b>
         <ul>
             <li><code>/organisations</code><em>string</em> - get all the Organisation resources (will return a list of 'summary' resource records).</li>
             <li><code>/organisations/:odsCode</code><em>string</em> - get a specific Organisation resource by its ODS code (will return the full resource).</li>
         </ul>
     <b>Query Parameters:</b>
         <ul>
-            <li><code>q</code><em>string</em> - Filter results to those containing specified string in their name attribute</li>
-            <li><code>offset</code><em>integer</em> - Return results offset by specified number</li>
-            <li><code>limit</code><em>integer</em> - Limit number of results returned to specified number</li>
-            <li><code>recordClass</code><em>string</em> - Filter results by their record class (HSCOrg or HSCSite)</li>
-            <li><code>roleCode</code><em>string</em> - Filter results to only those which have the specified role</li>
-            <li><code>primaryRoleCode</code><em>string</em> - Filter results to only those which have the specified primary role (ignored if roleCode is also specified)</li>
+            <li><code>q</code><em>string</em> - Filter results to those containing specified string in their name attribute.</li>
+            <li><code>offset</code><em>integer</em> - Return results offset by specified number.</li>
+            <li><code>limit</code><em>integer</em> - Limit number of results returned to specified number (maximum 1000).</li>
+            <li><code>recordClass</code><em>string</em> - Filter results by their record class (HSCOrg or HSCSite).</li>
+            <li><code>roleCode</code><em>string</em> - Filter results to only those which have the specified role.</li>
+            <li><code>primaryRoleCode</code><em>string</em> - Filter results to only those which have the specified primary role (ignored if roleCode is also specified).</li>
+            <li><code>active</code><em>boolean</em> - Filter results to only those with a matching active status e.g. <code>True</code> for Active, <code>False</code> for Inactive.</li>
+            <li><code>lastUpdatedSince</code><em>ISO8601 date</em> - Filter results to only those records that have been updated since the date specified. Date must be in format <code>lastUpdatedSince=yyyy-mm-dd</code>.
+                Will accept <code>lastUpdatedSince=yyyy-mm</code> or <code>lastUpdatedSince=yyyy</code>.</li>
+
         </ul>
+
+    <b>Endpoint:</b>
+        <ul>
+            <li><code>/organisations/:odsCode</code><em>string</em> - get a specific Organisation resource by its ODS code (will return the full resource).</li>
+        </ul>
+
+    <b>Query Parameters:</b>
+        None
 
     <br>
     <b>Example HTTP Request:</b>
@@ -106,7 +139,8 @@ Content-Type: application/json
       ],
       "name": "BARNSLEY HOSPITAL NHS FOUNDATION TRUST",
       "odsCode": "RFF",
-      "recordClass": "HSCOrg"
+      "recordClass": "HSCOrg",
+      "status": "Active"
     }
   ]
 }
