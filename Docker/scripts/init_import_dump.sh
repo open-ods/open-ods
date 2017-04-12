@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-pg_restore -d openods "$POSTGRES_DUMP_LOCATION/openods_012.dump"
+pg_restore -U openods -d openods "$POSTGRES_DUMP_LOCATION/openods_012.dump"

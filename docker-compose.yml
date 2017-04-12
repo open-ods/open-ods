@@ -10,10 +10,10 @@ services:
       - "8000:8080"
     links:
       - "db:database"
-      - "cache:redis"
+#      - "cache:redis"
     depends_on:
       - db
-      - cache
+#      - cache
   db:
     container_name: openods-postgres
     build:
@@ -21,8 +21,8 @@ services:
       dockerfile: Dockerfile-postgres
     ports:
       - "5433:5432"
-  cache:
-    container_name: openods-redis
-    build:
-      context: .
-      dockerfile: Dockerfile-redis
+#  cache:
+#    container_name: openods-redis
+#    build:
+#      context: .
+#      dockerfile: Dockerfile-redis
