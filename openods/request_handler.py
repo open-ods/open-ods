@@ -8,8 +8,6 @@ from openods import cache as ocache
 
 
 @ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
-
-
 def get_root_response():
 
     logger = logging.getLogger(__name__)

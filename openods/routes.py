@@ -207,7 +207,6 @@ def get_organisation(ods_code):
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
     logger = logging.getLogger(__name__)
-
     logger.info("API_REQUEST method={method} requestId={request_id} path={path} "
                 "resourceId={resource_id} sourceIp={source_ip} url={url}".format(
                     method=request.method,
@@ -219,20 +218,9 @@ def get_organisation(ods_code):
                     )
                 )
 
-    data = db.get_organisation_by_odscode(ods_code)
+    response = request_handler.get_single_organisation_response(ods_code)
 
-    if data:
-
-        try:
-            del data['org_lastchanged']
-        except KeyError as e:
-            pass
-
-        result = jsonify(data)
-        return result
-
-    else:
-        return "Not found", status.HTTP_404_NOT_FOUND
+    return response
 
 
 @app.route(app.config['API_URL'] + "/role-types", methods=['GET'])
