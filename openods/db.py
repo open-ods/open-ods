@@ -47,7 +47,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
     record_class_param = '%' if recordclass == 'both' else recordclass
 
     # Start the select statement with the field list and from clause
-    sql = "SELECT odscode, name, record_class, status " \
+    sql = "SELECT odscode, name, record_class, status, post_code " \
           "FROM organisations " \
           "WHERE TRUE "
 
@@ -208,6 +208,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
                                     row['odscode'])
 
         item = {
+            'postCode': row['post_code'],
             'odsCode': row['odscode'],
             'name': row['name'],
             'recordClass': row['record_class'],
