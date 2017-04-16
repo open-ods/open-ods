@@ -34,7 +34,12 @@ def not_found(error):
                    ), 404
 
 
-@app.route(app.config['API_PATH'] , methods=['GET'])
+@app.route(app.config['API_PATH'] + '/v1' + '/status')
+def get_status():
+    return jsonify({'status': 'OK'})
+
+
+@app.route(app.config['API_PATH'], methods=['GET'])
 def get_root():
     """Endpoint returning information about available resources
     ---
