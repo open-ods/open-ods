@@ -10,6 +10,6 @@ ENV POSTGRES_DUMP_LOCATION /temp_data
 COPY assets/openods_012.dump $POSTGRES_DUMP_LOCATION/
 # ADD https://s3.amazonaws.com/openods-assets/database_backups/openods_012.dump $POSTGRES_DUMP_LOCATION/
 # RUN chmod u+r /temp_data/openods_012.dump
-COPY Docker/scripts/init_import_dump.sh /docker-entrypoint-initdb.d
+COPY scripts/init_import_dump.sh /docker-entrypoint-initdb.d
 
 EXPOSE 5432/tcp
