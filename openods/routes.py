@@ -1,8 +1,8 @@
 import logging
 import os
 
-from flask import jsonify, request, g, json, send_from_directory
 from flasgger import Swagger
+from flask import jsonify, request, g, json, redirect, url_for, send_from_directory
 
 from openods import app
 from openods import request_handler, request_utils
@@ -20,20 +20,24 @@ def not_found(error):
 
     logger = logging.getLogger(__name__)
 
-    log_event = {
-        'method': request.method,
-        'requestId': g.request_id,
-        'sourceIp': g.source_ip,
-        'url': request.url,
-        'statusCode': error.code,
-        'errorDescription': error.description
-    }
+    logger.info('API_REQUEST method={method} requestId={request_id} status_code={status_code} '
+                'errorDescription="{error_description}" path={path} '
+                'sourceIp={source_ip} url={url}'.format(
+                    request_id=g.request_id,
+                    source_ip=g.source_ip,
+                    path=request.path,
+                    url=request.url,
+                    method=request.method,
+                    status_code=error.code,
+                    error_description=error.description)
+                )
 
-    logger.info("API_REQUEST_JSON {log_event}".format(log_event=json.dumps(log_event)))
-
-    return jsonify({'errorCode': 404,
-                    'errorText': 'Not found'}
-                   ), 404
+    return jsonify(
+        {
+            'errorCode': 404,
+            'errorText': 'Not found'
+        }
+    ), 404
 
 
 @app.route('/favicon.ico', methods=['GET'])
@@ -44,7 +48,16 @@ def favicon():
 
 @app.route(app.config['API_PATH'] + '/v1' + '/status')
 def get_status():
-    return jsonify({'status': 'OK'})
+    return jsonify(
+        {
+            'status': 'OK'
+        }
+    )
+
+
+@app.route('/')
+def root():
+    return redirect(url_for('get_root'))
 
 
 @app.route(app.config['API_PATH'], methods=['GET'])
@@ -61,30 +74,20 @@ def get_root():
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
 
-    logger.info("API_REQUEST method={method} requestId={request_id} path={path} "
-                "sourceIp={source_ip} url={url}".format(
+    logger.info("API_REQUEST method={method} requestId={request_id} statusCode={status_code} path={path} "
+                "sourceIp={source_ip} url={url} parameters={parameters}".format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
                     path=request.path,
                     url=request.url,
-                    method=request.method)
+                    method=request.method,
+                    parameters=json.dumps(request.args),
+                    status_code=200)
                 )
-
-    log_event = {
-        'method': request.method,
-        'requestId': g.request_id,
-        'sourceIp': g.source_ip,
-        'path': request.path,
-        'url': request.url,
-        'parameters': request.args,
-        'statusCode': 200
-    }
-
-    logger.info("API_REQUEST_JSON {log_event}".format(log_event=json.dumps(log_event)))
 
     logger.debug("requestId={request_id} headers={headers}".format(
         headers=json.dumps(dict(request.headers)),
-        request_id = g.request_id)
+        request_id=g.request_id)
     )
 
     root_resource = request_handler.get_root_response()
