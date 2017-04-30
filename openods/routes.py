@@ -20,14 +20,13 @@ def not_found(error):
 
     logger = logging.getLogger(__name__)
 
-    logger.info('API_REQUEST method={method} requestId={request_id} status_code={status_code} '
-                'errorDescription="{error_description}" path={path} '
-                'sourceIp={source_ip} url={url}'.format(
+    logger.info('logType=Request, requestId={request_id}, statusCode={status_code}, '
+                'errorDescription="{error_description}", path="{path}", '
+                'sourceIp={source_ip}, url="{url}"'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
                     path=request.path,
                     url=request.url,
-                    method=request.method,
                     status_code=error.code,
                     error_description=error.description)
                 )
@@ -74,18 +73,17 @@ def get_root():
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
 
-    logger.info("API_REQUEST method={method} requestId={request_id} statusCode={status_code} path={path} "
-                "sourceIp={source_ip} url={url} parameters={parameters}".format(
+    logger.info('logType=Request, requestId={request_id}, statusCode={status_code}, path="{path}", '
+                'sourceIp={source_ip}, url="{url}", parameters={parameters}'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
                     path=request.path,
                     url=request.url,
-                    method=request.method,
                     parameters=json.dumps(request.args),
                     status_code=200)
                 )
 
-    logger.debug("requestId={request_id} headers={headers}".format(
+    logger.debug('requestId={request_id}, headers={headers}'.format(
         headers=json.dumps(dict(request.headers)),
         request_id=g.request_id)
     )
@@ -107,13 +105,12 @@ def get_info():
     request_utils.get_source_ip(request)
 
     logger = logging.getLogger(__name__)
-    logger.info("API_REQUEST method={method} requestId={request_id} "
-                "path={resource} sourceIp={source_ip} url={url}".format(
+    logger.info('logType=Request, requestId={request_id}, '
+                'path="{path}", sourceIp={source_ip}, url="{url}"'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
-                    resource=request.path,
+                    path=request.path,
                     url=request.url,
-                    method=request.method
                     )
                 )
 
@@ -187,9 +184,8 @@ def get_organisations():
 
     logger = logging.getLogger(__name__)
 
-    logger.info("API_REQUEST method={method} requestId={request_id} "
-                "path={path} parameters={parameter_json} sourceIp={source_ip} url={url}".format(
-                    method=request.method,
+    logger.info('logType=Request, requestId={request_id}, path="{path}", sourceIp={source_ip}, '
+                'url="{url}", parameters={parameter_json}'.format(
                     source_ip=g.source_ip,
                     request_id=g.request_id,
                     path=request.path,
@@ -220,9 +216,8 @@ def get_organisation(ods_code):
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
     logger = logging.getLogger(__name__)
-    logger.info("API_REQUEST method={method} requestId={request_id} path={path} "
-                "resourceId={resource_id} sourceIp={source_ip} url={url}".format(
-                    method=request.method,
+    logger.info('logType=Request, requestId={request_id}, path="{path}", '
+                'resourceId={resource_id}, sourceIp={source_ip}, url="{url}"'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
                     path=request.path,
@@ -250,9 +245,8 @@ def route_role_types():
     request_utils.get_source_ip(request)
 
     logger = logging.getLogger(__name__)
-    logger.info("API_REQUEST method={method} requestId={request_id} "
-                "path={path} parameters={parameter_json} sourceIp={source_ip} url={url}".format(
-                    method=request.method,
+    logger.info('logType=Request, requestId={request_id}, '
+                'path="{path}", sourceIp={source_ip}, url="{url}", parameters={parameter_json}'.format(
                     source_ip=g.source_ip,
                     request_id=g.request_id,
                     path=request.path,
@@ -283,9 +277,8 @@ def route_role_type_by_code(role_code):
     request_utils.get_source_ip(request)
 
     logger = logging.getLogger(__name__)
-    logger.info("API_REQUEST method={method} requestId={request_id} path={path} "
-                "resourceId={resource_id} sourceIp={source_ip} url={url}".format(
-                    method=request.method,
+    logger.info('logType=Request, requestId={request_id}, path="{path}", '
+                'resourceId={resource_id}, sourceIp={source_ip}, url="{url}"'.format(
                     source_ip=g.source_ip,
                     request_id=g.request_id,
                     resource_id=role_code,
