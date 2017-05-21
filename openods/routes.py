@@ -1,6 +1,7 @@
 import logging
+import os
 
-from flask import jsonify, request, g, json
+from flask import jsonify, request, g, json, send_from_directory
 from flasgger import Swagger
 
 from openods import app
@@ -8,6 +9,7 @@ from openods import request_handler, request_utils
 from openods.config_swagger import template
 
 swagger = Swagger(app, template=template)
+
 
 # HTTP error handling
 @app.errorhandler(404)
@@ -32,6 +34,12 @@ def not_found(error):
     return jsonify({'errorCode': 404,
                     'errorText': 'Not found'}
                    ), 404
+
+
+@app.route('/favicon.ico', methods=['GET'])
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route(app.config['API_PATH'] + '/v1' + '/status')
