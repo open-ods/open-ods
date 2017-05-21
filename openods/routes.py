@@ -39,7 +39,7 @@ def not_found(error):
 @app.route('/favicon.ico', methods=['GET'])
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+                               'openods.ico', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route(app.config['API_PATH'] + '/v1' + '/status')
