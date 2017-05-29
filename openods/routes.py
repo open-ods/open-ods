@@ -16,10 +16,15 @@ swagger = Swagger(app, template=template)
 @app.errorhandler(404)
 def not_found(error: Exception) -> Tuple:
 
-    if not g.request_id:
+    try:
+        g.request_id
+    except AttributeError as e:
         request_utils.get_request_id(request)
         
-    request_utils.get_source_ip(request)
+    try:
+        g.source_ip
+    except AttributeError as e:
+        request_utils.get_source_ip(request)
 
     logger = logging.getLogger(__name__)
     logger.info('logType=Request|requestId="{request_id}"|statusCode={status_code}|'
