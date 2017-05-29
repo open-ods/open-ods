@@ -15,20 +15,21 @@ swagger = Swagger(app, template=template)
 @app.errorhandler(404)
 def not_found(error):
 
-    request_utils.get_request_id(request)
+    if not g.request_id:
+        request_utils.get_request_id(request)
+        
     request_utils.get_source_ip(request)
 
     logger = logging.getLogger(__name__)
-
     logger.info('logType=Request|requestId="{request_id}"|statusCode={status_code}|'
-                'errorDescription="{error_description}"|path="{path}"|'
+                'errorText="{error_text}"|path="{path}"|'
                 'sourceIp={source_ip}|url="{url}"|'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
                     path=request.path,
                     url=request.url,
                     status_code=error.code,
-                    error_description=error.description)
+                    error_text=error.description)
                 )
 
     return jsonify(
