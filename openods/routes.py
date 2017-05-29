@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import Tuple
 
 from flasgger import Swagger
 from flask import jsonify, request, g, json, redirect, url_for, send_from_directory
@@ -13,7 +14,7 @@ swagger = Swagger(app, template=template)
 
 # HTTP error handling
 @app.errorhandler(404)
-def not_found(error):
+def not_found(error: Exception) -> Tuple:
 
     if not g.request_id:
         request_utils.get_request_id(request)
