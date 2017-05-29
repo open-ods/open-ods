@@ -24,7 +24,7 @@ schema_check.check_schema_version()
 from openods import routes
 
 # Set up logging
-log_format = "%(asctime)s [%(levelname)s] %(message)s"
+log_format = "%(asctime)s|OpenODS|%(levelname)s|%(message)s"
 formatter = logging.Formatter(log_format)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG) if app.config["DEBUG"] is True else logger.setLevel(logging.INFO)
