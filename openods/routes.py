@@ -72,6 +72,8 @@ def get_root():
 
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
+    
+    parameters_as_string = request_utils.dict_to_piped_kv_pairs(json.dumps(request.args.items()))
 
     logger.info('logType=Request|requestId="{request_id}"|statusCode={status_code}|path="{path}"|'
                 'sourceIp={source_ip}|url="{url}"|{parameters}'.format(
@@ -184,9 +186,7 @@ def get_organisations():
 
     logger = logging.getLogger(__name__)
 
-    parameters_as_string = ""
-    for key, value in json.dumps(request.args).items():
-        parameters_as_string += "{0}={1}|".format(key, value)
+    parameters_as_string = request_utils.dict_to_piped_kv_pairs(json.dumps(request.args.items()))
 
     logger.info('logType=Request|requestId="{request_id}"|path="{path}"|sourceIp={source_ip}|'
                 'url="{url}"|{parameters}'.format(
@@ -247,15 +247,17 @@ def route_role_types():
 
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
-
+    
+    parameters_as_string = request_utils.dict_to_piped_kv_pairs(json.dumps(request.args.items()))
+    
     logger = logging.getLogger(__name__)
     logger.info('logType=Request|requestId="{request_id}"|'
-                'path="{path}"|sourceIp={source_ip}|url="{url}"|parameters={parameter_json}'.format(
+                'path="{path}"|sourceIp={source_ip}|url="{url}"|{parameters}'.format(
                     source_ip=g.source_ip,
                     request_id=g.request_id,
                     path=request.path,
                     url=request.url,
-                    parameter_json=json.dumps(request.args),
+                    parameters=parameters_as_string,
                     )
                 )
 
