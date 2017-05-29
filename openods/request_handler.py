@@ -1,7 +1,7 @@
 import logging
 
 import status
-from flask import jsonify, g
+from flask import jsonify, g, abort
 
 from openods import app, db
 from openods import cache as ocache
@@ -118,7 +118,7 @@ def get_single_organisation_response(ods_code):
         return result
 
     else:
-        return "Not found", status.HTTP_404_NOT_FOUND
+        abort(404)
 
 
 # Handles a request for a list of role-types resources.
