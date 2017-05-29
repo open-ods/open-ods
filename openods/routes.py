@@ -20,7 +20,7 @@ def not_found(error):
 
     logger = logging.getLogger(__name__)
 
-    logger.info('NotFound|requestId={request_id}|statusCode={status_code}|'
+    logger.info('logType=Request|requestId={request_id}|statusCode={status_code}|'
                 'errorDescription="{error_description}"|path="{path}"|'
                 'sourceIp={source_ip}|url="{url}"|'.format(
                     request_id=g.request_id,
@@ -73,7 +73,7 @@ def get_root():
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
 
-    logger.info('Request|requestId={request_id}|statusCode={status_code}|path="{path}"|'
+    logger.info('logType=Request|requestId={request_id}|statusCode={status_code}|path="{path}"|'
                 'sourceIp={source_ip}|url="{url}"|parameters={parameters}|'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
