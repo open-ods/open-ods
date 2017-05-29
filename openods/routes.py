@@ -74,12 +74,12 @@ def get_root():
     request_utils.get_source_ip(request)
 
     logger.info('logType=Request|requestId="{request_id}"|statusCode={status_code}|path="{path}"|'
-                'sourceIp={source_ip}|url="{url}"|parameters={parameters}|'.format(
+                'sourceIp={source_ip}|url="{url}"|{parameters}'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
                     path=request.path,
                     url=request.url,
-                    parameters=json.dumps(request.args),
+                    parameters=parameters_as_string,
                     status_code=200)
                 )
 
@@ -106,7 +106,7 @@ def get_info():
 
     logger = logging.getLogger(__name__)
     logger.info('logType=Request|requestId="{request_id}"|'
-                'path="{path}"|sourceIp={source_ip}|url="{url}"'.format(
+                'path="{path}"|sourceIp={source_ip}|url="{url}|"'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
                     path=request.path,
@@ -184,13 +184,17 @@ def get_organisations():
 
     logger = logging.getLogger(__name__)
 
+    parameters_as_string = ""
+    for key, value in json.dumps(request.args).items():
+        parameters_as_string += "{0}={1}|".format(key, value)
+
     logger.info('logType=Request|requestId="{request_id}"|path="{path}"|sourceIp={source_ip}|'
-                'url="{url}"|parameters={parameter_json}'.format(
+                'url="{url}"|{parameters}'.format(
                     source_ip=g.source_ip,
                     request_id=g.request_id,
                     path=request.path,
                     url=request.url,
-                    parameter_json=json.dumps(request.args)
+                    parameters=parameters_as_string,
                     )
                 )
 
