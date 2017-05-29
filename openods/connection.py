@@ -5,6 +5,7 @@ from urllib.parse import urlparse as urlparse
 import psycopg2
 import psycopg2.extras
 import psycopg2.pool
+from flask import g
 
 from openods import app
 
@@ -22,7 +23,8 @@ def get_connection():
         )
 
         logger = logging.getLogger(__name__)
-        logger.debug("Connected to {db_url}".format(db_url=app.config['DATABASE_URL']))
+        logger.debug('requestId="{request_id}"|Connected to {db_url}'.format(db_url=app.config['DATABASE_URL'],
+                                                                             request_id=g.request_id))
 
     except psycopg2.Error as e:
         logger = logging.getLogger(__name__)

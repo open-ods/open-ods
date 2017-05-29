@@ -30,3 +30,11 @@ def get_request_id(my_request):
     g.request_id = request_id
 
     return request_id
+
+
+# Utility method which takes a dict of request parameters and writes them out as pipe delimeted kv pairs
+def dict_to_piped_kv_pairs(dict_for_conversion):
+    output_string = ""
+    for key, value in sorted(dict_for_conversion.items()):
+        output_string += "{0}={1}|".format(key, value)
+    return output_string

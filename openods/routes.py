@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import Tuple
 
 from flasgger import Swagger
 from flask import jsonify, request, g, json, redirect, url_for, send_from_directory
@@ -13,22 +14,23 @@ swagger = Swagger(app, template=template)
 
 # HTTP error handling
 @app.errorhandler(404)
-def not_found(error):
+def not_found(error: Exception) -> Tuple:
 
-    request_utils.get_request_id(request)
+    if not g.request_id:
+        request_utils.get_request_id(request)
+        
     request_utils.get_source_ip(request)
 
     logger = logging.getLogger(__name__)
-
-    logger.info('NotFound|requestId={request_id}|statusCode={status_code}|'
-                'errorDescription="{error_description}"|path="{path}"|'
+    logger.info('logType=Request|requestId="{request_id}"|statusCode={status_code}|'
+                'errorText="{error_text}"|path="{path}"|'
                 'sourceIp={source_ip}|url="{url}"|'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
                     path=request.path,
                     url=request.url,
                     status_code=error.code,
-                    error_description=error.description)
+                    error_text=error.description)
                 )
 
     return jsonify(
@@ -73,17 +75,19 @@ def get_root():
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
 
-    logger.info('Request|requestId={request_id}|statusCode={status_code}|path="{path}"|'
-                'sourceIp={source_ip}|url="{url}"|parameters={parameters}|'.format(
+    parameters_as_string = request_utils.dict_to_piped_kv_pairs(request.args)
+
+    logger.info('logType=Request|requestId="{request_id}"|statusCode={status_code}|path="{path}"|'
+                'sourceIp={source_ip}|url="{url}"|{parameters}'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
                     path=request.path,
                     url=request.url,
-                    parameters=json.dumps(request.args),
+                    parameters=parameters_as_string,
                     status_code=200)
                 )
 
-    logger.debug('requestId={request_id}|headers={headers}|'.format(
+    logger.debug('requestId="{request_id}"|headers={headers}|'.format(
         headers=json.dumps(dict(request.headers)),
         request_id=g.request_id)
     )
@@ -105,8 +109,8 @@ def get_info():
     request_utils.get_source_ip(request)
 
     logger = logging.getLogger(__name__)
-    logger.info('logType=Request, requestId={request_id}, '
-                'path="{path}", sourceIp={source_ip}, url="{url}"'.format(
+    logger.info('logType=Request|requestId="{request_id}"|'
+                'path="{path}"|sourceIp={source_ip}|url="{url}|"'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
                     path=request.path,
@@ -184,17 +188,19 @@ def get_organisations():
 
     logger = logging.getLogger(__name__)
 
-    logger.info('logType=Request, requestId={request_id}, path="{path}", sourceIp={source_ip}, '
-                'url="{url}", parameters={parameter_json}'.format(
+    resp = request_handler.get_organisations_response(request)
+
+    parameters_as_string = request_utils.dict_to_piped_kv_pairs(request.args)
+    
+    logger.info('logType=Request|requestId="{request_id}"|path="{path}"|sourceIp={source_ip}|'
+                'url="{url}"|{parameters}'.format(
                     source_ip=g.source_ip,
                     request_id=g.request_id,
                     path=request.path,
                     url=request.url,
-                    parameter_json=json.dumps(request.args)
+                    parameters=parameters_as_string,
                     )
                 )
-
-    resp = request_handler.get_organisations_response(request)
 
     return resp
 
@@ -215,9 +221,12 @@ def get_organisation(ods_code):
 
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
+
+    response = request_handler.get_single_organisation_response(ods_code)
+
     logger = logging.getLogger(__name__)
-    logger.info('logType=Request, requestId={request_id}, path="{path}", '
-                'resourceId={resource_id}, sourceIp={source_ip}, url="{url}"'.format(
+    logger.info('logType=Request|requestId="{request_id}"|path="{path}"|'
+                'resourceId={resource_id}|sourceIp={source_ip}|url="{url}"'.format(
                     request_id=g.request_id,
                     source_ip=g.source_ip,
                     path=request.path,
@@ -225,8 +234,6 @@ def get_organisation(ods_code):
                     url=request.url,
                     )
                 )
-
-    response = request_handler.get_single_organisation_response(ods_code)
 
     return response
 
@@ -244,14 +251,16 @@ def route_role_types():
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
 
+    parameters_as_string = request_utils.dict_to_piped_kv_pairs(request.args)
+    
     logger = logging.getLogger(__name__)
-    logger.info('logType=Request, requestId={request_id}, '
-                'path="{path}", sourceIp={source_ip}, url="{url}", parameters={parameter_json}'.format(
+    logger.info('logType=Request|requestId="{request_id}"|'
+                'path="{path}"|sourceIp={source_ip}|url="{url}"|{parameters}'.format(
                     source_ip=g.source_ip,
                     request_id=g.request_id,
                     path=request.path,
                     url=request.url,
-                    parameter_json=json.dumps(request.args),
+                    parameters=parameters_as_string,
                     )
                 )
 
@@ -277,8 +286,8 @@ def route_role_type_by_code(role_code):
     request_utils.get_source_ip(request)
 
     logger = logging.getLogger(__name__)
-    logger.info('logType=Request, requestId={request_id}, path="{path}", '
-                'resourceId={resource_id}, sourceIp={source_ip}, url="{url}"'.format(
+    logger.info('logType=Request|requestId="{request_id}"|path="{path}"|'
+                'resourceId={resource_id}|sourceIp={source_ip}|url="{url}"'.format(
                     source_ip=g.source_ip,
                     request_id=g.request_id,
                     resource_id=role_code,

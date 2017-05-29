@@ -1,7 +1,7 @@
 import logging
 
 import status
-from flask import jsonify, g
+from flask import jsonify, g, abort
 
 from openods import app, db
 from openods import cache as ocache
@@ -11,7 +11,7 @@ from openods import cache as ocache
 def get_root_response():
 
     logger = logging.getLogger(__name__)
-    logger.debug(str.format("requestId={0}|Retrieving data from database|", g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
 
     root_resource = {
         'organisations': str.format('{0}/organisations', app.config['APP_HOSTNAME']),
@@ -25,7 +25,7 @@ def get_root_response():
 def get_info_response():
 
     logger = logging.getLogger(__name__)
-    logger.debug(str.format("requestId={0}|Retrieving data from database|", g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
 
     dataset_info = db.get_dataset_info()
 
@@ -36,7 +36,7 @@ def get_info_response():
 def get_organisations_response(request):
 
     logger = logging.getLogger(__name__)
-    logger.debug(str.format("requestId={0}|Retrieving data from database|", g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
 
     # Collect any query parameters that were supplied
     query = request.args.get('q') if request.args.get('q') else None
@@ -103,7 +103,7 @@ def get_organisations_response(request):
 def get_single_organisation_response(ods_code):
 
     logger = logging.getLogger(__name__)
-    logger.debug(str.format("requestId={0}|Retrieving data from database|", g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
 
     data = db.get_organisation_by_odscode(ods_code)
 
@@ -118,7 +118,7 @@ def get_single_organisation_response(ods_code):
         return result
 
     else:
-        return "Not found", status.HTTP_404_NOT_FOUND
+        abort(404)
 
 
 # Handles a request for a list of role-types resources.
@@ -128,7 +128,7 @@ def get_single_organisation_response(ods_code):
 def get_role_types_response(request):
 
     logger = logging.getLogger(__name__)
-    logger.debug(str.format("requestId={0}|Retrieving data from database|", g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
 
     roles_list = db.get_role_types()
 
@@ -150,7 +150,7 @@ def get_role_type_by_code_response(request, role_code):
     """
 
     logger = logging.getLogger(__name__)
-    logger.debug(str.format("requestId={0}|Retrieving data from database|", g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
 
     result = db.get_role_type_by_id(role_code)
 
