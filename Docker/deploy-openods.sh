@@ -12,17 +12,22 @@ IMAGE_NAME=openods
 # call to this script - e.g. `DB=blah deploy-openods.sh`), which will be passed through
 # into the container
 
-LIVE_DEPLOYMENT=${LIVE_DEPLOYMENT:-FALSE}
-INSTANCE_NAME=${INSTANCE_NAME:-Development}
-CACHE_TIMEOUT=${CACHE_TIMEOUT:-30}
-APP_HOSTNAME=${APP_HOSTNAME:-localhost:8080/api}
-API_PATH=${API_PATH:-/api}
-
+# Database Settings
 DATA_CONTAINER=${DATA_CONTAINER:-openods-postgres}
 DB=${DB:-openods}
 DB_USER=${DB_USER:-openods}
 DB_PASSWORD=${DB_PASSWORD:-openods}
 DATABASE_URL=postgresql://$DB_USER:$DB_PASSWORD@$DATA_CONTAINER:5432/$DB
+
+# App Settings
+CACHE_TIMEOUT=${CACHE_TIMEOUT:-30}
+LIVE_DEPLOYMENT=${LIVE_DEPLOYMENT:-FALSE}
+INSTANCE_NAME=${INSTANCE_NAME:-Development}
+APP_HOSTNAME=${APP_HOSTNAME:-localhost:8080/api}
+API_PATH=${API_PATH:-/api}
+
+
+
 
 CONTAINER_NAME=${CONTAINER_NAME:-openods}
 
