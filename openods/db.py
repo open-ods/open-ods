@@ -1,6 +1,7 @@
 import logging
 
 import flask_featureflags as feature
+from flask import g
 import psycopg2
 import psycopg2.extras
 import psycopg2.pool
@@ -245,12 +246,12 @@ def get_organisation_by_odscode(odscode):
 
         cur.execute(sql, data)
         row_org = cur.fetchone()
-        logger.debug(str.format("Organisation Record: {0}",
-                                row_org))
+        logger.debug(str.format('requestId="{1}"|Organisation Record:{0}',
+                                row_org, g.request_id))
 
         # Raise an exception if the organisation record is not found
         if row_org is None:
-            raise Exception("Record Not Found")
+            raise Exception(str.format('requestId="{0}"|Record Not Found', g.request_id))
 
         row_org = remove_none_values_from_dictionary(row_org)
 
@@ -327,7 +328,9 @@ def get_organisation_by_odscode(odscode):
 
             cur.execute(sql, data)
             rows_successors = cur.fetchall()
-            logger.debug("Successors: %s" % rows_successors)
+            logger.debug(str.format('requestId="{0}"|Successors: {1}',
+                                    g.request_id,
+                                    rows_successors))
 
         except Exception as e:
             raise
