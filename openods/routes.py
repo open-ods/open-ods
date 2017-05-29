@@ -186,8 +186,10 @@ def get_organisations():
 
     logger = logging.getLogger(__name__)
 
-    parameters_as_string = request_utils.dict_to_piped_kv_pairs(request.args)
+    resp = request_handler.get_organisations_response(request)
 
+    parameters_as_string = request_utils.dict_to_piped_kv_pairs(request.args)
+    
     logger.info('logType=Request|requestId="{request_id}"|path="{path}"|sourceIp={source_ip}|'
                 'url="{url}"|{parameters}'.format(
                     source_ip=g.source_ip,
@@ -197,8 +199,6 @@ def get_organisations():
                     parameters=parameters_as_string,
                     )
                 )
-
-    resp = request_handler.get_organisations_response(request)
 
     return resp
 
@@ -219,6 +219,9 @@ def get_organisation(ods_code):
 
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
+
+    response = request_handler.get_single_organisation_response(ods_code)
+
     logger = logging.getLogger(__name__)
     logger.info('logType=Request|requestId="{request_id}"|path="{path}"|'
                 'resourceId={resource_id}|sourceIp={source_ip}|url="{url}"'.format(
@@ -229,8 +232,6 @@ def get_organisation(ods_code):
                     url=request.url,
                     )
                 )
-
-    response = request_handler.get_single_organisation_response(ods_code)
 
     return response
 
