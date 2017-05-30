@@ -9,7 +9,7 @@ from openods import app
 from openods import request_handler, request_utils
 from openods.config_swagger import template
 
-swagger = Swagger(app, template=template)
+Swagger(app, template=template)
 
 
 # HTTP error handling

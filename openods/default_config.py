@@ -44,3 +44,18 @@ RAISE_ERROR_ON_MISSING_FEATURES = True
 FEATURE_FLAGS = {
     'SuppressPrimaryRoleSearchLink': bool(os.environ.get('FT_SUPPRESSPRIMARYROLESEARCHLINK', False)),
 }
+
+SWAGGER = {
+    'specs_route': '{api_path}/docs/'.format(api_path=API_PATH),
+    'static_url_path': '{api_path}/docs/static'.format(api_path=API_PATH),
+    'title': 'OpenODS API',
+    'uiversion': 2,
+    "specs": [
+        {
+            "endpoint": 'apispec_1',
+            "route": '{api_path}/docs/apispec_1.json'.format(api_path=API_PATH),
+            "rule_filter": lambda rule: True,  # all in
+            "model_filter": lambda tag: True,  # all in
+        }
+    ]
+}

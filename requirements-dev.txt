@@ -25,7 +25,6 @@ python-status==1.0.1
 PyYAML==3.12
 redis==2.10.5
 six==1.10.0
-SQLAlchemy==1.1.9
 virtualenv==15.1.0
 waitress==1.0.2
 WebOb==1.7.2
