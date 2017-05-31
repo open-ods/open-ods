@@ -1,6 +1,12 @@
-0.15 - 10th April 2017
-----------------------
+0.15 - 31st May 2017
+--------------------
+* Re-organise code structure, remove _site blueprint (now hosted separately) and moved openods_core to openods
 * Rename variable API_URL to API_PATH, and remove API_USER and API_PASS variables as they're no longer used
+* Update Swagger configuration to move apidocs to /docs underneath api route path (e.g. /api/docs)
+* Changes to log formats to improve processing by logging utilties, including splitting URL parameters out into separate KV pairs
+* Updated NHS Docker config, removing unecessary files and updating to support new project structure
+* Improved 404 handling and logging
+
 
 0.14 - 4th April 2017
 ---------------------
