@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#Start green unicorn
+# Start OpenODS using GreenUnicorn WSGI server
 echo "Starting the OpenODS service"
 cd /openods
 
