@@ -7,8 +7,7 @@ template = {
   },
   "basePath": "/",
   "schemes": [
-    [
-      "https"
-    ]
+      "https",
+      "http"
   ]
 }
