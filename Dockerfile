@@ -3,9 +3,7 @@ FROM ubuntu:16.04
 ENV DATABASE_URL postgresql://openods:openods@openods-postgres:5432/openods
 ENV CACHE_TIMEOUT 30
 ENV APP_HOSTNAME localhost:8080/api
-ENV API_USER user
-ENV API_PASS pass
-ENV API_URL /api
+ENV API_PATH /api
 ENV LIVE_DEPLOYMENT FALSE
 ENV INSTANCE_NAME Development
 ENV FT_SUPPRESSPRIMARYROLESEARCHLINK ""
@@ -17,9 +15,8 @@ RUN groupadd -r openods -g 1000 && \
     useradd -u 1000 -r -g openods openods
 
 # Copy code into container
-COPY config.py run.py requirements.txt /openods/
-COPY app /openods/app/
-COPY assets /openods/assets/
+COPY requirements.txt /openods/
+COPY openods /openods/openods/
 
 # Install python modules
 RUN pip3 install --upgrade pip
