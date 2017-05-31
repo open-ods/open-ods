@@ -15,9 +15,8 @@ RUN groupadd -r openods -g 1000 && \
     useradd -u 1000 -r -g openods openods
 
 # Copy code into container
-COPY config.py run.py requirements.txt /openods/
-COPY app /openods/app/
-COPY assets /openods/assets/
+COPY requirements.txt /openods/
+COPY openods /openods/openods/
 
 # Install python modules
 RUN pip3 install --upgrade pip
