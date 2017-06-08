@@ -1,3 +1,7 @@
+0.15.1 - 8th June 2017
+----------------------
+* Fix SQL query for single organisation so that primary roles are not duplicated
+
 0.15 - 31st May 2017
 --------------------
 * Re-organise code structure, remove _site blueprint (now hosted separately) and moved openods_core to openods
