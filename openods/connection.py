@@ -6,14 +6,12 @@ import psycopg2
 import psycopg2.extras
 import psycopg2.pool
 from flask import g
-from retrying import retry
 
 from openods import app
 
 url = urlparse(app.config['DATABASE_URL'])
 
 
-@retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
 def get_connection():
     try:
         conn = psycopg2.connect(
