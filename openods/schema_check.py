@@ -4,15 +4,18 @@ from urllib.parse import urlparse as urlparse
 
 import psycopg2
 import psycopg2.extras
+from retrying import retry
 
 from openods import app
 
 url = urlparse(app.config['DATABASE_URL'])
 
 
-# Connects to the database and checks that the database schema matches that which is expected by the code
-def check_schema_version():
+@retry(wait_fixed=5000, stop_max_attempt_number=5)
+def get_db_connection():
     try:
+        logger = logging.getLogger(__name__)
+        logger.debug("Attempting connection to database")
         conn = psycopg2.connect(
             database=url.path[1:],
             user=url.username,
@@ -20,13 +23,23 @@ def check_schema_version():
             host=url.hostname,
             port=url.port
         )
-        logger = logging.getLogger(__name__)
         logger.debug("Checking schema version of {db_url}".format(db_url=app.config['DATABASE_URL']))
-
+        return conn
+    
     except psycopg2.Error:
-        logger = logging.getLogger(__name__)
-        logger.error("Unable to connect to the database")
-        sys.exit(1)
+        logger.error("Unable to connect to the database - retrying")
+        raise
+
+
+# Connects to the database and checks that the database schema matches that which is expected by the code
+def check_schema_version():
+    
+    conn = get_db_connection()
+    #
+    # except:
+    #     logger = logging.getLogger(__name__)
+    #     logger.error("Unable to connect to the database")
+    #     sys.exit(1)
 
     try:
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
