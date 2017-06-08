@@ -265,7 +265,8 @@ def get_organisation_by_odscode(odscode):
                   "r.legal_end_date, r.primary_role " \
                   "FROM roles r " \
                   "LEFT JOIN codesystems csr on r.code = csr.id " \
-                  "WHERE UPPER(r.org_odscode) = UPPER(%s);"
+                  "WHERE UPPER(r.org_odscode) = UPPER(%s) " \
+                  "AND csr.name = 'OrganisationRole';"
 
             data = (organisation_odscode,)
 
