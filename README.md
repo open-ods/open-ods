@@ -1,24 +1,26 @@
 # OpenODS
 
 ## Continuous Integration
-Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](https://travis-ci.org/open-ods/open-ods)
+Builds are handled by Travis CI at [https://travis-ci.org/open-ods/open-ods](https://travis-ci.org/open-ods/open-ods)
 
-[![Build Status](https://travis-ci.org/open-ods/open-ods.svg?branch=develop)](https://travis-ci.org/mattstibbs/open-ods) develop
+**master** branch (stable releases) [![Build Status](https://travis-ci.org/open-ods/open-ods.svg?branch=master)](https://travis-ci.org/open-ods/open-ods)
 
-[![Build Status](https://travis-ci.org/open-ods/open-ods.svg?branch=master)](https://travis-ci.org/mattstibbs/open-ods) master
+**develop** branch (development) [![Build Status](https://travis-ci.org/open-ods/open-ods.svg?branch=develop)](https://travis-ci.org/mattstibbs/open-ods)
 
 Chat with us on Gitter! https://gitter.im/open-ods/open-ods
 
-## Data
-The current Postgres database dump is v014 and can be downloaded from https://s3.amazonaws.com/openods-assets/database_backups/openods_014.dump
+## Latest Data File
+The current Postgres database dump is v014 and can be downloaded from:
 
-## About the project
+[https://s3.amazonaws.com/openods-assets/database_backups/openods_014.dump](https://s3.amazonaws.com/openods-assets/database_backups/openods_014.dump)
+
+## The Code
 
 ### Pre-requisites
-#### Needed
+#### Necessary
 * Python 3.6+
 * Virtualenv `pip install -g virtualenv`
-* PostgreSQL ([Postgres.app](http://postgresapp.com) is good for OSX development)
+* PostgreSQL ([Postgres.app](http://postgresapp.com) is simple for development on OSX)
 
 #### Optional
 * [Heroku Toolbelt](https://toolbelt.heroku.com) - Helpful if you're going to use Heroku to host OpenODS
@@ -113,7 +115,7 @@ test that you can run OpenODS using the built-in Flask development server.
     * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
     ```
 
-## Docker
+## Using Docker
 To get an instance of OpenODS running in Docker, [follow this README](Docker/README.md)
 
 ## Source Data Attribution
