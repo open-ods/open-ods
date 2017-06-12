@@ -7,6 +7,8 @@ Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](h
 
 [![Build Status](https://travis-ci.org/open-ods/open-ods.svg?branch=master)](https://travis-ci.org/mattstibbs/open-ods) master
 
+Chat with us on Gitter! https://gitter.im/open-ods/open-ods
+
 ## Getting Started
 
 ### Pre-requisites
