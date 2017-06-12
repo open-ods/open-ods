@@ -3,6 +3,5 @@ flask_cors
 flask_featureflags
 psycopg2
 flasgger
-python-status
 flask_heroku_cacheify
 gunicorn
