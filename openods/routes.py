@@ -1,6 +1,5 @@
 import logging
 import os
-from typing import Tuple
 
 from flasgger import Swagger
 from flask import jsonify, request, g, json, redirect, url_for, send_from_directory
@@ -14,16 +13,16 @@ Swagger(app, template=template)
 
 # HTTP error handling
 @app.errorhandler(404)
-def not_found(error: Exception) -> Tuple:
+def not_found(error):
 
     try:
         g.request_id
-    except AttributeError as e:
+    except AttributeError:
         request_utils.get_request_id(request)
         
     try:
         g.source_ip
-    except AttributeError as e:
+    except AttributeError:
         request_utils.get_source_ip(request)
 
     logger = logging.getLogger(__name__)
@@ -301,6 +300,6 @@ def route_role_type_by_code(role_code):
                     )
                 )
 
-    result = request_handler.get_role_type_by_code_response(request, role_code)
+    result = request_handler.get_role_type_by_code_response(role_code)
 
     return result
