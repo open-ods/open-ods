@@ -9,6 +9,9 @@ Builds are handled by Travis CI at [https://travis-ci.org/mattstibbs/open-ods](h
 
 Chat with us on Gitter! https://gitter.im/open-ods/open-ods
 
+## Data
+The current Postgres database dump is v014 and can be downloaded from https://s3.amazonaws.com/openods-assets/database_backups/openods_014.dump
+
 ## Getting Started
 
 ### Pre-requisites
