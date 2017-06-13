@@ -268,7 +268,7 @@ def route_role_types():
                     )
                 )
 
-    result = request_handler.get_role_types_response(request)
+    result = request_handler.get_role_types_response()
 
     return result
 
