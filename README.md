@@ -77,6 +77,11 @@ The current Postgres database dump is v014 and can be downloaded from:
     $ brew install libmemcached
     ```
 
+    On CentOS, you can use yum to install libmemcached and zlib
+    ```bash
+    sudo yum install zlib-devel libmemcached-devel
+    ```
+
     _If you're using another OS you will have to refer to appropriate instructions for your OS._
 
 
