@@ -51,13 +51,8 @@ The current Postgres database dump is v014 and can be downloaded from:
     Check that python3 is installed properly by running `python` and checking the version number displayed.
 
     ```bash
-    $ python
-    ```
-    ```
-    Python 3.6.1 (default, Apr  4 2017, 09:40:21)
-    [GCC 4.2.1 Compatible Apple LLVM 8.1.0 (clang-802.0.38)] on darwin
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>>
+    $ python --version
+    Python 3.6.1
     ```
 
 
