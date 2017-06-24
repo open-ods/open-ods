@@ -74,13 +74,14 @@ def get_root():
         description: A list of resources available through the API
     """
 
-    logger = logging.getLogger(__name__)
-
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
 
-    parameters_as_string = request_utils.dict_to_piped_kv_pairs(request.args)
+    root_resource = request_handler.get_root_response()
 
+    parameters_as_string = request_utils.dict_to_piped_kv_pairs(request.args)
+    
+    logger = logging.getLogger(__name__)
     logger.info('logType=Request|requestId="{request_id}"|statusCode={status_code}|path="{path}"|'
                 'sourceIp={source_ip}|url="{url}"|{parameters}'.format(
                     request_id=g.request_id,
@@ -95,8 +96,6 @@ def get_root():
         headers=json.dumps(dict(request.headers)),
         request_id=g.request_id)
     )
-
-    root_resource = request_handler.get_root_response()
 
     return jsonify(root_resource)
 
@@ -225,9 +224,9 @@ def get_organisation(ods_code):
 
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
-
+    # Pass the supplied code to the request handler to service the request
     response = request_handler.get_single_organisation_response(ods_code)
-
+    
     logger = logging.getLogger(__name__)
     logger.info('logType=Request|requestId="{request_id}"|path="{path}"|'
                 'resourceId={resource_id}|sourceIp={source_ip}|url="{url}"'.format(
@@ -255,6 +254,8 @@ def route_role_types():
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
 
+    result = request_handler.get_role_types_response()
+    
     parameters_as_string = request_utils.dict_to_piped_kv_pairs(request.args)
     
     logger = logging.getLogger(__name__)
@@ -267,8 +268,6 @@ def route_role_types():
                     parameters=parameters_as_string,
                     )
                 )
-
-    result = request_handler.get_role_types_response()
 
     return result
 
@@ -289,6 +288,9 @@ def route_role_type_by_code(role_code):
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
 
+    # Pass the supplied code to the request handler to service the request
+    result = request_handler.get_role_type_by_code_response(role_code)
+
     logger = logging.getLogger(__name__)
     logger.info('logType=Request|requestId="{request_id}"|path="{path}"|'
                 'resourceId={resource_id}|sourceIp={source_ip}|url="{url}"'.format(
@@ -299,7 +301,5 @@ def route_role_type_by_code(role_code):
                     url=request.url,
                     )
                 )
-
-    result = request_handler.get_role_type_by_code_response(role_code)
 
     return result
