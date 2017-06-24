@@ -224,6 +224,10 @@ def get_organisation(ods_code):
 
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
+    
+    # Ensure the provided code is in upper case
+    ods_code = str.upper(ods_code)
+    
     # Pass the supplied code to the request handler to service the request
     response = request_handler.get_single_organisation_response(ods_code)
     
@@ -287,6 +291,9 @@ def route_role_type_by_code(role_code):
         """
     request_utils.get_request_id(request)
     request_utils.get_source_ip(request)
+    
+    # Ensure the provided code is in upper case
+    role_code = str.upper(role_code)
 
     # Pass the supplied code to the request handler to service the request
     result = request_handler.get_role_type_by_code_response(role_code)
