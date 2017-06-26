@@ -16,7 +16,8 @@ def remove_none_values_from_dictionary(dirty_dict):
 
 def get_org_list(offset=0, limit=20, recordclass='both',
                  primary_role_code_list=None, role_code_list=None,
-                 query=None, postcode=None, active=True, last_updated_since=None):
+                 query=None, postcode=None, active=True, last_updated_since=None,
+                 legally_active=None):
     """Retrieves a list of organisations
 
     Parameters
@@ -30,6 +31,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
     postcode = filter organisations to those with a match on the postcode
     active = filter organisations by their status (active / inactive)
     last_changed_since = filter organisations by their lastUpdated date
+    legally_active = filter organisations to exclude those with legal end date prior to now
 
     Returns
     -------
@@ -137,7 +139,18 @@ def get_org_list(offset=0, limit=20, recordclass='both',
             sql=sql_count, new_sql=new_clause)
         
         data = data + (last_updated_since,)
+        
+    # If the legally_active parameter was specified, add that to the statement
+    if legally_active in (True, 1, '1', 'True', 'true', 'TRUE', 'yes', 'Yes', 'YES'):
+        logger.debug("legally_active parameter was provided")
+        new_clause = "AND legal_end_date < now() "
     
+        sql = "{sql} {new_sql}".format(
+            sql=sql, new_sql=new_clause)
+
+        sql_count = "{sql} {new_sql}".format(
+            sql=sql_count, new_sql=new_clause)
+
     # If a role_code parameter was specified, add that to the statement
     if role_code_list:
         logger.debug('role_code parameter was provided')
