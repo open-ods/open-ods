@@ -175,6 +175,11 @@ def get_organisations():
         type: string
         format: date
         required: false
+      - name: legalEndDate
+        description: Filters results to only those with a legalEndDate before the specified date.
+        in: query
+        type: date
+        required: false
       - name: recordClass
         description: Filters results to only those in the specified record class.
         in: query
