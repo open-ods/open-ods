@@ -143,7 +143,7 @@ def get_org_list(offset=0, limit=20, recordclass='both',
     # If the legally_active parameter was specified, add that to the statement
     if legally_active in (True, 1, '1', 'True', 'true', 'TRUE', 'yes', 'Yes', 'YES'):
         logger.debug("legally_active parameter was provided")
-        new_clause = "AND legal_end_date < now() "
+        new_clause = "AND (legal_end_date > now() or legal_end_date ISNULL) "
     
         sql = "{sql} {new_sql}".format(
             sql=sql, new_sql=new_clause)
