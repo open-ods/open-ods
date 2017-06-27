@@ -23,7 +23,7 @@ def check_schema_version():
         logger = logging.getLogger(__name__)
         logger.debug("Checking schema version of {db_url}".format(db_url=app.config['DATABASE_URL']))
 
-    except psycopg2.Error as e:
+    except psycopg2.Error:
         logger = logging.getLogger(__name__)
         logger.error("Unable to connect to the database")
         sys.exit(1)
@@ -41,7 +41,7 @@ def check_schema_version():
         logger.error("Exception: %s" % e)
         sys.exit(1)
 
-    except psycopg2.Error as e:
+    except psycopg2.Error:
         logger = logging.getLogger(__name__)
         logger.error("Error retrieving schema_version from database")
         raise

@@ -21,16 +21,16 @@ def get_connection():
             host=url.hostname,
             port=url.port
         )
-
+        
         logger = logging.getLogger(__name__)
         logger.debug('requestId="{request_id}"|Connected to {db_url}'.format(db_url=app.config['DATABASE_URL'],
                                                                              request_id=g.request_id))
-
-    except psycopg2.Error as e:
+    
+    except psycopg2.Error:
         logger = logging.getLogger(__name__)
         logger.warning("Unable to connect to the database on {db_url}".format(db_url=app.config['DATABASE_URL']))
         sys.exit(1)
-
+    
     return conn
 
 
