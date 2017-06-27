@@ -71,11 +71,14 @@ def get_organisations_response(request):
     
     last_updated_since = request.args.get('lastUpdatedSince') if request.args.get('lastUpdatedSince') else None
     
+    legally_active = request.args.get('legallyActive') if request.args.get('legallyActive') else None
+    
     # Call the get_org_list method from the database controller, passing in parameters.
     # Method will return a tuple containing the data and the total record count for the specified filter.
     data, total_record_count = db.get_org_list(offset, limit, record_class,
                                                primary_role_code_list, role_code_list,
-                                               query, postcode, active, last_updated_since)
+                                               query, postcode, active, last_updated_since,
+                                               legally_active)
     
     if data:
         results = {'organisations': data}
