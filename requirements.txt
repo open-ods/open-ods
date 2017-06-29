@@ -5,4 +5,4 @@ psycopg2==2.7.1
 flasgger==0.6.5
 flask-heroku-cacheify==1.6.0
 gunicorn==19.7.1
-
+retrying
