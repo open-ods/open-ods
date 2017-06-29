@@ -289,7 +289,7 @@ def get_organisation_by_odscode(odscode):
         
         row_org = remove_none_values_from_dictionary(row_org)
         
-        # Get the organisation_ref from the retrieved record
+        # Get the organisation ref from the retrieved record
         organisation_odscode = row_org['odscode']
         
         # Retrieve the roles for the organisation
@@ -335,8 +335,7 @@ def get_organisation_by_odscode(odscode):
                   "address_line3, " \
                   "town, county, " \
                   "post_code, " \
-                  "country, uprn, " \
-                  "location_id " \
+                  "country  " \
                   "FROM addresses a " \
                   "WHERE a.org_odscode = UPPER(%s);"
             
