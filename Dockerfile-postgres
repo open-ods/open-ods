@@ -7,9 +7,9 @@ ENV POSTGRES_PASSWORD openods
 ENV POSTGRES_DB openods
 ENV POSTGRES_DUMP_LOCATION /temp_data
 
-COPY assets/openods_014.dump $POSTGRES_DUMP_LOCATION/
-# ADD https://s3.amazonaws.com/openods-assets/database_backups/openods_014.dump $POSTGRES_DUMP_LOCATION/
-# RUN chmod u+r /temp_data/openods_014.dump
+COPY assets/openods_015_a.dump $POSTGRES_DUMP_LOCATION/
+# ADD https://s3.amazonaws.com/openods-assets/database_backups/openods_015_a.dump $POSTGRES_DUMP_LOCATION/
+# RUN chmod u+r /temp_data/openods_015_a.dump
 COPY scripts/init_import_dump.sh /docker-entrypoint-initdb.d
 
 EXPOSE 5432/tcp
