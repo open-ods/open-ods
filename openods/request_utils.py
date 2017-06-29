@@ -7,11 +7,11 @@ def get_source_ip(my_request):
     try:
         # First check for an X-Forwarded-For header provided by a proxy / router e.g. on Heroku
         source_ip = my_request.headers['X-Forwarded-For']
-    except KeyError as e:
+    except KeyError:
         try:
             # First check for an X-Forwarded-For header provided by a proxy / router e.g. on Heroku
             source_ip = my_request.headers['X-Client-IP']
-        except KeyError as e:
+        except KeyError:
             # If that header is not present, attempt to get the Source IP address from the request itself
             source_ip = my_request.remote_addr
 
@@ -24,7 +24,7 @@ def get_source_ip(my_request):
 def get_request_id(my_request):
     try:
         request_id = my_request.headers['X-Request-Id']
-    except KeyError as e:
+    except KeyError:
         request_id = str(uuid.uuid4())
 
     g.request_id = request_id

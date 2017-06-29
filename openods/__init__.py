@@ -1,4 +1,4 @@
-__version__ = '0.15'
+__version__ = '0.16'
 
 import logging
 import re
@@ -7,8 +7,6 @@ import re
 from flask import Flask
 from flask_cors import CORS
 from flask_featureflags import FeatureFlag
-
-
 
 # Define the WSGI application object
 app = Flask(__name__)
@@ -19,6 +17,7 @@ app.config.from_object('openods.default_config')
 
 # We check the version of the database schema that is available to the app
 from openods import schema_check
+
 schema_check.check_schema_version()
 
 from openods import routes
@@ -35,6 +34,5 @@ logger.addHandler(ch)
 logger.debug("Logging at DEBUG level")
 
 # Allow Cross Origin Resource Sharing for routes under the API path so that other services can use the API
-regEx=re.compile(app.config['API_PATH'] + "/*")
+regEx = re.compile(app.config['API_PATH'] + "/*")
 CORS(app, resources={regEx: {"origins": "*"}})
-
