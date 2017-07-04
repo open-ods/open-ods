@@ -14,6 +14,39 @@ def remove_none_values_from_dictionary(dirty_dict):
     return clean_dict
 
 
+def ping_database():
+    """
+    Performs a simple query against the database to confirm connection is up
+    """
+    try:
+        
+        # Get a DB connection and cursor
+        conn = connect.get_connection()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        
+        # Define simple select query against the settings table
+        sql = "SELECT * " \
+              "FROM settings;"
+
+        logger = logging.getLogger(__name__)
+        logger.debug(f'Start: {sql}')
+        
+        # Execute the query
+        cur.execute(sql)
+        rows = cur.fetchall()
+        
+        logger.debug(f'End: {sql}')
+        
+        # Providing we get some results from the query, return True
+        if rows:
+            return True
+    
+    # Catch any exceptions and represent as an error, return False
+    except Exception as e:
+        logger.error("Error performing database status check", exc_info=True)
+        return False
+    
+
 def get_org_list(offset=0, limit=20, recordclass='both',
                  primary_role_code_list=None, role_code_list=None,
                  query=None, postcode=None, active=True, last_updated_since=None,
