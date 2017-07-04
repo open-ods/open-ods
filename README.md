@@ -12,7 +12,7 @@ Chat with us on Gitter! https://gitter.im/open-ods/open-ods
 ## Latest Data File
 The current Postgres database dump is v015a and can be downloaded from:
 
-[https://s3.amazonaws.com/openods-assets/database_backups/openods_015_a.dump](https://s3.amazonaws.com/openods-assets/database_backups/openods_015_a.dump)
+[https://s3.amazonaws.com/openods-assets/database_backups/openods_015_b.dump](https://s3.amazonaws.com/openods-assets/database_backups/openods_015_b.dump)
 
 ## The Code
 
