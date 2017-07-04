@@ -2,7 +2,7 @@ import os
 
 
 # Database Settings
-TARGET_SCHEMA_VERSION = '012'
+TARGET_SCHEMA_VERSION = '015'
 DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://openods:openods@localhost:5432/openods')
 
 

@@ -1,3 +1,10 @@
+0.16 - 29th June 2017
+----------------------
+* Updated code to support database schema version 015 (removed unused fields from queries)
+* Added new legallyActive query parameter to filter by organisations based on their legally active status
+* Improved some SQL queries by removing unnecessary use of UPPER() function
+
+
 0.15.1 - 8th June 2017
 ----------------------
 * Fix SQL query for single organisation so that primary roles are not duplicated
