@@ -1,0 +1,74 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "19ed96934cec5587a9764f54aa29804f3b2edfbdac9324f73b4fd628073c652f"
+        },
+        "requires": {},
+        "sources": [
+            {
+                "url": "https://pypi.python.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "click": {
+            "version": "==6.7"
+        },
+        "flasgger": {
+            "version": "==0.6.5"
+        },
+        "flask": {
+            "version": "==0.12.2"
+        },
+        "flask-cache": {
+            "version": "==0.13.1"
+        },
+        "flask-cors": {
+            "version": "==3.0.3"
+        },
+        "flask-featureflags": {
+            "version": "==0.6"
+        },
+        "flask-heroku-cacheify": {
+            "version": "==1.6.0"
+        },
+        "gunicorn": {
+            "version": "==19.7.1"
+        },
+        "itsdangerous": {
+            "version": "==0.24"
+        },
+        "jinja2": {
+            "version": "==2.9.6"
+        },
+        "jsonschema": {
+            "version": "==2.6.0"
+        },
+        "markupsafe": {
+            "version": "==1.0"
+        },
+        "mistune": {
+            "version": "==0.7.4"
+        },
+        "psycopg2": {
+            "version": "==2.7.1"
+        },
+        "pylibmc": {
+            "version": "==1.5.2"
+        },
+        "pyyaml": {
+            "version": "==3.12"
+        },
+        "redis": {
+            "version": "==2.10.5"
+        },
+        "six": {
+            "version": "==1.10.0"
+        },
+        "werkzeug": {
+            "version": "==0.12.2"
+        }
+    },
+    "develop": {}
+}
