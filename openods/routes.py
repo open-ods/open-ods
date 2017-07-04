@@ -53,11 +53,21 @@ def favicon():
 
 @app.route(app.config['API_PATH'] + '/v1' + '/status')
 def get_status():
-    return jsonify(
-        {
-            'status': 'OK'
-        }
-    )
+
+    result = request_handler.ping_database()
+    
+    if result:
+        return jsonify(
+            {
+                'status': 'OK'
+            }
+        )
+    else:
+        return jsonify(
+            {
+                'status': 'ERROR'
+            }
+        ), 500
 
 
 @app.route('/')
