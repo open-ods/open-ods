@@ -53,16 +53,33 @@ def favicon():
 
 @app.route(app.config['API_PATH'] + '/v1' + '/status')
 def get_status():
+    
+    request_utils.get_request_id(request)
+    request_utils.get_source_ip(request)
 
     result = request_handler.ping_database()
     
     if result:
+        logger = logging.getLogger(__name__)
+        logger.debug('logType=StatusCheck|requestId="{request_id}"|statusCode={status_code}|path="{path}"|'
+                     'sourceIp={source_ip}|url="{url}"'.format(request_id=g.request_id,
+                                                               source_ip=g.source_ip,
+                                                               path=request.path,
+                                                               url=request.url,
+                                                               status_code=200))
         return jsonify(
             {
                 'status': 'OK'
             }
         )
     else:
+        logger = logging.getLogger(__name__)
+        logger.error('logType=StatusCheck|requestId="{request_id}"|statusCode={status_code}|path="{path}"|'
+                     'sourceIp={source_ip}|url="{url}"'.format(request_id=g.request_id,
+                                                               source_ip=g.source_ip,
+                                                               path=request.path,
+                                                               url=request.url,
+                                                               status_code=500))
         return jsonify(
             {
                 'status': 'ERROR'
