@@ -6,7 +6,8 @@ import psycopg2
 import psycopg2.extras
 import psycopg2.pool
 
-from openods import app, connection as connect
+from openods import app
+from openods import connection as connect
 
 
 def remove_none_values_from_dictionary(dirty_dict):

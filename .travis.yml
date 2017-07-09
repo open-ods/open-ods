@@ -1,14 +1,15 @@
 language: python
 python:
-  - "3.6"
+    - "3.6"
 addons:
   postgresql: "9.4"
 services:
   - postgresql
-install: "pip install -r requirements-dev.txt"
+env:
+- CACHE_TIMEOUT=1 APP_HOSTNAME=localhost:5000/api PIPENV_NOSPIN=True
+install: "make"
 before_script:
   - psql -f sql/create_user_and_database.sql -U postgres
   - pg_restore -d openods assets/openods.sampledb
-env:
-- CACHE_TIMEOUT=1 APP_HOSTNAME=localhost:5000/api
-script: nosetests
+script:
+    - make test

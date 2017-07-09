@@ -13,7 +13,7 @@ def ping_database():
 @ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
 def get_root_response():
     logger = logging.getLogger(__name__)
-    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving fresh data from database', g.request_id))
     
     root_resource = {
         'organisations': str.format('{0}/organisations', app.config['APP_HOSTNAME']),
@@ -26,7 +26,7 @@ def get_root_response():
 @ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
 def get_info_response():
     logger = logging.getLogger(__name__)
-    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving fresh data from database', g.request_id))
     
     dataset_info = db.get_dataset_info()
     
@@ -36,7 +36,7 @@ def get_info_response():
 @ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
 def get_organisations_response(request):
     logger = logging.getLogger(__name__)
-    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving fresh data from database', g.request_id))
     
     # Collect any query parameters that were supplied
     query = request.args.get('q') if request.args.get('q') else None
@@ -105,7 +105,7 @@ def get_organisations_response(request):
 @ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
 def get_single_organisation_response(ods_code):
     logger = logging.getLogger(__name__)
-    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving fresh data from database', g.request_id))
     
     data = db.get_organisation_by_odscode(ods_code)
     
@@ -129,7 +129,7 @@ def get_single_organisation_response(ods_code):
 @ocache.cache.cached(timeout=app.config['CACHE_TIMEOUT'], key_prefix=ocache.generate_cache_key)
 def get_role_types_response():
     logger = logging.getLogger(__name__)
-    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving fresh data from database', g.request_id))
     
     roles_list = db.get_role_types()
     
@@ -151,7 +151,7 @@ def get_role_type_by_code_response(role_code):
     """
     
     logger = logging.getLogger(__name__)
-    logger.debug(str.format('requestId="{0}"|Retrieving data from database|', g.request_id))
+    logger.debug(str.format('requestId="{0}"|Retrieving fresh data from database', g.request_id))
     
     result = db.get_role_type_by_id(role_code)
     
