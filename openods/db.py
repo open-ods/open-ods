@@ -21,9 +21,8 @@ def ping_database():
     """
     try:
         
-        # Get a DB connection and cursor
-        conn = connect.get_connection()
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        # Get a cursor
+        cur = connect.get_cursor()
         
         # Define simple select query against the settings table
         sql = "SELECT * " \
@@ -76,10 +75,9 @@ def get_org_list(offset=0, limit=20, recordclass='both',
     
     if int(limit) > 1000:
         limit = 1000
-    
-    conn = connect.get_connection()
-    
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    # Get a cursor
+    cur = connect.get_cursor()
     
     # TODO: Sort out this slightly dodgy code for filtering by record class.
     # Statement below doesn't look like it's actually using the filtered value...
@@ -296,12 +294,9 @@ def get_org_list(offset=0, limit=20, recordclass='both',
 
 def get_organisation_by_odscode(odscode):
     logger = logging.getLogger(__name__)
-    
-    # Get a database connection
-    conn = connect.get_connection()
-    
-    # Use the RealDictCursor to return data as a python dictionary type
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    # Get a cursor
+    cur = connect.get_cursor()
     
     # Try and retrieve the organisation record for the provided ODS code
     try:
@@ -617,12 +612,9 @@ def search_organisation(search_text, offset=0, limit=1000, ):
     
     if limit > 1000:
         limit = 1000
-    
-    # Get a database connection
-    conn = connect.get_connection()
-    
-    # Use the RealDictCursor to return data as a python dictionary type
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    # Get a cursor
+    cur = connect.get_cursor()
     
     try:
         search_term = str.format("%{0}%",
@@ -670,9 +662,10 @@ def search_organisation(search_text, offset=0, limit=1000, ):
 
 def get_role_types():
     logger = logging.getLogger(__name__)
+
+    # Get a cursor
+    cur = connect.get_cursor()
     
-    conn = connect.get_connection()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute("SELECT displayname, id "
                 "FROM codesystems "
                 "WHERE name = 'OrganisationRole' "
