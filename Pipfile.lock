@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "19ed96934cec5587a9764f54aa29804f3b2edfbdac9324f73b4fd628073c652f"
+            "sha256": "f916e40c4769a74198e2f301960ab806f1e8c2167ad9935648a857e0166affaa"
         },
         "requires": {},
         "sources": [
@@ -16,7 +16,7 @@
             "version": "==6.7"
         },
         "flasgger": {
-            "version": "==0.6.5"
+            "version": "==0.6.6"
         },
         "flask": {
             "version": "==0.12.2"
