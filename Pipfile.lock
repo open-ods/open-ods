@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f916e40c4769a74198e2f301960ab806f1e8c2167ad9935648a857e0166affaa"
+            "sha256": "a1bfdea286720571061a99f3cf0cc9af617b7e328f032be68ac7dc59ddfc3968"
         },
         "requires": {},
         "sources": [
@@ -52,7 +52,7 @@
             "version": "==0.7.4"
         },
         "psycopg2": {
-            "version": "==2.7.1"
+            "version": "==2.7.3"
         },
         "pylibmc": {
             "version": "==1.5.2"
