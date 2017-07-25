@@ -3,7 +3,7 @@ flasgger==0.6.6
 pyyaml==3.12
 gunicorn==19.7.1
 flask==0.12.2
-psycopg2==2.7.2
+psycopg2==2.7.3
 six==1.10.0
 redis==2.10.5
 flask-heroku-cacheify==1.6.0
