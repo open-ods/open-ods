@@ -5,7 +5,7 @@ gunicorn==19.7.1
 flask==0.12.2
 psycopg2==2.7.3
 six==1.10.0
-redis==2.10.5
+redis==2.10.6
 flask-heroku-cacheify==1.6.0
 flask-cache==0.13.1
 markupsafe==1.0
