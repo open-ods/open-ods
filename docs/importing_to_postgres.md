@@ -7,7 +7,7 @@
 To make it easier to get started, you can download a pre-populated
 Postgres database backup file from here (hosted on AWS S3):
 
-[Download **openods_015_b.dump** from AWS S3](https://s3.amazonaws.com/openods-assets/database_backups/openods_015_b.dump)
+[Download **openods_015_aug17_a.dump** from AWS S3](https://s3.amazonaws.com/openods-assets/database_backups/openods_015_aug17_a.dump)
 
 The number in the filename is incremented every time a new version of
 the OpenODS database is created and a new backup file is generated.
