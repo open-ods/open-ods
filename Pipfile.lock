@@ -61,7 +61,7 @@
             "version": "==3.12"
         },
         "redis": {
-            "version": "==2.10.5"
+            "version": "==2.10.6"
         },
         "six": {
             "version": "==1.10.0"
