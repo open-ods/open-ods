@@ -10,9 +10,9 @@ Builds are handled by Travis CI at [https://travis-ci.org/open-ods/open-ods](htt
 Chat with us on Gitter! https://gitter.im/open-ods/open-ods
 
 ## Latest Data File
-The current Postgres database dump is 015_aug17_a and can be downloaded from:
+The current Postgres database dump is openods_015_sep17_001.dump and can be downloaded from:
 
-[https://s3.amazonaws.com/openods-assets/database_backups/openods_015_aug17_a.dump](https://s3.amazonaws.com/openods-assets/database_backups/openods_015_aug17_a.dump)
+[https://s3.amazonaws.com/openods-assets/database_backups/openods_015_sep17_001.dump](https://s3.amazonaws.com/openods-assets/database_backups/openods_015_sep17_001.dump)
 
 ## The Code
 
