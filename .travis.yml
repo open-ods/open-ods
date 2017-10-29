@@ -10,5 +10,5 @@ before_script:
   - psql -f sql/create_user_and_database.sql -U postgres
   - pg_restore -d openods assets/openods.sampledb
 env:
-- CACHE_TIMEOUT=1 APP_HOSTNAME=localhost:5000/api
+  - CACHE_TIMEOUT=1 APP_HOSTNAME=localhost:5000/api
 script: pytest
