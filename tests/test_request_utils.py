@@ -1,7 +1,6 @@
 import pytest
 
 
-@pytest.mark.xfail()
 def test_method_converts_dict_to_piped_kv_pairs():
     from openods import request_utils
     input_dict = {

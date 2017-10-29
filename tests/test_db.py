@@ -1,7 +1,6 @@
 import pytest
 
 
-@pytest.mark.xfail()
 def test_none_type_method_removes_none_types():
     from openods import db
 
