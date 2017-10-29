@@ -1,3 +1,10 @@
+0.17 - 26th August 2017
+----------------------
+* Status endpoint (/api/v1/status) now touches the database before responding
+* Several dependency version uplifts
+* Added Pipfiles (to support Pipenv)
+
+
 0.16 - 29th June 2017
 ----------------------
 * Updated code to support database schema version 015 (removed unused fields from queries)
