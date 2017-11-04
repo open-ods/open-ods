@@ -1,20 +1,2 @@
-mistune==0.8
-flasgger==0.8.0
-pyyaml==3.12
-gunicorn==19.7.1
-flask==0.12.2
-psycopg2==2.7.3.2
-six==1.11.0
-redis==2.10.6
-flask-heroku-cacheify==1.6.0
-flask-cache==0.13.1
-markupsafe==1.0
-flask-featureflags==0.6
-jinja2==2.9.6
-jsonschema==2.6.0
-werkzeug==0.12.2
-flask-cors==3.0.3
-pylibmc==1.5.2
-itsdangerous==0.24
-click==6.7
-pytest
+py==1.4.34 --hash=sha256:2ccb79b01769d99115aa600d7eed99f524bf752bba8f041dc1c184853514655a  --hash=sha256:0f2d585d22050e90c7d293b6451c83db097df77871974d90efd5a30dc12fcde3
+pytest==3.2.3 --hash=sha256:81a25f36a97da3313e1125fce9e7bbbba565bc7fec3c5beb14c262ddab238ac1  --hash=sha256:27fa6617efc2869d3e969a3e75ec060375bfb28831ade8b5cdd68da3a741dc3c
