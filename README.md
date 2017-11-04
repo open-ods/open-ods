@@ -31,10 +31,10 @@ The current Postgres database dump is openods_015_sep17_001.dump and can be down
 1. Clone this repository to your local machine
 
     ```bash
-    $ git clone https://github.com/mattstibbs/open-ods.git
+    $ git clone https://github.com/open-ods/open-ods.git
     ```
-  
-  
+
+
 2. In the terminal, navigate to the newly cloned repository on your machine
 
     ```bash
