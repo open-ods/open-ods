@@ -26,13 +26,17 @@ from openods import routes
 log_format = "%(asctime)s|OpenODS|%(levelname)s|%(message)s"
 formatter = logging.Formatter(log_format)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG) if app.config["DEBUG"] is True else logger.setLevel(logging.INFO)
+
+logger.setLevel(logging.DEBUG) \
+    if app.config["DEBUG"] is True else logger.setLevel(logging.INFO)
+
 ch = logging.StreamHandler()
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 logger.debug("Logging at DEBUG level")
 
-# Allow Cross Origin Resource Sharing for routes under the API path so that other services can use the API
+# Allow Cross Origin Resource Sharing for routes under the API path so that
+# other services can use the API.
 regEx = re.compile(app.config['API_PATH'] + "/*")
 CORS(app, resources={regEx: {"origins": "*"}})
