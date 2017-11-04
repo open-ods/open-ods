@@ -5,7 +5,7 @@ addons:
   postgresql: "9.4"
 services:
   - postgresql
-install: "pip install -r requirements-dev.txt"
+install: "pip install pipenv && pipenv install --dev"
 before_script:
   - psql -f sql/create_user_and_database.sql -U postgres
   - pg_restore -d openods assets/openods.sampledb
