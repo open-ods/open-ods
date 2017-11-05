@@ -9,9 +9,9 @@
             "os_name": "posix",
             "platform_machine": "x86_64",
             "platform_python_implementation": "CPython",
-            "platform_release": "17.2.0",
+            "platform_release": "17.3.0",
             "platform_system": "Darwin",
-            "platform_version": "Darwin Kernel Version 17.2.0: Sun Oct  1 00:46:50 PDT 2017; root:xnu-4570.20.62~10/RELEASE_X86_64",
+            "platform_version": "Darwin Kernel Version 17.3.0: Wed Oct 25 22:42:12 PDT 2017; root:xnu-4570.30.81.0.1~1/RELEASE_X86_64",
             "python_full_version": "3.6.3",
             "python_version": "3.6",
             "sys_platform": "darwin"
