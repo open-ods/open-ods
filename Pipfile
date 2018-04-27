@@ -6,7 +6,7 @@ verify_ssl = true
 
 [packages]
 
-flask = "==0.12.2"
+flask = "==1.0"
 flask-cors = "==3.0.3"
 flask-featureflags = "==0.6"
 flasgger = "==0.8.1"
