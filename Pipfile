@@ -12,7 +12,7 @@ flask-featureflags = "==0.6"
 flasgger = "==0.8.1"
 "psycopg2" = "==2.7.4"
 flask-heroku-cacheify = "==1.6.1"
-gunicorn = "==19.7.1"
+gunicorn = "==19.9.0"
 
 
 [dev-packages]
