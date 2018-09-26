@@ -1,20 +1,15 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 
-
 [packages]
-
 flask = "==0.12.2"
-flask-cors = "==3.0.4"
+flask-cors = "==3.0.6"
 flask-featureflags = "==0.6"
-flasgger = "==0.8.1"
-"psycopg2" = "==2.7.4"
+flasgger = "==0.9.1"
+"psycopg2" = "==2.7.5"
 flask-heroku-cacheify = "==1.6.1"
-gunicorn = "==19.7.1"
-
+gunicorn = "==19.9.0"
 
 [dev-packages]
-
-pytest = "*"
+pytest = "==3.8.1"
