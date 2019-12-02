@@ -9,7 +9,7 @@ flask-featureflags = "==0.6"
 flasgger = "==0.9.1"
 "psycopg2" = "==2.7.5"
 flask-heroku-cacheify = "==1.6.1"
-gunicorn = "==19.9.0"
+gunicorn = "==20.0.4"
 
 [dev-packages]
 pytest = "==3.8.1"
