@@ -12,4 +12,4 @@ flask-heroku-cacheify = "==1.6.1"
 gunicorn = "==19.9.0"
 
 [dev-packages]
-pytest = "==3.8.1"
+pytest = "==6.1.1"
