@@ -8,7 +8,7 @@ flask-featureflags==0.6
 flask-heroku-cacheify==1.6.1
 flask==0.12.2
 gunicorn==19.9.0
-itsdangerous==1.1.0
+itsdangerous==2.1.2
 jinja2==2.10
 jsonschema==3.0.1
 markupsafe==1.1.1
