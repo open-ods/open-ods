@@ -18,5 +18,5 @@ pylibmc==1.6.1
 pyrsistent==0.14.11
 pyyaml==6.0
 redis==3.2.0
-six==1.12.0
+six==1.16.0
 werkzeug==2.1.2
