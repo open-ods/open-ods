@@ -1,5 +1,5 @@
 -i https://pypi.python.org/simple/
-attrs==19.1.0
+attrs==21.4.0
 click==7.0
 flasgger==0.9.1
 flask-cache==0.13.1
