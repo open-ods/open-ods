@@ -10,7 +10,7 @@ flask==0.12.2
 gunicorn==19.9.0
 itsdangerous==2.1.2
 jinja2==2.10
-jsonschema==3.0.1
+jsonschema==4.17.3
 markupsafe==1.1.1
 mistune==2.0.2
 psycopg2==2.7.5
