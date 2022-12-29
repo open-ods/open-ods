@@ -15,7 +15,7 @@ markupsafe==1.1.1
 mistune==2.0.2
 psycopg2==2.7.5
 pylibmc==1.6.1
-pyrsistent==0.14.11
+pyrsistent==0.19.3
 pyyaml==6.0
 redis==3.2.0
 six==1.12.0
