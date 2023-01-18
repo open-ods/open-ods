@@ -11,7 +11,7 @@ gunicorn==19.9.0
 itsdangerous==2.1.2
 jinja2==2.10
 jsonschema==3.0.1
-markupsafe==1.1.1
+markupsafe==2.1.2
 mistune==2.0.2
 psycopg2==2.7.5
 pylibmc==1.6.1
