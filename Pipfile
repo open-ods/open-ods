@@ -3,7 +3,7 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 
 [packages]
-flask = "==0.12.2"
+flask = "==2.2.3"
 flask-cors = "==3.0.6"
 flask-featureflags = "==0.6"
 flasgger = "==0.9.1"
